@@ -26,6 +26,7 @@ public class ExamBean {
 	
 	private String examName;
 	
+	
 	@ManyToOne
 	@JoinColumn(name = "subjectId",nullable = false)
 	private SubjectBean subject;

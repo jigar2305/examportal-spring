@@ -18,4 +18,6 @@ public class QuestionanswerBean {
 
 	private String selected;
 	
+	
+	
 }

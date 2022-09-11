@@ -17,10 +17,13 @@ import com.bean.forms.QuestionBean;
 import com.bean.forms.QuestionanswerBean;
 import com.bean.forms.ResultBean;
 import com.bean.forms.SubjectBean;
+import com.bean.forms.UserquestionanswerBean;
 import com.repository.ExamRepository;
 import com.repository.QuestionRepository;
+import com.repository.ResultRepository;
 import com.repository.SubjectRepository;
 import com.repository.UserRepository;
+import com.repository.UserquestionanswerRepository;
 
 @Service
 public class QuestionService {
@@ -29,12 +32,18 @@ public class QuestionService {
 
 	@Autowired
 	SubjectRepository subjectRepo;
-	
+
 	@Autowired
 	ExamRepository examRepo;
-	
+
 	@Autowired
 	UserRepository userRepo;
+
+	@Autowired
+	ResultRepository resultRepo;
+	
+	@Autowired
+	UserquestionanswerRepository userquestionanswerRepo;
 
 	public List<ExamquestionBean> randomquestion(AddquestionBean addquestion) {
 
@@ -61,10 +70,21 @@ public class QuestionService {
 		List<QuestionanswerBean> que = questions.getQuestions();
 		ExamBean exam = examRepo.findByExamId(questions.getExam().getExamId());
 		UserBean user = userRepo.findByEmail(questions.getEmail());
+//		List<UserquestionanswerBean> uqa = new ArrayList<>();
 		user.setPassword(null);
 		Integer total = que.size();
 		Integer obtain = 0;
 		for (QuestionanswerBean i : que) {
+//			UserquestionanswerBean q = new UserquestionanswerBean();
+//			q.setExam(exam);
+//			q.setUser(user);
+//			ExamquestionBean e = new ExamquestionBean();
+//			QuestionBean queq = questionRepo.findByQuestionId(i.getQuestionId());
+//			e.setQuestion(queq);
+//			q.setQuestion(e);
+//			q.setSelectedOption(i.getSelected());
+//			userquestionanswerRepo.save(q);
+
 			if (i.getCorrectAnswer() == i.getSelected()) {
 				obtain = obtain + 1;
 			}
@@ -72,8 +92,11 @@ public class QuestionService {
 		ResultBean result = new ResultBean();
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);
+		System.out.println(result.getTotalMarks());
 		result.setExam(exam);
 		result.setUser(user);
+		resultRepo.save(result);
+
 		return result;
 	}
 

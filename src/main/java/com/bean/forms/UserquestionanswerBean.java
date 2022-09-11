@@ -33,6 +33,6 @@ public class UserquestionanswerBean {
 	@JoinColumn(name = "examquestionId",nullable = false)
 	private ExamquestionBean question;
 	
-	private Integer selectedOption;
+	private String selectedOption;
 	
 }
