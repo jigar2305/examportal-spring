@@ -26,12 +26,12 @@ public class UserquestionanswerBean {
 	private UserBean user;
 	
 	@ManyToOne
-	@JoinColumn(name = "examId",nullable = false)
-	private ExamBean exam;
+	@JoinColumn(name = "qestionId",nullable = false)
+	private QuestionBean question;
 	
 	@ManyToOne
-	@JoinColumn(name = "examquestionId",nullable = false)
-	private ExamquestionBean question;
+	@JoinColumn(name = "examId",nullable = false)
+	private ExamBean exam;
 	
 	private String selectedOption;
 	

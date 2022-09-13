@@ -41,10 +41,8 @@ public class ExamBean {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "exam")
-	Set<UserquestionanswerBean> Userquestionanswers;
-	
+	Set<UserquestionanswerBean> userquestionanswers;
 
-	
 	
 
 }

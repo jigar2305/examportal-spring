@@ -70,25 +70,28 @@ public class QuestionService {
 		List<QuestionanswerBean> que = questions.getQuestions();
 		ExamBean exam = examRepo.findByExamId(questions.getExam().getExamId());
 		UserBean user = userRepo.findByEmail(questions.getEmail());
+		System.out.println(user.getUserId());
 //		List<UserquestionanswerBean> uqa = new ArrayList<>();
 		user.setPassword(null);
 		Integer total = que.size();
 		Integer obtain = 0;
 		for (QuestionanswerBean i : que) {
 //			UserquestionanswerBean q = new UserquestionanswerBean();
-//			q.setExam(exam);
-//			q.setUser(user);
-//			ExamquestionBean e = new ExamquestionBean();
+//			
 //			QuestionBean queq = questionRepo.findByQuestionId(i.getQuestionId());
-//			e.setQuestion(queq);
-//			q.setQuestion(e);
+//			q.setUser(user);
+//			q.setQuestion(queq);
+//			q.setExam(exam);
 //			q.setSelectedOption(i.getSelected());
-//			userquestionanswerRepo.save(q);
-
+//			System.out.println(q.getSelectedOption());
+//			System.out.println(q.getQuestion());
+//			System.out.println(q.getUser());
+//			uqa.add(q);
 			if (i.getCorrectAnswer() == i.getSelected()) {
 				obtain = obtain + 1;
 			}
 		}
+//		userquestionanswerRepo.saveAll(uqa);
 		ResultBean result = new ResultBean();
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);

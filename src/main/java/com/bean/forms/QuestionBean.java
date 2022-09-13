@@ -38,5 +38,9 @@ public class QuestionBean {
 	@JsonIgnore
 	@OneToMany(mappedBy = "question")	
 	private Set<ExamquestionBean> examquestions;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "question")	
+	private Set<UserquestionanswerBean> userquestionanswers;
 
 }
