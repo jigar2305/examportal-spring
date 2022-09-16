@@ -12,6 +12,7 @@ import com.bean.UserBean;
 
 import lombok.Data;
 
+
 @Data
 @Entity
 @Table(name = "userquestionanswer")

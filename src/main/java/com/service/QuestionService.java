@@ -41,7 +41,7 @@ public class QuestionService {
 
 	@Autowired
 	ResultRepository resultRepo;
-	
+
 	@Autowired
 	UserquestionanswerRepository userquestionanswerRepo;
 
@@ -71,27 +71,29 @@ public class QuestionService {
 		ExamBean exam = examRepo.findByExamId(questions.getExam().getExamId());
 		UserBean user = userRepo.findByEmail(questions.getEmail());
 		System.out.println(user.getUserId());
-//		List<UserquestionanswerBean> uqa = new ArrayList<>();
+		List<UserquestionanswerBean> uqa = new ArrayList<>();
 		user.setPassword(null);
 		Integer total = que.size();
 		Integer obtain = 0;
 		for (QuestionanswerBean i : que) {
-//			UserquestionanswerBean q = new UserquestionanswerBean();
-//			
-//			QuestionBean queq = questionRepo.findByQuestionId(i.getQuestionId());
-//			q.setUser(user);
-//			q.setQuestion(queq);
-//			q.setExam(exam);
-//			q.setSelectedOption(i.getSelected());
-//			System.out.println(q.getSelectedOption());
-//			System.out.println(q.getQuestion());
-//			System.out.println(q.getUser());
-//			uqa.add(q);
+			UserquestionanswerBean q = new UserquestionanswerBean();
+			QuestionBean queq = questionRepo.findByQuestionId(i.getQuestionId());
+			q.setUser(user);
+			q.setQuestion(queq);
+			q.setExam(exam);
+			System.out.println(i.getSelected());
+			q.setSelectedOption(i.getSelected());
+			uqa.add(q);
 			if (i.getCorrectAnswer() == i.getSelected()) {
 				obtain = obtain + 1;
 			}
 		}
-//		userquestionanswerRepo.saveAll(uqa);
+		try {
+			userquestionanswerRepo.saveAll(uqa);
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("in error");
+		}
 		ResultBean result = new ResultBean();
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);

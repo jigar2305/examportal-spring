@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bean.ReqBean;
 import com.bean.ResponseBean;
 import com.bean.UserBean;
 import com.bean.forms.ExamBean;
 import com.bean.forms.ResultBean;
+import com.bean.forms.UserquestionanswerBean;
+import com.criteria.CriteriaApi;
+import com.criteria.CriteriaRepository;
 import com.repository.ExamRepository;
 import com.repository.ResultRepository;
 import com.repository.UserRepository;
+import com.repository.UserquestionanswerRepository;
 
 @CrossOrigin
 @RestController
@@ -30,6 +33,9 @@ public class ResultController {
 	
 	@Autowired
 	ResultRepository resultRepo;
+	
+	@Autowired
+	UserquestionanswerRepository userquestionanswerRepo;
 	
 	@Autowired
 	ExamRepository examRepo;
@@ -47,9 +53,13 @@ public class ResultController {
 	public ResponseEntity<?> getallquestionbyexamId(@PathVariable("userId") Integer userId,@PathVariable("examId") Integer examId) {
 		UserBean user  = userRepo.findByUserId(userId);
 		ExamBean exam =  examRepo.findByExamId(examId);
-		List<ResultBean> results = resultRepo.findByUser(user);
-		ResponseBean<List<ResultBean>> res = new ResponseBean<>();
-		res.setData(results);
+//		List<ResultBean> results = resultRepo.findByUser(user);
+		CriteriaApi criteriaRepo = new CriteriaApi();
+		List<UserquestionanswerBean> userquestionanswerBean = criteriaRepo.getquestion(user,exam);
+//		Map<String, List<Object>> results1 = new HashMap();
+//		results1.put("result",results);
+		ResponseBean<List<UserquestionanswerBean>> res = new ResponseBean<>();
+		res.setData(userquestionanswerBean);
 		res.setMsg("sussessfully");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 	}
