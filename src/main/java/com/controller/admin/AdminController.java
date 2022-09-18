@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,11 +31,26 @@ public class AdminController {
 		res.setMsg("users fetch successfully..");
 		return ResponseEntity.ok(res);
 	}
-	@GetMapping("/deleteuser/{userId}")
+	
+	@DeleteMapping("/deleteuser/{userId}")
 	public ResponseEntity<?> deleteuser(@PathVariable("userId")Integer userId){		
 		userRepo.deleteById(userId);
 		ResponseBean<Object> res = new ResponseBean<>();
 		res.setData(userId);
+		res.setMsg("user deleted successfully..");
+		return ResponseEntity.ok(res);
+	}
+	@GetMapping("/updatestatus/{userId}")
+	public ResponseEntity<?> active(@PathVariable("userId")Integer userId){		
+		UserBean user = userRepo.findByUserId(userId);
+		if(user.getActive().booleanValue()==true) {
+			user.setActive(false);
+		}else {
+			user.setActive(true);
+		}
+		userRepo.save(user);
+		ResponseBean<Boolean> res = new ResponseBean<>();
+		res.setData(user.getActive());
 		res.setMsg("user deleted successfully..");
 		return ResponseEntity.ok(res);
 	}

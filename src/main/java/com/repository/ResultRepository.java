@@ -10,5 +10,6 @@ import com.bean.forms.ResultBean;
 public interface ResultRepository extends CrudRepository<ResultBean, Integer>{
 	
 	List<ResultBean> findByUser(UserBean user);
+	ResultBean findByResultId(Integer resultId);
 
 }

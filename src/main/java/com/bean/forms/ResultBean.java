@@ -1,5 +1,6 @@
 package com.bean.forms;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,11 +25,11 @@ public class ResultBean {
 	
 	private Integer totalMarks;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.REMOVE})
 	@JoinColumn(name = "userId")
 	private UserBean user;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.REMOVE})
 	@JoinColumn(name = "examId")
 	private ExamBean exam;
 

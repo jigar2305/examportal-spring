@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bean.ResponseBean;
 import com.bean.UserBean;
-import com.bean.forms.ExamBean;
 import com.bean.forms.ResultBean;
 import com.bean.forms.UserquestionanswerBean;
-import com.criteria.CriteriaApi;
-import com.criteria.CriteriaRepository;
 import com.repository.ExamRepository;
 import com.repository.ResultRepository;
 import com.repository.UserRepository;
@@ -49,15 +46,27 @@ public class ResultController {
 		res.setMsg("sussessfully");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 	}
+	
+	@GetMapping("/get/{resultId}")
+	public ResponseEntity<?> getbyid(@PathVariable("resultId") Integer resultId) {
+		ResultBean result = resultRepo.findByResultId(resultId);
+		if(result == null) {
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(resultId);
+			res.setMsg("Data not found");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		}else {
+			
+		ResponseBean<ResultBean> res = new ResponseBean<>();
+		res.setData(result);
+		res.setMsg("sussessfully");
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+		}
+	}
+	
 	@GetMapping("/listresult/{userId}/{examId}")
 	public ResponseEntity<?> getallquestionbyexamId(@PathVariable("userId") Integer userId,@PathVariable("examId") Integer examId) {
-		UserBean user  = userRepo.findByUserId(userId);
-		ExamBean exam =  examRepo.findByExamId(examId);
-//		List<ResultBean> results = resultRepo.findByUser(user);
-		CriteriaApi criteriaRepo = new CriteriaApi();
-		List<UserquestionanswerBean> userquestionanswerBean = criteriaRepo.getquestion(user,exam);
-//		Map<String, List<Object>> results1 = new HashMap();
-//		results1.put("result",results);
+		List<UserquestionanswerBean> userquestionanswerBean = userquestionanswerRepo.findByExamAndUser(examId,userId);
 		ResponseBean<List<UserquestionanswerBean>> res = new ResponseBean<>();
 		res.setData(userquestionanswerBean);
 		res.setMsg("sussessfully");

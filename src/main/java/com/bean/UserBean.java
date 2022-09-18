@@ -2,6 +2,7 @@ package com.bean;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,7 +41,7 @@ public class UserBean {
 	
 	private Integer otp;
 	
-	@ManyToOne
+	@ManyToOne()
 	@JoinColumn(name = "roleId",nullable = false)
 	private RoleBean role;
 	

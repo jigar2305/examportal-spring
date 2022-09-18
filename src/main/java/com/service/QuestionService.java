@@ -1,12 +1,17 @@
 package com.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bean.AddquestionBean;
 import com.bean.UserBean;
@@ -70,7 +75,6 @@ public class QuestionService {
 		List<QuestionanswerBean> que = questions.getQuestions();
 		ExamBean exam = examRepo.findByExamId(questions.getExam().getExamId());
 		UserBean user = userRepo.findByEmail(questions.getEmail());
-		System.out.println(user.getUserId());
 		List<UserquestionanswerBean> uqa = new ArrayList<>();
 		user.setPassword(null);
 		Integer total = que.size();
@@ -81,7 +85,6 @@ public class QuestionService {
 			q.setUser(user);
 			q.setQuestion(queq);
 			q.setExam(exam);
-			System.out.println(i.getSelected());
 			q.setSelectedOption(i.getSelected());
 			uqa.add(q);
 			if (i.getCorrectAnswer() == i.getSelected()) {
@@ -92,12 +95,10 @@ public class QuestionService {
 			userquestionanswerRepo.saveAll(uqa);
 		} catch (Exception e) {
 			System.out.println(e);
-			System.out.println("in error");
 		}
 		ResultBean result = new ResultBean();
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);
-		System.out.println(result.getTotalMarks());
 		result.setExam(exam);
 		result.setUser(user);
 		resultRepo.save(result);
@@ -105,4 +106,39 @@ public class QuestionService {
 		return result;
 	}
 
+	public List<QuestionBean> addquestion(MultipartFile excel) {
+
+		List<QuestionBean> questions = new ArrayList<>();
+		try {
+			XSSFWorkbook workbook = new XSSFWorkbook(excel.getInputStream());
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+				XSSFRow row = sheet.getRow(i);
+				QuestionBean questionBean = new QuestionBean();
+				questionBean.setQuestion(row.getCell(0).toString());
+				questionBean.setA(row.getCell(1).toString());
+				questionBean.setB(row.getCell(2).toString());
+				questionBean.setC(row.getCell(3).toString());
+				questionBean.setD(row.getCell(4).toString());
+				questionBean.setCorrectAnswer(row.getCell(5).toString());
+				SubjectBean subjectBean = subjectRepo.findBySubjectName(row.getCell(6).toString());
+				if (subjectBean == null && questionBean.getQuestion().isEmpty() && questionBean.getA().isEmpty()
+						&& questionBean.getB().isEmpty() && questionBean.getC().isEmpty()
+						&& questionBean.getD().isEmpty() && questionBean.getCorrectAnswer().isEmpty()
+
+				) {
+				} else {
+					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
+					questionBean.setSubject(subjectBean);
+//					questionRepo.save(questionBean);
+					questions.add(questionRepo.save(questionBean));
+				}
+			}
+			
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return questions;
+	}
 }

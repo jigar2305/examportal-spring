@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,12 +29,12 @@ public class SubjectBean {
 	
 	private String subjectName;
 	
-	@ManyToOne
+	@ManyToOne()
 	@JoinColumn(name = "courseId")
 	private CourseBean course;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "subject",cascade = CascadeType.ALL )
+	@OneToMany(mappedBy = "subject" )
 	private Set<QuestionBean> questions;
 	
 	@JsonIgnore

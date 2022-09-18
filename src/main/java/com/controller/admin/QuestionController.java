@@ -22,9 +22,7 @@ import com.bean.ResponseBean;
 import com.bean.forms.QuestionBean;
 import com.repository.QuestionRepository;
 
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 @CrossOrigin
 @RequestMapping("/que")
 @RestController
@@ -35,10 +33,6 @@ public class QuestionController {
 
 	@PostMapping("/add")
 	public ResponseEntity<?> addquestion(@RequestBody List<QuestionBean> questions) {
-		log.info("in ques add function");
-		for (int i = 0; i < questions.size(); i++) {
-			System.out.println(questions.get(i).toString());
-		}
 		QuestionBean d = null;
 		for (int i = 0; i < questions.size(); i++) {
 			if (questionRepo.findByQuestion(questions.get(i).getQuestion()) == null) {

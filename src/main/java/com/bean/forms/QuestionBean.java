@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -31,7 +32,7 @@ public class QuestionBean {
 	private String d;
 	private String correctAnswer;
 
-	@ManyToOne
+	@ManyToOne()
 	@JoinColumn(name = "subjectId")
 	private SubjectBean subject;
 	
@@ -42,5 +43,6 @@ public class QuestionBean {
 	@JsonIgnore
 	@OneToMany(mappedBy = "question")	
 	private Set<UserquestionanswerBean> userquestionanswers;
+
 
 }

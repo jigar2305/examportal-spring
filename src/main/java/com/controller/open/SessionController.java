@@ -48,7 +48,7 @@ public class SessionController {
 		ResponseBean<UserBean> res = new ResponseBean<>();
 		if (dbUser == null) {
 			user.setActive(true);
-			RoleBean role = roleRepo.findByRoleName("admin");
+			RoleBean role = roleRepo.findByRoleName("student");
 			user.setRole(role);
 			String encpassword = bcrypt.encode(user.getPassword());
 			user.setPassword(encpassword);	
@@ -110,7 +110,7 @@ public class SessionController {
 			res.setData(email);
 			res.setMsg("successfully...");
 			userBean.setOtp(null);
-//			userRepo.save(userBean);
+			userRepo.save(userBean);
 			return ResponseEntity.ok(res);
 		}else {
 			res.setData(email);

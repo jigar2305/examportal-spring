@@ -2,6 +2,7 @@ package com.bean.forms;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,7 @@ public class CourseBean {
 	private String courseName;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "course")
+	@OneToMany(mappedBy = "course",cascade = {CascadeType.REMOVE})
 	List<SubjectBean> subjects;
 
 }

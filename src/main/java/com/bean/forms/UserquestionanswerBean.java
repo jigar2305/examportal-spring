@@ -27,7 +27,7 @@ public class UserquestionanswerBean {
 	private UserBean user;
 	
 	@ManyToOne
-	@JoinColumn(name = "qestionId",nullable = false)
+	@JoinColumn(name = "questionId",nullable = false)
 	private QuestionBean question;
 	
 	@ManyToOne

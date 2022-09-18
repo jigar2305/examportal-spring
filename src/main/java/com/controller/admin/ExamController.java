@@ -69,7 +69,6 @@ public class ExamController {
 	@GetMapping("/get/{examId}")
 	public ResponseEntity<?> getquestionbyId(@PathVariable("examId") Integer examId) {
 		Optional<ExamBean> examBean = examRepo.findById(examId);
-		System.out.println(examBean == null);
 		if (examBean.isEmpty()) {
 			ResponseBean<Object> res = new ResponseBean<>();
 			res.setData(examId);
