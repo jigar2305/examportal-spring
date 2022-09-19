@@ -122,15 +122,14 @@ public class QuestionService {
 				questionBean.setD(row.getCell(4).toString());
 				questionBean.setCorrectAnswer(row.getCell(5).toString());
 				SubjectBean subjectBean = subjectRepo.findBySubjectName(row.getCell(6).toString());
-				if (subjectBean == null && questionBean.getQuestion().isEmpty() && questionBean.getA().isEmpty()
-						&& questionBean.getB().isEmpty() && questionBean.getC().isEmpty()
-						&& questionBean.getD().isEmpty() && questionBean.getCorrectAnswer().isEmpty()
+				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
+						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
+						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
 
 				) {
 				} else {
 					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
 					questionBean.setSubject(subjectBean);
-//					questionRepo.save(questionBean);
 					questions.add(questionRepo.save(questionBean));
 				}
 			}
