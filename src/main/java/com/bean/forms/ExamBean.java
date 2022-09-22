@@ -22,40 +22,32 @@ import lombok.Data;
 @Entity
 @Table(name = "exam")
 public class ExamBean {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer examId;
-	
+
 	private String examName;
-	
-	
+
 	@ManyToOne
-	@JoinColumn(name = "subjectId",nullable = false)
+	@JoinColumn(name = "subjectId", nullable = false)
 	private SubjectBean subject;
-	
+
 	@JsonIgnore
-	@OneToMany(mappedBy = "exam")	
+	@OneToMany(mappedBy = "exam")
 	private Set<ExamquestionBean> examquestions;
-	
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "exam")
 	Set<ResultBean> results;
-	
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "exam")
 	Set<UserquestionanswerBean> userquestionanswers;
 	
-	
+	@JsonIgnore
 	@ManyToMany
-	@JoinTable(
-	  name = "enroleexam", 
-	  joinColumns = @JoinColumn(name = "exams"), 
-	  inverseJoinColumns = @JoinColumn(name = "users"))
+	@JoinTable(name = "enroleexam", joinColumns = @JoinColumn(name = "examId"), inverseJoinColumns = @JoinColumn(name = "userId"))
 	Set<UserBean> users;
-
-
-
-	
 
 }

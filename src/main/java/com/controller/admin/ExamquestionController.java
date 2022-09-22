@@ -23,8 +23,11 @@ import com.bean.forms.ExamBean;
 import com.bean.forms.ExamquestionBean;
 import com.bean.forms.QuestionBean;
 import com.bean.forms.ResultBean;
+import com.bean.forms.SubjectBean;
 import com.repository.ExamRepository;
 import com.repository.ExamquestionRepository;
+import com.repository.QuestionRepository;
+import com.repository.SubjectRepository;
 import com.service.QuestionService;
 
 @CrossOrigin
@@ -41,21 +44,40 @@ public class ExamquestionController {
 	@Autowired
 	QuestionService questionService;
 
+	@Autowired
+	QuestionRepository questionRepo;
+
+	@Autowired
+	SubjectRepository subjectRepo;
+
 	@PostMapping("/add")
 	public ResponseEntity<?> addequestions(@RequestBody AddquestionBean addquestion) {
 		List<ExamquestionBean> examque = examquestionRepo.findByExam(addquestion.getExam());
 		ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
 		if (examque.isEmpty()) {
-			List<ExamquestionBean> equestions = questionService.randomquestion(addquestion);
-			examquestionRepo.saveAll(equestions);
-			res.setData(equestions);
-			res.setMsg("added sussessfully");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			Optional<SubjectBean> subject = subjectRepo.findById(addquestion.getExam().getSubject().getSubjectId());
+			List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subject);
+			if (que.size() > addquestion.getNumber()) {
+
+				List<ExamquestionBean> equestions = questionService.randomquestion(addquestion);
+				if (equestions != null) {
+					examquestionRepo.saveAll(equestions);
+					res.setData(equestions);
+					res.setMsg("added sussessfully");
+					return ResponseEntity.status(HttpStatus.OK).body(res);
+				}
+
+			}
+			ResponseBean<Integer> resq = new ResponseBean<>();
+			resq.setData(addquestion.getNumber());
+			resq.setMsg("please add question first");
+			return ResponseEntity.status(HttpStatus.OK).body(resq);
 		} else {
 			res.setData(examque);
 			res.setMsg("this exam is already exist");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}
+
 	}
 
 	@GetMapping("/get/{examId}")
@@ -75,6 +97,7 @@ public class ExamquestionController {
 			return ResponseEntity.status(HttpStatus.OK).body(res);
 		}
 	}
+
 	@GetMapping("/getque/{examId}")
 	public ResponseEntity<?> listequesrion(@PathVariable("examId") Integer examId) {
 		Optional<ExamBean> exam = examRepo.findById(examId);
@@ -87,10 +110,10 @@ public class ExamquestionController {
 		} else {
 			ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-			List<QuestionBean> questions = new ArrayList<>(); 
+			List<QuestionBean> questions = new ArrayList<>();
 			for (int i = 0; i < examquestion.size(); i++) {
 				questions.add(examquestion.get(i).getQuestion());
-				
+
 			}
 			res.setData(questions);
 			res.setMsg("get successfully");
@@ -99,17 +122,15 @@ public class ExamquestionController {
 	}
 
 	@PostMapping("/checkanswer")
-	public ResponseEntity<?> checkanswer(@RequestBody CheckquestionanswerBean questions){
-		ResultBean result =  questionService.checkanswer(questions);
+	public ResponseEntity<?> checkanswer(@RequestBody CheckquestionanswerBean questions) {
+		ResultBean result = questionService.checkanswer(questions);
 		ResponseBean<ResultBean> res = new ResponseBean<>();
 		res.setData(result);
 		res.setMsg(" your result ");
 		return ResponseEntity.status(HttpStatus.OK).body(res);
-		
+
 	}
-	
-	
-	
+
 	@DeleteMapping("/delete/{examId}")
 	public ResponseEntity<?> deleteequesrions(@PathVariable("examId") Integer examId) {
 		Optional<ExamBean> exam = examRepo.findById(examId);

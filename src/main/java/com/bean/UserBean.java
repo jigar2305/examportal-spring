@@ -54,6 +54,7 @@ public class UserBean {
 	@OneToMany(mappedBy = "user")
 	Set<UserquestionanswerBean> userquestionanswers; 
 	
+	@JsonIgnore
 	@ManyToMany(mappedBy = "users")
     Set<ExamBean> exams;
 	
