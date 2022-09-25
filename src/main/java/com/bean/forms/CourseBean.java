@@ -12,9 +12,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
-
-@Data
 @Entity
 @Table(name = "course")
 public class CourseBean {
@@ -28,5 +25,30 @@ public class CourseBean {
 	@JsonIgnore
 	@OneToMany(mappedBy = "course",cascade = {CascadeType.REMOVE})
 	List<SubjectBean> subjects;
+
+	public Integer getCourseId() {
+		return courseId;
+	}
+
+	public void setCourseId(Integer courseId) {
+		this.courseId = courseId;
+	}
+
+	public String getCourseName() {
+		return courseName;
+	}
+
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
+	}
+
+	public List<SubjectBean> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(List<SubjectBean> subjects) {
+		this.subjects = subjects;
+	}
+	
 
 }

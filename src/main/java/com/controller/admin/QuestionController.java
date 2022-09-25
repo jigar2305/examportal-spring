@@ -33,6 +33,9 @@ public class QuestionController {
 
 	@PostMapping("/add")
 	public ResponseEntity<?> addquestion(@RequestBody List<QuestionBean> questions) {
+		for (QuestionBean questionBean : questions) {
+		System.out.println(	questionBean.getLevel());
+		}
 		QuestionBean d = null;
 		for (int i = 0; i < questions.size(); i++) {
 			if (questionRepo.findByQuestion(questions.get(i).getQuestion()) == null) {
@@ -92,10 +95,6 @@ public class QuestionController {
 		}
 	}
 	
-	
-	
-	
-
 	@PutMapping("/update")
 	public ResponseEntity<?> updatequestionbyId(@RequestBody QuestionBean question) {
 		QuestionBean que = questionRepo.save(question);

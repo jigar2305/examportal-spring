@@ -9,9 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "Examquestion")
 public class ExamquestionBean {
@@ -29,6 +27,36 @@ public class ExamquestionBean {
 	@ManyToOne
 	@JoinColumn(name = "examId")
 	private ExamBean exam;
+
+
+	public Integer getExamquestionId() {
+		return examquestionId;
+	}
+
+
+	public void setExamquestionId(Integer examquestionId) {
+		this.examquestionId = examquestionId;
+	}
+
+
+	public QuestionBean getQuestion() {
+		return question;
+	}
+
+
+	public void setQuestion(QuestionBean question) {
+		this.question = question;
+	}
+
+
+	public ExamBean getExam() {
+		return exam;
+	}
+
+
+	public void setExam(ExamBean exam) {
+		this.exam = exam;
+	}
 	
 
 }

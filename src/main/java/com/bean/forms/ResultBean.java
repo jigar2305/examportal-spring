@@ -11,9 +11,7 @@ import javax.persistence.Table;
 
 import com.bean.UserBean;
 
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "result")
 public class ResultBean {
@@ -32,6 +30,46 @@ public class ResultBean {
 	@ManyToOne(cascade = {CascadeType.REMOVE})
 	@JoinColumn(name = "examId")
 	private ExamBean exam;
+
+	public Integer getResultId() {
+		return resultId;
+	}
+
+	public void setResultId(Integer resultId) {
+		this.resultId = resultId;
+	}
+
+	public Integer getObtainMarks() {
+		return obtainMarks;
+	}
+
+	public void setObtainMarks(Integer obtainMarks) {
+		this.obtainMarks = obtainMarks;
+	}
+
+	public Integer getTotalMarks() {
+		return totalMarks;
+	}
+
+	public void setTotalMarks(Integer totalMarks) {
+		this.totalMarks = totalMarks;
+	}
+
+	public UserBean getUser() {
+		return user;
+	}
+
+	public void setUser(UserBean user) {
+		this.user = user;
+	}
+
+	public ExamBean getExam() {
+		return exam;
+	}
+
+	public void setExam(ExamBean exam) {
+		this.exam = exam;
+	}
 
 	
 }

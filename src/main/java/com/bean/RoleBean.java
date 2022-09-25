@@ -11,9 +11,8 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
 
-@Data
+
 @Table(name = "role")
 @Entity
 public class RoleBean {
@@ -25,6 +24,30 @@ public class RoleBean {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "role")
-	Set<UserBean> users; 
+	Set<UserBean> users;
+
+	public Integer getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public Set<UserBean> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<UserBean> users) {
+		this.users = users;
+	} 
 
 }

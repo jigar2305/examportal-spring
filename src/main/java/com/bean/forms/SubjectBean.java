@@ -2,7 +2,6 @@ package com.bean.forms;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,13 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
-
-@Data
 @Entity
 @Table(name = "subject")
 public class SubjectBean {
@@ -37,7 +32,39 @@ public class SubjectBean {
 	@OneToMany(mappedBy = "subject" )
 	private Set<QuestionBean> questions;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "subject" )
-	private Set<ExamBean> exams;
+	public Integer getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(Integer subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public String getSubjectName() {
+		return subjectName;
+	}
+
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
+	}
+
+	public CourseBean getCourse() {
+		return course;
+	}
+
+	public void setCourse(CourseBean course) {
+		this.course = course;
+	}
+
+	public Set<QuestionBean> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(Set<QuestionBean> questions) {
+		this.questions = questions;
+	}
+
+
+	
+	
 }

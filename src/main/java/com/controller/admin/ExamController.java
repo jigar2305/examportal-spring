@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bean.ResponseBean;
+import com.bean.UserBean;
 import com.bean.forms.ExamBean;
 import com.repository.ExamRepository;
+import com.repository.ResultRepository;
+import com.repository.UserRepository;
 
 @CrossOrigin
 @RestController
@@ -25,12 +28,21 @@ import com.repository.ExamRepository;
 public class ExamController {
 	@Autowired
 	ExamRepository examRepo;
+	
+	
+	@Autowired
+	UserRepository userRepo;
+	
+	@Autowired
+	ResultRepository resultRepo;
 
+	
 	@PostMapping("/add")
 	public ResponseEntity<?> addexam(@RequestBody ExamBean exam) {
 		ExamBean examBean = examRepo.findByExamName(exam.getExamName());
 		ResponseBean<ExamBean> res = new ResponseBean<>();
 		if (examBean == null) {
+			exam.setTime(exam.getTime()*60);
 			examRepo.save(exam);
 			res.setData(exam);
 			res.setMsg("exam added sussessfully...");
@@ -41,10 +53,25 @@ public class ExamController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}
 	}
+
 	
 	@GetMapping("/list")
 	public ResponseEntity<?> list() {
 		List<ExamBean> exams = (List<ExamBean>) examRepo.findAll();
+		ResponseBean<List<ExamBean>> res = new ResponseBean<>();
+		res.setData(exams);
+		res.setMsg("sussessfully");
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+	}
+	@GetMapping("/list/{userId}")
+	public ResponseEntity<?> getexambyuserId(@PathVariable("userId") Integer userId) {
+		UserBean user = userRepo.findByUserId(userId);
+		List<ExamBean> exams = (List<ExamBean>) examRepo.findByUsers(user);
+		for (int i = 0; i < exams.size(); i++) {
+			if(resultRepo.findByExamAndUser(exams.get(i), user) != null) {
+				exams.remove(i);
+			}
+		}
 		ResponseBean<List<ExamBean>> res = new ResponseBean<>();
 		res.setData(exams);
 		res.setMsg("sussessfully");

@@ -10,10 +10,6 @@ import javax.persistence.Table;
 
 import com.bean.UserBean;
 
-import lombok.Data;
-
-
-@Data
 @Entity
 @Table(name = "userquestionanswer")
 public class UserquestionanswerBean {
@@ -35,5 +31,46 @@ public class UserquestionanswerBean {
 	private ExamBean exam;
 	
 	private String selectedOption;
+
+	public Integer getUserquestionanswerId() {
+		return userquestionanswerId;
+	}
+
+	public void setUserquestionanswerId(Integer userquestionanswerId) {
+		this.userquestionanswerId = userquestionanswerId;
+	}
+
+	public UserBean getUser() {
+		return user;
+	}
+
+	public void setUser(UserBean user) {
+		this.user = user;
+	}
+
+	public QuestionBean getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(QuestionBean question) {
+		this.question = question;
+	}
+
+	public ExamBean getExam() {
+		return exam;
+	}
+
+	public void setExam(ExamBean exam) {
+		this.exam = exam;
+	}
+
+	public String getSelectedOption() {
+		return selectedOption;
+	}
+
+	public void setSelectedOption(String selectedOption) {
+		this.selectedOption = selectedOption;
+	}
+	
 	
 }

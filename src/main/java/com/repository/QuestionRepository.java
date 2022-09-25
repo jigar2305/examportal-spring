@@ -12,8 +12,9 @@ import com.bean.forms.SubjectBean;
 @Repository
 public interface QuestionRepository extends CrudRepository<QuestionBean, Integer>{
 	QuestionBean findByQuestion(String question);
-	List<QuestionBean> findBySubject(Optional<SubjectBean> subject);
+	List<QuestionBean> findBySubject(SubjectBean subjectBean);
 	QuestionBean findByQuestionId(Integer questionId);
+	List<QuestionBean> findBySubject(Optional<SubjectBean> subject);
 	
 
 }

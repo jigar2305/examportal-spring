@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bean.AddquestionBean;
+import com.bean.ExamMSubjectBean;
+import com.bean.SNNLBean;
 import com.bean.UserBean;
 import com.bean.forms.CheckquestionanswerBean;
 import com.bean.forms.ExamBean;
@@ -24,6 +26,7 @@ import com.bean.forms.ResultBean;
 import com.bean.forms.SubjectBean;
 import com.bean.forms.UserquestionanswerBean;
 import com.repository.ExamRepository;
+import com.repository.ExamquestionRepository;
 import com.repository.QuestionRepository;
 import com.repository.ResultRepository;
 import com.repository.SubjectRepository;
@@ -45,6 +48,9 @@ public class QuestionService {
 	UserRepository userRepo;
 
 	@Autowired
+	ExamquestionRepository examquestionRepo;
+
+	@Autowired
 	ResultRepository resultRepo;
 
 	@Autowired
@@ -52,23 +58,23 @@ public class QuestionService {
 
 	public List<ExamquestionBean> randomquestion(AddquestionBean addquestion) {
 
-		Optional<SubjectBean> subject = subjectRepo.findById(addquestion.getExam().getSubject().getSubjectId());
-		List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subject);
-		if (que.size() > addquestion.getNumber()) {
-			List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
-			Random rand = new Random();
-			for (int i = 0; i < addquestion.getNumber(); i++) {
-				int randomIndex = rand.nextInt(que.size());
-				ExamquestionBean eq = new ExamquestionBean();
-				eq.setExam(addquestion.getExam());
-				eq.setQuestion(que.get(randomIndex));
-				question.add(eq);
-				que.remove(randomIndex);
-			}
-			return question;
-		} else {
-			return null;
-		}
+//		Optional<SubjectBean> subject = subjectRepo.findById(addquestion.getExam().getSubject().getSubjectId());
+//		List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subject);
+//		if (que.size() > addquestion.getNumber()) {
+//			List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
+//			Random rand = new Random();
+//			for (int i = 0; i < addquestion.getNumber(); i++) {
+//				int randomIndex = rand.nextInt(que.size());
+//				ExamquestionBean eq = new ExamquestionBean();
+//				eq.setExam(addquestion.getExam());
+//				eq.setQuestion(que.get(randomIndex));
+//				question.add(eq);
+//				que.remove(randomIndex);
+//			}
+//			return question;
+//		} else {
+		return null;
+//		}
 	}
 
 	public ResultBean checkanswer(CheckquestionanswerBean questions) {
@@ -76,7 +82,6 @@ public class QuestionService {
 		ExamBean exam = examRepo.findByExamId(questions.getExam().getExamId());
 		UserBean user = userRepo.findByEmail(questions.getEmail());
 		List<UserquestionanswerBean> uqa = new ArrayList<>();
-		user.setPassword(null);
 		Integer total = que.size();
 		Integer obtain = 0;
 		for (QuestionanswerBean i : que) {
@@ -121,23 +126,49 @@ public class QuestionService {
 				questionBean.setC(row.getCell(3).toString());
 				questionBean.setD(row.getCell(4).toString());
 				questionBean.setCorrectAnswer(row.getCell(5).toString());
-				SubjectBean subjectBean = subjectRepo.findBySubjectName(row.getCell(6).toString());
-				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
-						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
-						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
+				questionBean.setLevel(row.getCell(6).toString());
+				System.out.println(row.getCell(0).toString() + " " + row.getCell(1).toString() + " "
+						+ row.getCell(2).toString() + " " + row.getCell(2).toString() + " " + row.getCell(4).toString()
+						+ " " + row.getCell(5).toString() + " " + row.getCell(6).toString() + " "+row.getCell(7).toString());
+//				SubjectBean subjectBean = subjectRepo.findBySubjectName(row.getCell(7).toString());
+//				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
+//						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
+//						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
+//
+//				) {
+//				} else {
+//					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
+//					questionBean.setSubject(subjectBean);
+//					questions.add(questionRepo.save(questionBean));
+//				}
+//			}
 
-				) {
-				} else {
-					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
-					questionBean.setSubject(subjectBean);
-					questions.add(questionRepo.save(questionBean));
-				}
-			}
-			
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return questions;
+	}
+
+	public List<ExamquestionBean> randomquestionbymultiplesubject(ExamMSubjectBean addquestion) {
+
+		List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
+		for (int i = 0; i < addquestion.getSubjects().size(); i++) {
+			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
+			List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subjectBean);
+			if (que.size() > addquestion.getSubjects().get(i).getNumber()) {
+				Random rand = new Random();
+				for (int j = 0; j < addquestion.getSubjects().get(i).getNumber(); j++) {
+					int randomIndex = rand.nextInt(que.size());
+					ExamquestionBean eq = new ExamquestionBean();
+					eq.setExam(addquestion.getExam());
+					eq.setQuestion(que.get(randomIndex));
+					question.add(eq);
+					que.remove(randomIndex);
+				}
+			}
+		}
+		examquestionRepo.saveAll(question);
+		return question;
 	}
 }
