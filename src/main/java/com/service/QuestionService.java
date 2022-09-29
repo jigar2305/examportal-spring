@@ -129,7 +129,8 @@ public class QuestionService {
 				questionBean.setLevel(row.getCell(6).toString());
 				System.out.println(row.getCell(0).toString() + " " + row.getCell(1).toString() + " "
 						+ row.getCell(2).toString() + " " + row.getCell(2).toString() + " " + row.getCell(4).toString()
-						+ " " + row.getCell(5).toString() + " " + row.getCell(6).toString() + " "+row.getCell(7).toString());
+						+ " " + row.getCell(5).toString() + " " + row.getCell(6).toString() + " "
+						+ row.getCell(7).toString());
 //				SubjectBean subjectBean = subjectRepo.findBySubjectName(row.getCell(7).toString());
 //				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
 //						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
@@ -165,6 +166,97 @@ public class QuestionService {
 					eq.setQuestion(que.get(randomIndex));
 					question.add(eq);
 					que.remove(randomIndex);
+				}
+			}
+		}
+		examquestionRepo.saveAll(question);
+		return question;
+	}
+
+	public List<ExamquestionBean> randomquestionbymultiplesubjectbylevel(ExamMSubjectBean addquestion) {
+
+		Random rand = new Random();
+		List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
+		for (int i = 0; i < addquestion.getSubjects().size(); i++) {
+			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
+			List<QuestionBean> que = questionRepo.findBySubject(subjectBean);
+			List<QuestionBean> quehard = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
+			List<QuestionBean> queMedium = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
+			List<QuestionBean> queeasy = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
+			Integer hard = quehard.size();
+			Integer medium = queMedium.size();
+			Integer easy = queeasy.size();
+			Integer number = addquestion.getSubjects().get(i).getNumber();
+//			if (que.size() > addquestion.getSubjects().get(i).getNumber()) {
+//				Random rand = new Random();
+//				for (int j = 0; j < addquestion.getSubjects().get(i).getNumber(); j++) {
+//					int randomIndex = rand.nextInt(que.size());
+//					ExamquestionBean eq = new ExamquestionBean();
+//					eq.setExam(addquestion.getExam());
+//					eq.setQuestion(que.get(randomIndex));
+//					question.add(eq);
+//					que.remove(randomIndex);
+//				}
+//			}
+			if (addquestion.getSubjects().get(i).getLevel() == "hard") {
+				if (number % 2 == 0) {
+					if (hard % 2 == 0) {
+						if (hard > number / 2) {
+							for (int j = 0; j < number / 2; j++) {
+								int randomIndex = rand.nextInt(quehard.size());
+								ExamquestionBean eq = new ExamquestionBean();
+								eq.setExam(addquestion.getExam());
+								eq.setQuestion(quehard.get(randomIndex));
+								question.add(eq);
+								quehard.remove(randomIndex);
+							}
+							if ((medium + easy) > number / 2) {
+								for (int j = 0; j < number / 2; j++) {
+									if (queMedium.size() != 0) {
+										int randomIndex = rand.nextInt(queMedium.size());
+										ExamquestionBean eq = new ExamquestionBean();
+										eq.setExam(addquestion.getExam());
+										eq.setQuestion(queMedium.get(randomIndex));
+										question.add(eq);
+										queMedium.remove(randomIndex);
+									} else {
+										int randomIndex = rand.nextInt(queeasy.size());
+										ExamquestionBean eq = new ExamquestionBean();
+										eq.setExam(addquestion.getExam());
+										eq.setQuestion(queeasy.get(randomIndex));
+										question.add(eq);
+										queeasy.remove(randomIndex);
+									}
+								}
+							} 
+							if (question.size() == number) {
+								examquestionRepo.saveAll(question);
+								return question;
+							}
+
+						} else {
+							for (int j = 0; j < number / 2; j++) {
+								int randomIndex = rand.nextInt(quehard.size());
+								ExamquestionBean eq = new ExamquestionBean();
+								eq.setExam(addquestion.getExam());
+								eq.setQuestion(que.get(randomIndex));
+								question.add(eq);
+								que.remove(randomIndex);
+							}
+						}
+
+					} else {
+						if (hard > addquestion.getSubjects().get(i).getNumber() / 2) {
+							for (int j = 0; j < ((number / 2) + 1); j++) {
+								int randomIndex = rand.nextInt(quehard.size());
+								ExamquestionBean eq = new ExamquestionBean();
+								eq.setExam(addquestion.getExam());
+								eq.setQuestion(quehard.get(randomIndex));
+								question.add(eq);
+								quehard.remove(randomIndex);
+							}
+						}
+					}
 				}
 			}
 		}
