@@ -111,7 +111,7 @@ public class QuestionService {
 		return result;
 	}
 
-	public List<QuestionBean> addquestion(MultipartFile excel) {
+	public List<QuestionBean> addquestion(MultipartFile excel)  throws Exception{
 
 		List<QuestionBean> questions = new ArrayList<>();
 		try {
@@ -127,22 +127,23 @@ public class QuestionService {
 				questionBean.setD(row.getCell(4).toString());
 				questionBean.setCorrectAnswer(row.getCell(5).toString());
 				questionBean.setLevel(row.getCell(6).toString());
-				System.out.println(row.getCell(0).toString() + " " + row.getCell(1).toString() + " "
-						+ row.getCell(2).toString() + " " + row.getCell(2).toString() + " " + row.getCell(4).toString()
-						+ " " + row.getCell(5).toString() + " " + row.getCell(6).toString() + " "
-						+ row.getCell(7).toString());
-//				SubjectBean subjectBean = subjectRepo.findBySubjectName(row.getCell(7).toString());
-//				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
-//						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
-//						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
-//
-//				) {
-//				} else {
-//					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
-//					questionBean.setSubject(subjectBean);
-//					questions.add(questionRepo.save(questionBean));
-//				}
-//			}
+				String subject = null;
+				SubjectBean subjectBean = null;
+				if(row.getCell(7).toString() != null) {
+					subject = row.getCell(7).toString();
+					subjectBean = subjectRepo.findBySubjectName(row.getCell(7).toString());
+				}
+				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
+						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
+						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
+
+				) {
+				} else {
+					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
+					questionBean.setSubject(subjectBean);
+					questions.add(questionRepo.save(questionBean));
+				}
+			}
 
 			}
 		} catch (IOException e) {
@@ -151,42 +152,12 @@ public class QuestionService {
 		return questions;
 	}
 
-	public List<ExamquestionBean> randomquestionbymultiplesubject(ExamMSubjectBean addquestion) {
-
-		List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
-		for (int i = 0; i < addquestion.getSubjects().size(); i++) {
-			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
-			List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subjectBean);
-			if (que.size() > addquestion.getSubjects().get(i).getNumber()) {
-				Random rand = new Random();
-				for (int j = 0; j < addquestion.getSubjects().get(i).getNumber(); j++) {
-					int randomIndex = rand.nextInt(que.size());
-					ExamquestionBean eq = new ExamquestionBean();
-					eq.setExam(addquestion.getExam());
-					eq.setQuestion(que.get(randomIndex));
-					question.add(eq);
-					que.remove(randomIndex);
-				}
-			}
-		}
-		examquestionRepo.saveAll(question);
-		return question;
-	}
-
-	public List<ExamquestionBean> randomquestionbymultiplesubjectbylevel(ExamMSubjectBean addquestion) {
-
-		Random rand = new Random();
-		List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
-		for (int i = 0; i < addquestion.getSubjects().size(); i++) {
-			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
-			List<QuestionBean> que = questionRepo.findBySubject(subjectBean);
-			List<QuestionBean> quehard = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
-			List<QuestionBean> queMedium = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
-			List<QuestionBean> queeasy = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
-			Integer hard = quehard.size();
-			Integer medium = queMedium.size();
-			Integer easy = queeasy.size();
-			Integer number = addquestion.getSubjects().get(i).getNumber();
+//	public List<ExamquestionBean> randomquestionbymultiplesubject(ExamMSubjectBean addquestion) {
+//
+//		List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
+//		for (int i = 0; i < addquestion.getSubjects().size(); i++) {
+//			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
+//			List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subjectBean);
 //			if (que.size() > addquestion.getSubjects().get(i).getNumber()) {
 //				Random rand = new Random();
 //				for (int j = 0; j < addquestion.getSubjects().get(i).getNumber(); j++) {
@@ -198,69 +169,147 @@ public class QuestionService {
 //					que.remove(randomIndex);
 //				}
 //			}
-			if (addquestion.getSubjects().get(i).getLevel() == "hard") {
+//		}
+//		examquestionRepo.saveAll(question);
+//		return question;
+//	}
+//
+	public List<ExamquestionBean> randomquestionbymultiplesubjectbylevel(ExamMSubjectBean addquestion) {
+		ExamBean exam = examRepo.findByExamName(addquestion.getExamName());
+		Integer total = 0;
+		Random rand = new Random();
+		List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
+		for (int i = 0; i < addquestion.getSubjects().size(); i++) {
+			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
+			List<QuestionBean> quehard = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
+			List<QuestionBean> quemoderate = questionRepo.findBySubjectAndLevel(subjectBean, "moderate");
+			List<QuestionBean> queeasy = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
+			Integer hard = quehard.size();
+			Integer moderate = quemoderate.size();
+			Integer easy = queeasy.size();
+			Integer number = addquestion.getSubjects().get(i).getNumber();
+			total = total + number;
+			String level = exam.getLevel();
+
+			if (level.equalsIgnoreCase("hard")) {
+				if (hard > number) {
+					for (int j = 0; j < hard; j++) {
+						int randomIndex = rand.nextInt(hard);
+						ExamquestionBean eq = new ExamquestionBean();
+						eq.setExam(exam);
+						eq.setQuestion(quehard.get(randomIndex));
+						question.add(eq);
+						quehard.remove(randomIndex);
+					}
+				}
+			} else if (level.equalsIgnoreCase("easy")) {
+				if (easy > number) {
+					for (int j = 0; j < number; j++) {
+						int randomIndex = rand.nextInt(easy);
+						ExamquestionBean eq = new ExamquestionBean();
+						eq.setExam(exam);
+						eq.setQuestion(queeasy.get(randomIndex));
+						question.add(eq);
+						queeasy.remove(randomIndex);
+					}
+				}
+			} else if (level.equalsIgnoreCase("easy-moderate")) {
 				if (number % 2 == 0) {
-					if (hard % 2 == 0) {
-						if (hard > number / 2) {
-							for (int j = 0; j < number / 2; j++) {
-								int randomIndex = rand.nextInt(quehard.size());
-								ExamquestionBean eq = new ExamquestionBean();
-								eq.setExam(addquestion.getExam());
-								eq.setQuestion(quehard.get(randomIndex));
-								question.add(eq);
-								quehard.remove(randomIndex);
-							}
-							if ((medium + easy) > number / 2) {
-								for (int j = 0; j < number / 2; j++) {
-									if (queMedium.size() != 0) {
-										int randomIndex = rand.nextInt(queMedium.size());
-										ExamquestionBean eq = new ExamquestionBean();
-										eq.setExam(addquestion.getExam());
-										eq.setQuestion(queMedium.get(randomIndex));
-										question.add(eq);
-										queMedium.remove(randomIndex);
-									} else {
-										int randomIndex = rand.nextInt(queeasy.size());
-										ExamquestionBean eq = new ExamquestionBean();
-										eq.setExam(addquestion.getExam());
-										eq.setQuestion(queeasy.get(randomIndex));
-										question.add(eq);
-										queeasy.remove(randomIndex);
-									}
-								}
-							} 
-							if (question.size() == number) {
-								examquestionRepo.saveAll(question);
-								return question;
-							}
-
-						} else {
-							for (int j = 0; j < number / 2; j++) {
-								int randomIndex = rand.nextInt(quehard.size());
-								ExamquestionBean eq = new ExamquestionBean();
-								eq.setExam(addquestion.getExam());
-								eq.setQuestion(que.get(randomIndex));
-								question.add(eq);
-								que.remove(randomIndex);
-							}
+					if (easy / 2 > number / 2) {
+						for (int j = 0; j < number / 2; j++) {
+							int randomIndex = rand.nextInt(easy);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(queeasy.get(randomIndex));
+							question.add(eq);
+							queeasy.remove(randomIndex);
 						}
-
-					} else {
-						if (hard > addquestion.getSubjects().get(i).getNumber() / 2) {
-							for (int j = 0; j < ((number / 2) + 1); j++) {
-								int randomIndex = rand.nextInt(quehard.size());
-								ExamquestionBean eq = new ExamquestionBean();
-								eq.setExam(addquestion.getExam());
-								eq.setQuestion(quehard.get(randomIndex));
-								question.add(eq);
-								quehard.remove(randomIndex);
-							}
+					}
+					if (moderate / 2 > number / 2) {
+						for (int j = 0; j < number / 2; j++) {
+							int randomIndex = rand.nextInt(moderate);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(quemoderate.get(randomIndex));
+							question.add(eq);
+							quemoderate.remove(randomIndex);
+						}
+					}
+				} else {
+					if (easy / 2 > (number + 1) / 2) {
+						for (int j = 0; j < (number + 1) / 2; j++) {
+							int randomIndex = rand.nextInt(easy);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(queeasy.get(randomIndex));
+							question.add(eq);
+							queeasy.remove(randomIndex);
+						}
+					}
+					if (moderate / 2 > (number - 1) / 2) {
+						for (int j = 0; j < (number - 1) / 2; j++) {
+							int randomIndex = rand.nextInt(moderate);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(quemoderate.get(randomIndex));
+							question.add(eq);
+							quemoderate.remove(randomIndex);
+						}
+					}
+				}
+			} else if (level.equalsIgnoreCase("moderate-hard")) {
+				if (number % 2 == 0) {
+					if (hard / 2 > number / 2) {
+						for (int j = 0; j < number / 2; j++) {
+							int randomIndex = rand.nextInt(hard);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(quehard.get(randomIndex));
+							question.add(eq);
+							quehard.remove(randomIndex);
+						}
+					}
+					if (moderate / 2 > number / 2) {
+						for (int j = 0; j < number / 2; j++) {
+							int randomIndex = rand.nextInt(moderate);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(quemoderate.get(randomIndex));
+							question.add(eq);
+							quemoderate.remove(randomIndex);
+						}
+					}
+				} else {
+					if (hard / 2 > (number + 1) / 2) {
+						for (int j = 0; j < (number + 1) / 2; j++) {
+							int randomIndex = rand.nextInt(hard);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(quehard.get(randomIndex));
+							question.add(eq);
+							quehard.remove(randomIndex);
+						}
+					}
+					if (moderate / 2 > (number - 1) / 2) {
+						for (int j = 0; j < (number - 1) / 2; j++) {
+							int randomIndex = rand.nextInt(moderate);
+							ExamquestionBean eq = new ExamquestionBean();
+							eq.setExam(exam);
+							eq.setQuestion(quemoderate.get(randomIndex));
+							question.add(eq);
+							quemoderate.remove(randomIndex);
 						}
 					}
 				}
 			}
 		}
-		examquestionRepo.saveAll(question);
-		return question;
+		if (total == question.size()) {
+			examquestionRepo.saveAll(question);
+			return question;
+		} else {
+			question.removeAll(question);
+			return question;
+		}
 	}
+
 }

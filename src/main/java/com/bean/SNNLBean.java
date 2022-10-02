@@ -7,7 +7,6 @@ public class SNNLBean {
 	
 	Integer subjectId;
 	String subjectName;
-	String level;
 	Integer number;
 
 }

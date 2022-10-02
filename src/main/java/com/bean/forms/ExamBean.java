@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,10 +28,9 @@ public class ExamBean {
 	
 	private Integer time;
 	
-//	@ManyToOne
-//	@JoinColumn(name = "subjectId",nullable = false)
-//	private SubjectBean subject;
+	private Boolean isshow;
 	
+	private String level;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "exam")	
@@ -54,7 +52,24 @@ public class ExamBean {
 	  inverseJoinColumns = @JoinColumn(name = "userId"))
 	Set<UserBean> users;
 
+	public Boolean getIsshow() {
+		return isshow;
+	}
 
+
+	public void setIsshow(Boolean isshow) {
+		this.isshow = isshow;
+	}
+
+
+	public String getLevel() {
+		return level;
+	}
+
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
 
 
 	public Integer getExamId() {
@@ -75,16 +90,6 @@ public class ExamBean {
 	public void setExamName(String examName) {
 		this.examName = examName;
 	}
-
-
-//	public SubjectBean getSubject() {
-//		return subject;
-//	}
-//
-//
-//	public void setSubject(SubjectBean subject) {
-//		this.subject = subject;
-//	}
 
 
 	public Set<ExamquestionBean> getExamquestions() {

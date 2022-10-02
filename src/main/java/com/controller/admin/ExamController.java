@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bean.ExamMSubjectBean;
 import com.bean.ResponseBean;
 import com.bean.UserBean;
 import com.bean.forms.ExamBean;
+import com.bean.forms.ExamquestionBean;
 import com.repository.ExamRepository;
 import com.repository.ResultRepository;
 import com.repository.UserRepository;
+import com.service.QuestionService;
 
 @CrossOrigin
 @RestController
@@ -28,21 +31,22 @@ import com.repository.UserRepository;
 public class ExamController {
 	@Autowired
 	ExamRepository examRepo;
-	
-	
+
 	@Autowired
 	UserRepository userRepo;
-	
+
 	@Autowired
 	ResultRepository resultRepo;
 
-	
+	@Autowired
+	QuestionService questionService;
+
 	@PostMapping("/add")
 	public ResponseEntity<?> addexam(@RequestBody ExamBean exam) {
 		ExamBean examBean = examRepo.findByExamName(exam.getExamName());
 		ResponseBean<ExamBean> res = new ResponseBean<>();
 		if (examBean == null) {
-			exam.setTime(exam.getTime()*60);
+			exam.setTime(exam.getTime() * 60);
 			examRepo.save(exam);
 			res.setData(exam);
 			res.setMsg("exam added sussessfully...");
@@ -54,7 +58,40 @@ public class ExamController {
 		}
 	}
 
-	
+	@PostMapping("/add1")
+	public ResponseEntity<?> addexamandquestion(@RequestBody ExamMSubjectBean examsubject) {
+		ExamBean examBean = examRepo.findByExamName(examsubject.getExamName());
+		ResponseBean<ExamBean> res = new ResponseBean<>();
+		ExamBean exam = new ExamBean();
+		if (examBean == null) {
+			exam.setExamName(examsubject.getExamName());
+			exam.setIsshow(examsubject.getIsshow());
+			exam.setLevel(examsubject.getLevel());
+			exam.setTime(exam.getTime() * 60);
+			ExamBean exam1 = examRepo.save(exam);
+			if (exam1 != null) {
+				List<ExamquestionBean> equestions = questionService.randomquestionbymultiplesubjectbylevel(examsubject);
+				if (equestions.size() > 0) {
+					res.setData(exam);
+					res.setMsg("exam added sussessfully...");
+					return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+				} else {
+					res.setData(null);
+					res.setMsg("please add questions first");
+					return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
+				}
+			} else {
+				res.setData(exam);
+				res.setMsg("something went wrong...");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+			}
+		} else {
+			res.setData(examBean);
+			res.setMsg("exam alredy added...");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		}
+	}
+
 	@GetMapping("/list")
 	public ResponseEntity<?> list() {
 		List<ExamBean> exams = (List<ExamBean>) examRepo.findAll();
@@ -63,12 +100,13 @@ public class ExamController {
 		res.setMsg("sussessfully");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 	}
+
 	@GetMapping("/list/{userId}")
 	public ResponseEntity<?> getexambyuserId(@PathVariable("userId") Integer userId) {
 		UserBean user = userRepo.findByUserId(userId);
 		List<ExamBean> exams = (List<ExamBean>) examRepo.findByUsers(user);
 		for (int i = 0; i < exams.size(); i++) {
-			if(resultRepo.findByExamAndUser(exams.get(i), user) != null) {
+			if (resultRepo.findByExamAndUser(exams.get(i), user) != null) {
 				exams.remove(i);
 			}
 		}
@@ -77,7 +115,7 @@ public class ExamController {
 		res.setMsg("sussessfully");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 	}
-	
+
 	@DeleteMapping("/delete/{examId}")
 	public ResponseEntity<?> deleteexam(@PathVariable("examId") Integer examId) {
 		Optional<ExamBean> examBean = examRepo.findById(examId);
@@ -93,6 +131,7 @@ public class ExamController {
 			return ResponseEntity.ok(res);
 		}
 	}
+
 	@GetMapping("/get/{examId}")
 	public ResponseEntity<?> getquestionbyId(@PathVariable("examId") Integer examId) {
 		Optional<ExamBean> examBean = examRepo.findById(examId);

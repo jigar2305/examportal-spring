@@ -27,12 +27,22 @@ public class FilereadController {
 	@PostMapping("excel")
 	public ResponseEntity<?> fileread(@RequestParam("file") MultipartFile excel) {
 
-		List<QuestionBean> questions = questionService.addquestion(excel);
+		List<QuestionBean> questions;
+		try {
+			questions = questionService.addquestion(excel);
+			ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
+			res.setData(questions);
+			res.setMsg("question added successfully..");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ResponseBean<Object> res = new ResponseBean<>();
+		res.setData(null);
+		res.setMsg("something went wrong");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 
-		ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
-		res.setData(questions);
-		res.setMsg("question added successfully..");
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 	}
 
 }

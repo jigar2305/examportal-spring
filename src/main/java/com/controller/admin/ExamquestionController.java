@@ -58,22 +58,30 @@ public class ExamquestionController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}
 	}
-	
-	@PostMapping("/add/many")
-	public ResponseEntity<?> addequestionsbymultiplesubject(@RequestBody ExamMSubjectBean addquestion) {
-		List<ExamquestionBean> examque = examquestionRepo.findByExam(addquestion.getExam());
-		ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
-		if (examque.isEmpty()) {
-			List<ExamquestionBean> equestions = questionService.randomquestionbymultiplesubject(addquestion);
-			res.setData(equestions);
-			res.setMsg("added sussessfully");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
-		} else {
-			res.setData(examque);
-			res.setMsg("this exam is already exist");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-		}
-	}
+//
+//	@PostMapping("/add/many")
+//	public ResponseEntity<?> addequestionsbymultiplesubject(@RequestBody ExamMSubjectBean addquestion) {
+//		List<ExamquestionBean> examque = examquestionRepo.findByExam(addquestion.getExam());
+//		ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
+//		if (examque.isEmpty()) {
+//			List<ExamquestionBean> equestions = questionService.randomquestionbymultiplesubjectbylevel(addquestion);
+//			if (equestions.size() > 0) {
+//				res.setData(equestions);
+//				res.setMsg("added sussessfully");
+//				return ResponseEntity.status(HttpStatus.OK).body(res);
+//			} else {
+//				ResponseBean<Object> res1 = new ResponseBean<>();
+//				res.setData(null);
+//				res.setMsg("please add questions first");
+//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+//
+//			}
+//		} else {
+//			res.setData(examque);
+//			res.setMsg("this exam is already exist");
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+//		}
+//	}
 
 	@GetMapping("/get/{examId}")
 	public ResponseEntity<?> listequesrions(@PathVariable("examId") Integer examId) {
@@ -92,6 +100,7 @@ public class ExamquestionController {
 			return ResponseEntity.status(HttpStatus.OK).body(res);
 		}
 	}
+
 	@GetMapping("/getque/{examId}")
 	public ResponseEntity<?> listequesrion(@PathVariable("examId") Integer examId) {
 		Optional<ExamBean> exam = examRepo.findById(examId);
@@ -104,7 +113,7 @@ public class ExamquestionController {
 		} else {
 			ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-			List<QuestionBean> questions = new ArrayList<>(); 
+			List<QuestionBean> questions = new ArrayList<>();
 			for (int i = 0; i < examquestion.size(); i++) {
 				questions.add(examquestion.get(i).getQuestion());
 			}
@@ -115,17 +124,15 @@ public class ExamquestionController {
 	}
 
 	@PostMapping("/checkanswer")
-	public ResponseEntity<?> checkanswer(@RequestBody CheckquestionanswerBean questions){
-		ResultBean result =  questionService.checkanswer(questions);
+	public ResponseEntity<?> checkanswer(@RequestBody CheckquestionanswerBean questions) {
+		ResultBean result = questionService.checkanswer(questions);
 		ResponseBean<ResultBean> res = new ResponseBean<>();
 		res.setData(result);
 		res.setMsg(" your result ");
 		return ResponseEntity.status(HttpStatus.OK).body(res);
-		
+
 	}
-	
-	
-	
+
 	@DeleteMapping("/delete/{examId}")
 	public ResponseEntity<?> deleteequesrions(@PathVariable("examId") Integer examId) {
 		Optional<ExamBean> exam = examRepo.findById(examId);

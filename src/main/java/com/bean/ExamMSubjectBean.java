@@ -8,9 +8,16 @@ import lombok.Data;
 
 @Data
 public class ExamMSubjectBean {
-	
-	private ExamBean exam;
-	
-	private List<SNNLBean>  subjects;
+//
+//	private ExamBean exam;
+	private String examName;
+
+	private Integer time;
+
+	private Boolean isshow;
+
+	private String level;
+
+	private List<SNNLBean> subjects;
 
 }
