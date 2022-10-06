@@ -32,6 +32,18 @@ public class SubjectBean {
 	@OneToMany(mappedBy = "subject" )
 	private Set<QuestionBean> questions;
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "subject")
+	private Set<SubjectFileBean> subjectFiles;
+	
+	public Set<SubjectFileBean> getSubjectFiles() {
+		return subjectFiles;
+	}
+
+	public void setSubjectFiles(Set<SubjectFileBean> subjectFiles) {
+		this.subjectFiles = subjectFiles;
+	}
+
 	public Integer getSubjectId() {
 		return subjectId;
 	}

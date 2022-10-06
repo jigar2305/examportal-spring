@@ -13,13 +13,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bean.ResponseBean;
 import com.bean.forms.QuestionBean;
 import com.bean.forms.SubjectBean;
 import com.repository.QuestionRepository;
 import com.repository.SubjectRepository;
+import com.service.SubjectFileService;
 
 @CrossOrigin
 @RestController
@@ -31,6 +37,9 @@ public class SubjectController {
 	
 	@Autowired
 	QuestionRepository questionRepo;
+	
+	@Autowired
+	SubjectFileService subjectFileService;
 	
 	@PostMapping("/add")
 	public ResponseEntity<?> addsubject(@RequestBody SubjectBean subject) {
@@ -47,6 +56,36 @@ public class SubjectController {
 			return ResponseEntity.ok(res);
 		}
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/add2", headers = "Content-Type= multipart/form-data", method = RequestMethod.POST)
+	public ResponseEntity<?> addsubject2(@RequestParam("subject") SubjectBean subject,@RequestParam(value = "file", required = true) MultipartFile[] files) {
+		
+		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
+		
+		ResponseBean<SubjectBean> res = new ResponseBean<>();
+		if (subjectBean == null) {
+			
+			SubjectBean subjectres = subjectRepo.save(subject);
+			if(subjectres != null) {
+				subjectFileService.addfiles(files,subjectres);
+				res.setData(subjectres);
+				res.setMsg("subject added..");
+				return ResponseEntity.ok(res);
+			}else {
+				
+			}
+			res.setData(subjectBean);
+			res.setMsg("something went wrong..");
+			return ResponseEntity.ok(res);
+		} else {
+			res.setData(subjectBean);
+			res.setMsg("subject exist..");
+			return ResponseEntity.ok(res);
+		}
+	}
+	
 	
 	@GetMapping("/list")
 	public ResponseEntity<?> listsubject() {
