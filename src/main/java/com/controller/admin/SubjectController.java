@@ -58,9 +58,12 @@ public class SubjectController {
 	}
 	
 	
-	@ResponseBody
-	@RequestMapping(value = "/add2", headers = "Content-Type= multipart/form-data", method = RequestMethod.POST)
-	public ResponseEntity<?> addsubject2(@RequestParam("subject") SubjectBean subject,@RequestParam(value = "file", required = true) MultipartFile[] files) {
+//	@ResponseBody
+//	@RequestMapping(value = "/add2", headers = "Content-Type= multipart/form-data", method = RequestMethod.POST)
+//	public ResponseEntity<?> addsubject2(@RequestParam("subject") SubjectBean subject,@RequestParam(value = "file", required = true) MultipartFile[] files) {
+//		
+	@PostMapping("/add2")
+	public ResponseEntity<?> addsubject2(@RequestPart SubjectBean subject,@RequestPart MultipartFile[] files) {
 		
 		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
 		

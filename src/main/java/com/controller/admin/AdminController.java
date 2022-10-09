@@ -50,7 +50,15 @@ public class AdminController {
 		userRepo.save(user);
 		ResponseBean<Boolean> res = new ResponseBean<>();
 		res.setData(user.getActive());
-		res.setMsg("user deleted successfully..");
+		res.setMsg("status updated successfully..");
+		return ResponseEntity.ok(res);
+	}
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<?> findbyid(@PathVariable("userId")Integer userId){		
+		UserBean user = userRepo.findByUserId(userId);
+		ResponseBean<UserBean> res = new ResponseBean<>();
+		res.setData(user);
+		res.setMsg("get user successfully..");
 		return ResponseEntity.ok(res);
 	}
 }
