@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bean.ResponseBean;
+import com.bean.forms.Getsubjectfile;
+import com.bean.forms.PdfBean;
 import com.bean.forms.QuestionBean;
 import com.bean.forms.SubjectBean;
 import com.repository.QuestionRepository;
@@ -57,13 +59,10 @@ public class SubjectController {
 		}
 	}
 	
-	
-//	@ResponseBody
-//	@RequestMapping(value = "/add2", headers = "Content-Type= multipart/form-data", method = RequestMethod.POST)
-//	public ResponseEntity<?> addsubject2(@RequestParam("subject") SubjectBean subject,@RequestParam(value = "file", required = true) MultipartFile[] files) {
-//		
 	@PostMapping("/add2")
-	public ResponseEntity<?> addsubject2(@RequestPart SubjectBean subject,@RequestPart MultipartFile[] files) {
+	public ResponseEntity<?> addsubject2(@RequestBody Getsubjectfile subjectfile) {
+		SubjectBean subject = subjectfile.getSubject();
+		List<PdfBean> files = subjectfile.getFiles();
 		
 		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
 		
@@ -72,7 +71,8 @@ public class SubjectController {
 			
 			SubjectBean subjectres = subjectRepo.save(subject);
 			if(subjectres != null) {
-				subjectFileService.addfiles(files,subjectres);
+				System.out.println(files.get(0).getFileString());
+//				subjectFileService.addfiles(files,subjectres);
 				res.setData(subjectres);
 				res.setMsg("subject added..");
 				return ResponseEntity.ok(res);

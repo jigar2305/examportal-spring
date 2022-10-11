@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bean.forms.PdfBean;
 import com.bean.forms.SubjectBean;
 import com.bean.forms.SubjectFileBean;
 import com.bean.forms.SubjectFileBean2;
@@ -21,7 +23,7 @@ public class SubjectFileService {
 	@Autowired
 	SubjectFileRepository subjectFileRepo;
 
-	public void addfiles(MultipartFile[] subjectfile, SubjectBean subject) {
+	public void addfiles(List<PdfBean> files, SubjectBean subject) {
 		System.out.println("----------------------------------------------------------");
 		int subjectId = (subject.getSubjectId());
 		String mainpath="D:\\SpringTool\\examportal\\src\\main\\resources\\subjectfiles";

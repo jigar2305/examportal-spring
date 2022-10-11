@@ -7,9 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class FileBean implements Serializable {
 	
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	
 	private MultipartFile file;
