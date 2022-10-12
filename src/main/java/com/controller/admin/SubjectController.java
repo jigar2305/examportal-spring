@@ -25,6 +25,7 @@ import com.bean.forms.Getsubjectfile;
 import com.bean.forms.PdfBean;
 import com.bean.forms.QuestionBean;
 import com.bean.forms.SubjectBean;
+import com.bean.forms.SubjectFileBean;
 import com.repository.QuestionRepository;
 import com.repository.SubjectRepository;
 import com.service.SubjectFileService;
@@ -33,16 +34,16 @@ import com.service.SubjectFileService;
 @RestController
 @RequestMapping("/subject")
 public class SubjectController {
-	
+
 	@Autowired
 	SubjectRepository subjectRepo;
-	
+
 	@Autowired
 	QuestionRepository questionRepo;
-	
+
 	@Autowired
 	SubjectFileService subjectFileService;
-	
+
 	@PostMapping("/add")
 	public ResponseEntity<?> addsubject(@RequestBody SubjectBean subject) {
 		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
@@ -58,38 +59,43 @@ public class SubjectController {
 			return ResponseEntity.ok(res);
 		}
 	}
-	
+
 	@PostMapping("/add2")
 	public ResponseEntity<?> addsubject2(@RequestBody Getsubjectfile subjectfile) {
 		SubjectBean subject = subjectfile.getSubject();
 		List<PdfBean> files = subjectfile.getFiles();
-		
+
 		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
-		
+
 		ResponseBean<SubjectBean> res = new ResponseBean<>();
 		if (subjectBean == null) {
-			
+
 			SubjectBean subjectres = subjectRepo.save(subject);
-			if(subjectres != null) {
-				System.out.println(files.get(0).getFileString());
-//				subjectFileService.addfiles(files,subjectres);
-				res.setData(subjectres);
-				res.setMsg("subject added..");
-				return ResponseEntity.ok(res);
-			}else {
-				
+			if (subjectres != null) {
+				List<SubjectFileBean> rsfile = subjectFileService.addfiles(files, subjectres);
+				if (rsfile == null) {
+					subjectRepo.deleteById(subjectres.getSubjectId());
+					res.setData(subjectBean);
+					res.setMsg("something went wrong..");
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+				} else {
+					res.setData(subjectres);
+					res.setMsg("subject added..");
+					return ResponseEntity.ok(res);
+				}
+			} else {
+
 			}
 			res.setData(subjectBean);
 			res.setMsg("something went wrong..");
-			return ResponseEntity.ok(res);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		} else {
 			res.setData(subjectBean);
 			res.setMsg("subject exist..");
-			return ResponseEntity.ok(res);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}
 	}
-	
-	
+
 	@GetMapping("/list")
 	public ResponseEntity<?> listsubject() {
 		List<SubjectBean> subjects = (List<SubjectBean>) subjectRepo.findAll();
@@ -98,28 +104,28 @@ public class SubjectController {
 		res.setMsg("list successfully");
 		return ResponseEntity.ok(res);
 	}
-	
+
 	@DeleteMapping("/delete/{subjectId}")
 	public ResponseEntity<?> deletesubject(@PathVariable("subjectId") Integer subjectId) {
 		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
 		ResponseBean<Object> res = new ResponseBean<>();
-		if(subject.isEmpty()) {
+		if (subject.isEmpty()) {
 			res.setData(subjectId);
 			res.setMsg("subjects not found ");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-		}else {
-			
-		List<QuestionBean> questions = questionRepo.findBySubject(subject);
-		if(questions != null) {
-			questionRepo.deleteAll(questions);
-		}
-		subjectRepo.deleteById(subjectId);
-		res.setData(subjectId);
-		res.setMsg("deleted successfully");
-		return ResponseEntity.ok(res);
+		} else {
+
+			List<QuestionBean> questions = questionRepo.findBySubject(subject);
+			if (questions != null) {
+				questionRepo.deleteAll(questions);
+			}
+			subjectRepo.deleteById(subjectId);
+			res.setData(subjectId);
+			res.setMsg("deleted successfully");
+			return ResponseEntity.ok(res);
 		}
 	}
-	
+
 	@GetMapping("/subjectbyId/{subjectId}")
 	public ResponseEntity<?> getcoursebyid(@PathVariable("subjectId") Integer subjectId) {
 		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
@@ -134,6 +140,5 @@ public class SubjectController {
 			return ResponseEntity.ok(res);
 		}
 	}
-	
 
 }

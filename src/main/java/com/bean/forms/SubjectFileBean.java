@@ -23,33 +23,52 @@ public class SubjectFileBean {
 	@JoinColumn(name = "subjectId")
 	private SubjectBean subject;
 	
+	private String fileName;
+	
+	
 	private String url;
 
-	public SubjectBean getSubject() {
-		return subject;
-	}
-
-	public void setSubject(SubjectBean subject) {
-		this.subject = subject;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
 
 	public Integer getSubjectfileId() {
 		return subjectfileId;
 	}
 
+
 	public void setSubjectfileId(Integer subjectfileId) {
 		this.subjectfileId = subjectfileId;
 	}
-	
-	
+
+
+	public SubjectBean getSubject() {
+		return subject;
+	}
+
+
+	public void setSubject(SubjectBean subject) {
+		this.subject = subject;
+	}
+
+
+	public String getFileName() {
+		return fileName;
+	}
+
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+
+	public String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
 	
 	
 
