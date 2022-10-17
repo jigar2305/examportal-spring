@@ -6,7 +6,7 @@ public class Getsubjectfile {
 	
 	private SubjectBean subject;
 	
-	private List<PdfBean> files;
+	private List<SubjectFileBean> files;
 
 	public SubjectBean getSubject() {
 		return subject;
@@ -16,11 +16,11 @@ public class Getsubjectfile {
 		this.subject = subject;
 	}
 
-	public List<PdfBean> getFiles() {
+	public List<SubjectFileBean> getFiles() {
 		return files;
 	}
 
-	public void setFiles(List<PdfBean> files) {
+	public void setFiles(List<SubjectFileBean> files) {
 		this.files = files;
 	}
 	

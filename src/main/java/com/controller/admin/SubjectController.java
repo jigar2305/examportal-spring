@@ -13,12 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bean.ResponseBean;
 import com.bean.forms.Getsubjectfile;
@@ -44,26 +39,26 @@ public class SubjectController {
 	@Autowired
 	SubjectFileService subjectFileService;
 
-	@PostMapping("/add")
-	public ResponseEntity<?> addsubject(@RequestBody SubjectBean subject) {
-		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
-		ResponseBean<SubjectBean> res = new ResponseBean<>();
-		if (subjectBean == null) {
-			subjectRepo.save(subject);
-			res.setData(subjectBean);
-			res.setMsg("subject added..");
-			return ResponseEntity.ok(res);
-		} else {
-			res.setData(subject);
-			res.setMsg("subject exist..");
-			return ResponseEntity.ok(res);
-		}
-	}
+//	@PostMapping("/add")
+//	public ResponseEntity<?> addsubject(@RequestBody SubjectBean subject) {
+//		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
+//		ResponseBean<SubjectBean> res = new ResponseBean<>();
+//		if (subjectBean == null) {
+//			subjectRepo.save(subject);
+//			res.setData(subjectBean);
+//			res.setMsg("subject added..");
+//			return ResponseEntity.ok(res);
+//		} else {
+//			res.setData(subject);
+//			res.setMsg("subject exist..");
+//			return ResponseEntity.ok(res);
+//		}
+//	}
 
 	@PostMapping("/add2")
 	public ResponseEntity<?> addsubject2(@RequestBody Getsubjectfile subjectfile) {
 		SubjectBean subject = subjectfile.getSubject();
-		List<PdfBean> files = subjectfile.getFiles();
+		List<SubjectFileBean> files = subjectfile.getFiles();
 
 		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
 
@@ -95,6 +90,8 @@ public class SubjectController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}
 	}
+	
+	
 
 	@GetMapping("/list")
 	public ResponseEntity<?> listsubject() {

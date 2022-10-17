@@ -1,5 +1,6 @@
 package com.bean.forms;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,9 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.springframework.web.multipart.MultipartFile;
-
 
 @Entity
 @Table(name = "SubjectFile")
@@ -25,8 +23,21 @@ public class SubjectFileBean {
 	
 	private String fileName;
 	
-	
 	private String url;
+	
+	
+	public String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
+	@Column(columnDefinition="TEXT")
+	private String fileString;
 
 
 	public Integer getSubjectfileId() {
@@ -59,14 +70,16 @@ public class SubjectFileBean {
 	}
 
 
-	public String getUrl() {
-		return url;
+	public String getFileString() {
+		return fileString;
 	}
 
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setFileString(String fileString) {
+		this.fileString = fileString;
 	}
+
+
 
 
 	
