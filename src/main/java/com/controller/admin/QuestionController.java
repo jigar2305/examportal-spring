@@ -86,12 +86,12 @@ public class QuestionController {
 			ResponseBean<Object> res = new ResponseBean<>();
 			res.setData(questionId);
 			res.setMsg("question not found");
-			return ResponseEntity.ok(res);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		} else {
 			ResponseBean<Optional<QuestionBean>> res = new ResponseBean<>();
 			res.setData(questionBean);
 			res.setMsg("fetch successfully");
-			return ResponseEntity.ok(res);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 		}
 	}
 	
