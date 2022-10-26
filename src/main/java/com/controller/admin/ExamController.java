@@ -41,33 +41,18 @@ public class ExamController {
 	@Autowired
 	QuestionService questionService;
 
-	@PostMapping("/add")
-	public ResponseEntity<?> addexam(@RequestBody ExamBean exam) {
-		ExamBean examBean = examRepo.findByExamName(exam.getExamName());
-		ResponseBean<ExamBean> res = new ResponseBean<>();
-		if (examBean == null) {
-			exam.setTime(exam.getTime() * 60);
-			examRepo.save(exam);
-			res.setData(exam);
-			res.setMsg("exam added sussessfully...");
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
-		} else {
-			res.setData(examBean);
-			res.setMsg("exam alredy added...");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-		}
-	}
 
-	@PostMapping("/add1")
+	@PostMapping("/add")
 	public ResponseEntity<?> addexamandquestion(@RequestBody ExamMSubjectBean examsubject) {
 		ExamBean examBean = examRepo.findByExamName(examsubject.getExamName());
 		ResponseBean<ExamBean> res = new ResponseBean<>();
 		ExamBean exam = new ExamBean();
 		if (examBean == null) {
 			exam.setExamName(examsubject.getExamName());
+			
 			exam.setIsshow(examsubject.getIsshow());
 			exam.setLevel(examsubject.getLevel());
-			exam.setTime(exam.getTime() * 60);
+			exam.setTime(examsubject.getTime() * 60);
 			ExamBean exam1 = examRepo.save(exam);
 			if (exam1 != null) {
 				List<ExamquestionBean> equestions = questionService.randomquestionbymultiplesubjectbylevel(examsubject);
@@ -77,12 +62,13 @@ public class ExamController {
 					return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 				} else {
 					res.setData(null);
+					examRepo.delete(exam1);
 					res.setMsg("please add questions first");
-					return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 				}
 			} else {
 				res.setData(exam);
-				res.setMsg("something went wrong...");
+				res.setMsg("Technical error occourd...");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 			}
 		} else {

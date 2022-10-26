@@ -56,26 +56,26 @@ public class QuestionService {
 	@Autowired
 	UserquestionanswerRepository userquestionanswerRepo;
 
-	public List<ExamquestionBean> randomquestion(AddquestionBean addquestion) {
-
-//		Optional<SubjectBean> subject = subjectRepo.findById(addquestion.getExam().getSubject().getSubjectId());
-//		List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subject);
-//		if (que.size() > addquestion.getNumber()) {
-//			List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
-//			Random rand = new Random();
-//			for (int i = 0; i < addquestion.getNumber(); i++) {
-//				int randomIndex = rand.nextInt(que.size());
-//				ExamquestionBean eq = new ExamquestionBean();
-//				eq.setExam(addquestion.getExam());
-//				eq.setQuestion(que.get(randomIndex));
-//				question.add(eq);
-//				que.remove(randomIndex);
-//			}
-//			return question;
-//		} else {
-		return null;
-//		}
-	}
+//	public List<ExamquestionBean> randomquestion(AddquestionBean addquestion) {
+//
+////		Optional<SubjectBean> subject = subjectRepo.findById(addquestion.getExam().getSubject().getSubjectId());
+////		List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subject);
+////		if (que.size() > addquestion.getNumber()) {
+////			List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
+////			Random rand = new Random();
+////			for (int i = 0; i < addquestion.getNumber(); i++) {
+////				int randomIndex = rand.nextInt(que.size());
+////				ExamquestionBean eq = new ExamquestionBean();
+////				eq.setExam(addquestion.getExam());
+////				eq.setQuestion(que.get(randomIndex));
+////				question.add(eq);
+////				que.remove(randomIndex);
+////			}
+////			return question;
+////		} else {
+//		return null;
+////		}
+//	}
 
 	public ResultBean checkanswer(CheckquestionanswerBean questions) {
 		List<QuestionanswerBean> que = questions.getQuestions();
@@ -92,7 +92,9 @@ public class QuestionService {
 			q.setExam(exam);
 			q.setSelectedOption(i.getSelected());
 			uqa.add(q);
-			if (i.getCorrectAnswer() == i.getSelected()) {
+			System.out.println(i.getCorrectAnswer());
+			System.out.println(i.getSelected());
+			if (i.getCorrectAnswer().equalsIgnoreCase(i.getSelected())) {
 				obtain = obtain + 1;
 			}
 		}
@@ -152,28 +154,7 @@ public class QuestionService {
 		return questions;
 	}
 
-//	public List<ExamquestionBean> randomquestionbymultiplesubject(ExamMSubjectBean addquestion) {
-//
-//		List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
-//		for (int i = 0; i < addquestion.getSubjects().size(); i++) {
-//			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
-//			List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subjectBean);
-//			if (que.size() > addquestion.getSubjects().get(i).getNumber()) {
-//				Random rand = new Random();
-//				for (int j = 0; j < addquestion.getSubjects().get(i).getNumber(); j++) {
-//					int randomIndex = rand.nextInt(que.size());
-//					ExamquestionBean eq = new ExamquestionBean();
-//					eq.setExam(addquestion.getExam());
-//					eq.setQuestion(que.get(randomIndex));
-//					question.add(eq);
-//					que.remove(randomIndex);
-//				}
-//			}
-//		}
-//		examquestionRepo.saveAll(question);
-//		return question;
-//	}
-//
+
 	public List<ExamquestionBean> randomquestionbymultiplesubjectbylevel(ExamMSubjectBean addquestion) {
 		ExamBean exam = examRepo.findByExamName(addquestion.getExamName());
 		Integer total = 0;

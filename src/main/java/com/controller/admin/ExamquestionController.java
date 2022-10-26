@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bean.AddquestionBean;
-import com.bean.ExamMSubjectBean;
 import com.bean.ResponseBean;
 import com.bean.forms.CheckquestionanswerBean;
 import com.bean.forms.ExamBean;
@@ -41,47 +40,24 @@ public class ExamquestionController {
 
 	@Autowired
 	QuestionService questionService;
-
-	@PostMapping("/add")
-	public ResponseEntity<?> addequestions(@RequestBody AddquestionBean addquestion) {
-		List<ExamquestionBean> examque = examquestionRepo.findByExam(addquestion.getExam());
-		ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
-		if (examque.isEmpty()) {
-			List<ExamquestionBean> equestions = questionService.randomquestion(addquestion);
-			examquestionRepo.saveAll(equestions);
-			res.setData(equestions);
-			res.setMsg("added sussessfully");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
-		} else {
-			res.setData(examque);
-			res.setMsg("this exam is already exist");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-		}
-	}
 //
-//	@PostMapping("/add/many")
-//	public ResponseEntity<?> addequestionsbymultiplesubject(@RequestBody ExamMSubjectBean addquestion) {
+//	@PostMapping("/add")
+//	public ResponseEntity<?> addequestions(@RequestBody AddquestionBean addquestion) {
 //		List<ExamquestionBean> examque = examquestionRepo.findByExam(addquestion.getExam());
 //		ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
 //		if (examque.isEmpty()) {
-//			List<ExamquestionBean> equestions = questionService.randomquestionbymultiplesubjectbylevel(addquestion);
-//			if (equestions.size() > 0) {
-//				res.setData(equestions);
-//				res.setMsg("added sussessfully");
-//				return ResponseEntity.status(HttpStatus.OK).body(res);
-//			} else {
-//				ResponseBean<Object> res1 = new ResponseBean<>();
-//				res.setData(null);
-//				res.setMsg("please add questions first");
-//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-//
-//			}
+//			List<ExamquestionBean> equestions = questionService.randomquestion(addquestion);
+//			examquestionRepo.saveAll(equestions);
+//			res.setData(equestions);
+//			res.setMsg("added sussessfully");
+//			return ResponseEntity.status(HttpStatus.OK).body(res);
 //		} else {
 //			res.setData(examque);
 //			res.setMsg("this exam is already exist");
 //			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 //		}
 //	}
+
 
 	@GetMapping("/get/{examId}")
 	public ResponseEntity<?> listequesrions(@PathVariable("examId") Integer examId) {

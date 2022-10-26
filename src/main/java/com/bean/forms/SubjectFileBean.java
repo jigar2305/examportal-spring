@@ -23,8 +23,11 @@ public class SubjectFileBean {
 	
 	private String fileName;
 	
+	@Column(columnDefinition="TEXT")
 	private String url;
 	
+	@Column(columnDefinition="TEXT")
+	private String fileString;
 	
 	public String getUrl() {
 		return url;
@@ -36,8 +39,6 @@ public class SubjectFileBean {
 	}
 
 
-	@Column(columnDefinition="TEXT")
-	private String fileString;
 
 
 	public Integer getSubjectfileId() {

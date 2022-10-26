@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import com.bean.forms.ExamBean;
 import com.bean.forms.ResultBean;
+import com.bean.forms.SubjectBean;
 import com.bean.forms.UserquestionanswerBean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -57,6 +58,18 @@ public class UserBean {
 	@JsonIgnore
 	@ManyToMany(mappedBy = "users")
     Set<ExamBean> exams;
+	
+	@JsonIgnore
+	@ManyToMany(mappedBy = "users")
+    Set<SubjectBean> subjects;
+
+	public Set<SubjectBean> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(Set<SubjectBean> subjects) {
+		this.subjects = subjects;
+	}
 
 	public Integer getUserId() {
 		return userId;
@@ -154,6 +167,4 @@ public class UserBean {
 		this.exams = exams;
 	}
 	
-	
-
 }

@@ -7,11 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
+import com.bean.UserBean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -35,6 +37,17 @@ public class SubjectBean {
 	@JsonIgnore
 	@OneToMany(mappedBy = "subject")
 	private Set<SubjectFileBean> subjectFiles;
+	
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(
+	  name = "enrolesubject", 
+	  joinColumns = @JoinColumn(name = "subjectId"), 
+	  inverseJoinColumns = @JoinColumn(name = "userId"))
+	Set<UserBean> users;
+	
+	
+	
 	
 	public Set<SubjectFileBean> getSubjectFiles() {
 		return subjectFiles;
@@ -74,6 +87,14 @@ public class SubjectBean {
 
 	public void setQuestions(Set<QuestionBean> questions) {
 		this.questions = questions;
+	}
+
+	public Set<UserBean> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<UserBean> users) {
+		this.users = users;
 	}
 
 

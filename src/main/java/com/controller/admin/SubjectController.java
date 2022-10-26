@@ -1,5 +1,6 @@
 package com.controller.admin;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bean.ResponseBean;
 import com.bean.forms.Getsubjectfile;
-import com.bean.forms.PdfBean;
 import com.bean.forms.QuestionBean;
 import com.bean.forms.SubjectBean;
 import com.bean.forms.SubjectFileBean;
 import com.repository.QuestionRepository;
+import com.repository.SubjectFileRepository;
 import com.repository.SubjectRepository;
 import com.service.SubjectFileService;
 
@@ -39,24 +40,11 @@ public class SubjectController {
 	@Autowired
 	SubjectFileService subjectFileService;
 
-//	@PostMapping("/add")
-//	public ResponseEntity<?> addsubject(@RequestBody SubjectBean subject) {
-//		SubjectBean subjectBean = subjectRepo.findBySubjectName(subject.getSubjectName());
-//		ResponseBean<SubjectBean> res = new ResponseBean<>();
-//		if (subjectBean == null) {
-//			subjectRepo.save(subject);
-//			res.setData(subjectBean);
-//			res.setMsg("subject added..");
-//			return ResponseEntity.ok(res);
-//		} else {
-//			res.setData(subject);
-//			res.setMsg("subject exist..");
-//			return ResponseEntity.ok(res);
-//		}
-//	}
+	@Autowired
+	SubjectFileRepository fileRepo;
 
-	@PostMapping("/add2")
-	public ResponseEntity<?> addsubject2(@RequestBody Getsubjectfile subjectfile) {
+	@PostMapping("/add")
+	public ResponseEntity<?> addsubject2(@RequestBody Getsubjectfile subjectfile) throws IOException {
 		SubjectBean subject = subjectfile.getSubject();
 		List<SubjectFileBean> files = subjectfile.getFiles();
 
@@ -78,8 +66,6 @@ public class SubjectController {
 					res.setMsg("subject added..");
 					return ResponseEntity.ok(res);
 				}
-			} else {
-
 			}
 			res.setData(subjectBean);
 			res.setMsg("something went wrong..");
@@ -90,8 +76,33 @@ public class SubjectController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}
 	}
-	
-	
+
+	@PostMapping("/update")
+	public ResponseEntity<?> updatesubject(@RequestBody Getsubjectfile subjectfile) throws IOException {
+		SubjectBean subject = subjectfile.getSubject();
+		List<SubjectFileBean> files = subjectfile.getFiles();
+
+		ResponseBean<SubjectBean> res = new ResponseBean<>();
+		SubjectBean subjectres = subjectRepo.save(subject);
+		if (subjectres != null) {
+			List<SubjectFileBean> rsfile = subjectFileService.addfiles(files, subjectres);
+			if (rsfile == null) {
+				subjectRepo.deleteById(subjectres.getSubjectId());
+				res.setData(subjectfile.getSubject());
+				res.setMsg("something went wrong..");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+			} else {
+				res.setData(subjectres);
+				res.setMsg("subject added..");
+				return ResponseEntity.ok(res);
+			}
+		} else {
+			res.setData(subjectfile.getSubject());
+			res.setMsg("something went wrong..");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		}
+
+	}
 
 	@GetMapping("/list")
 	public ResponseEntity<?> listsubject() {
@@ -123,17 +134,55 @@ public class SubjectController {
 		}
 	}
 
-	@GetMapping("/subjectbyId/{subjectId}")
-	public ResponseEntity<?> getcoursebyid(@PathVariable("subjectId") Integer subjectId) {
+	@GetMapping("/get/{subjectId}")
+	public ResponseEntity<?> getsubjectbyid(@PathVariable("subjectId") Integer subjectId) {
 		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
-		ResponseBean<Optional<SubjectBean>> res = new ResponseBean<>();
 		if (subject.isEmpty()) {
-			res.setData(subject);
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(subjectId);
 			res.setMsg("subject not exist.");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		} else {
+			ResponseBean<Optional<SubjectBean>> res = new ResponseBean<>();
 			res.setData(subject);
 			res.setMsg("get subject successfully");
+			return ResponseEntity.ok(res);
+		}
+	}
+
+	@GetMapping("/getfiles/{subjectId}")
+	public ResponseEntity<?> getfiles(@PathVariable("subjectId") Integer subjectId) {
+		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
+		if (subject.isEmpty()) {
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(subjectId);
+			res.setMsg("subject not exist.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			ResponseBean<List<SubjectFileBean>> res = new ResponseBean<>();
+			List<SubjectFileBean> subjectfile = fileRepo.findBySubject(subject);
+			for (SubjectFileBean subjectFileBean : subjectfile) {
+				subjectFileBean.setFileString(null);
+				subjectFileBean.setUrl(null);
+			}
+			res.setData(subjectfile);
+			res.setMsg("get subject file successfully");
+			return ResponseEntity.ok(res);
+		}
+	}
+
+	@DeleteMapping("/deletefile/{subjectfileId}")
+	public ResponseEntity<?> deletesubjectfile(@PathVariable("subjectfileId") Integer subjectfileId) {
+		SubjectFileBean fileBean = fileRepo.getReferenceById(subjectfileId);
+		ResponseBean<Object> res = new ResponseBean<>();
+		if (fileBean == null) {
+			res.setData(subjectfileId);
+			res.setMsg("file not found ");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			fileRepo.delete(fileBean);
+			res.setData(subjectfileId);
+			res.setMsg("deleted successfully");
 			return ResponseEntity.ok(res);
 		}
 	}

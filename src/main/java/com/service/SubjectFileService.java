@@ -1,16 +1,21 @@
 package com.service;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,58 +32,55 @@ public class SubjectFileService {
 	SubjectFileRepository subjectFileRepo;
 
 //	public List<SubjectFileBean> addfiles(List<SubjectFileBean> files, SubjectBean subject) {
-//		System.out.println("----------------------------------------------------------");
+//		String mainpath = "D:\\SpringTool\\examportal\\src\\main\\resources\\subjectfiles";
+//		File folder = new File(mainpath, subject.getSubjectId() + "");
+//		List<SubjectFileBean> subjectFileBeans = new ArrayList<>();
+//		folder.mkdir();
+//
 //		for (int i = 0; i < files.size(); i++) {
-//			SubjectFileBean file = subjectFileRepo.findByFileName(files.get(i).getFileName());
-//			System.out.println(files.get(i).getFileString().length());
-//			if(file != null) {
-//				files.remove(i);
-//			}else {
+//			String name = files.get(i).getFileName();
+//			SubjectFileBean subjectFileBean = new SubjectFileBean();
+//			subjectFileBean.setFileString(name);
+//			subjectFileBean.setSubject(subject);
+//			subjectFileBean.setFileName(files.get(i).getFileName());
+//			subjectFileBeans.add(subjectFileBean);
+//			SubjectFileBean subjectFileBean2 = subjectFileRepo.findByFileName(files.get(i).getFileName());
+//			if (subjectFileBean2 == null) {
 //				files.get(i).setSubject(subject);
+//				System.out.println(files.get(i).getFileString());
+//			} else {
+//				files.remove(i);
 //			}
+//
 //		}
 //		List<SubjectFileBean> returnfile = subjectFileRepo.saveAll(files);
 //		return returnfile;
 //	}
 
-	public List<SubjectFileBean> addfiles(List<SubjectFileBean> files, SubjectBean subject) {
+
+
+	public List<SubjectFileBean> addfiles(List<SubjectFileBean> files, SubjectBean subject) throws IOException {
 		String mainpath = "D:\\SpringTool\\examportal\\src\\main\\resources\\subjectfiles";
 		File folder = new File(mainpath, subject.getSubjectId() + "");
-		List<SubjectFileBean> subjectFileBeans = new ArrayList<>();
 		folder.mkdir();
-
 		for (int i = 0; i < files.size(); i++) {
-//			String name = files.get(i).getFileName().replace("pdf", "txt");
-			String name = files.get(i).getFileName();
-//			File newfile = new File(folder, name);
-//			try {
-//				FileWriter fos = new FileWriter(newfile);
-//				FileOutputStream fos = new FileOutputStream(newfile);
-////				System.out.println("infile");
-////				System.out.println(decodeData);
-////				output.write(decodeData);
-////				output.close();
-//				String b64 = subjectFileBeans.get(i).getFileString();
-//				if(b64 != null) {					
-//					byte[] decoder = Base64.getDecoder().decode(b64);
-//					fos.write(decoder);
-//					fos.close();
-//					System.out.println("PDF File Saved");
-//				}
+			SubjectFileBean subjectFileBean = subjectFileRepo.findByFileNameAndSubject(files.get(i).getFileName(),
+					subject);
+			if (subjectFileBean == null) {
+				String name = files.get(i).getFileName();
 
-				SubjectFileBean subjectFileBean = new SubjectFileBean();
-				subjectFileBean.setFileString(name);
-				subjectFileBean.setSubject(subject);
-				subjectFileBean.setFileName(files.get(i).getFileName());
-				subjectFileBeans.add(subjectFileBean);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-			SubjectFileBean subjectFileBean2 = subjectFileRepo.findByFileName(files.get(i).getFileName());
-			if(subjectFileBean2 == null) {
+				String filestring = files.get(i).getFileString().replaceAll("data:application/pdf;base64,", "");
+				File newfile = new File(folder, name);
+				byte[] data = DatatypeConverter.parseBase64Binary(filestring);
+				OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(newfile));
+				outputStream.write(data);
+				outputStream.flush();
+				outputStream.close();
+				files.get(i).setFileName(name);
+				files.get(i).setUrl("src/main/resources/subjectfiles/" + subject.getSubjectId() + "/" + name);
+				files.get(i).setFileString(null);
 				files.get(i).setSubject(subject);
-				System.out.println(files.get(i).getFileString());
-			}else {
+			} else {
 				files.remove(i);
 			}
 
@@ -87,33 +89,4 @@ public class SubjectFileService {
 		return returnfile;
 	}
 
-	public void getsubjectfiles(List<SubjectBean> subjectBeans) {
-		List<PdfBean> pdffile = new ArrayList<>();
-		List<SubjectFileBean> subjectfile = new ArrayList<>();
-		for (int i = 0; i < subjectBeans.size(); i++) {
-			subjectfile.addAll(subjectFileRepo.findBySubject(subjectBeans.get(i)));
-		}
-//		for (int i = 0; i < subjectfile.size(); i++) {
-//			PdfBean pdfBean = new  PdfBean();
-//			 pdfBean.setFileName(subjectfile.get(i).getFileName());
-////			 Path path = Paths.get(subjectfile.get(i).getUrl());
-//
-//			    BufferedReader reader;
-//				try {
-//					reader = Files.newBufferedReader(path);
-//					String line = reader.readLine();
-//					System.out.println(line);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			
-//		}
-
-	}
-
-	public void getallsubjectfiles() {
-		List<SubjectFileBean> subjectfile = subjectFileRepo.findAll();
-
-	}
 }
