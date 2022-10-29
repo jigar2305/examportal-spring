@@ -15,5 +15,6 @@ public interface ResultRepository extends CrudRepository<ResultBean, Integer>{
 	List<ResultBean> findByUser(UserBean user);
 	ResultBean findByResultId(Integer resultId);
 	ResultBean findByExamAndUser(ExamBean exam,UserBean user);
+	List<ResultBean> findByExam(ExamBean exam);
 
 }

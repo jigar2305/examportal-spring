@@ -3,7 +3,6 @@ package com.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -13,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.bean.AddquestionBean;
 import com.bean.ExamMSubjectBean;
-import com.bean.SNNLBean;
 import com.bean.UserBean;
 import com.bean.forms.CheckquestionanswerBean;
 import com.bean.forms.ExamBean;
@@ -56,27 +53,6 @@ public class QuestionService {
 	@Autowired
 	UserquestionanswerRepository userquestionanswerRepo;
 
-//	public List<ExamquestionBean> randomquestion(AddquestionBean addquestion) {
-//
-////		Optional<SubjectBean> subject = subjectRepo.findById(addquestion.getExam().getSubject().getSubjectId());
-////		List<QuestionBean> que = (List<QuestionBean>) questionRepo.findBySubject(subject);
-////		if (que.size() > addquestion.getNumber()) {
-////			List<ExamquestionBean> question = new ArrayList<ExamquestionBean>();
-////			Random rand = new Random();
-////			for (int i = 0; i < addquestion.getNumber(); i++) {
-////				int randomIndex = rand.nextInt(que.size());
-////				ExamquestionBean eq = new ExamquestionBean();
-////				eq.setExam(addquestion.getExam());
-////				eq.setQuestion(que.get(randomIndex));
-////				question.add(eq);
-////				que.remove(randomIndex);
-////			}
-////			return question;
-////		} else {
-//		return null;
-////		}
-//	}
-
 	public ResultBean checkanswer(CheckquestionanswerBean questions) {
 		List<QuestionanswerBean> que = questions.getQuestions();
 		ExamBean exam = examRepo.findByExamId(questions.getExam().getExamId());
@@ -106,6 +82,12 @@ public class QuestionService {
 		ResultBean result = new ResultBean();
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);
+		float fi = total/3;
+		if(fi < obtain) {
+			result.setStatus("pass");
+		}else {
+			result.setStatus("fail");
+		}
 		result.setExam(exam);
 		result.setUser(user);
 		resultRepo.save(result);
@@ -129,11 +111,10 @@ public class QuestionService {
 				questionBean.setD(row.getCell(4).toString());
 				questionBean.setCorrectAnswer(row.getCell(5).toString());
 				questionBean.setLevel(row.getCell(6).toString());
-				String subject = null;
 				SubjectBean subjectBean = null;
 				if(row.getCell(7).toString() != null) {
-					subject = row.getCell(7).toString();
-					subjectBean = subjectRepo.findBySubjectName(row.getCell(7).toString());
+					String subject = row.getCell(7).toString();
+					subjectBean = subjectRepo.findBySubjectName(subject);
 				}
 				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
 						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()

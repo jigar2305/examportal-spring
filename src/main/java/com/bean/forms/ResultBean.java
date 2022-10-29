@@ -23,6 +23,8 @@ public class ResultBean {
 	
 	private Integer totalMarks;
 	
+	private String status;
+	
 	@ManyToOne(cascade = {CascadeType.REMOVE})
 	@JoinColumn(name = "userId")
 	private UserBean user;
@@ -69,6 +71,14 @@ public class ResultBean {
 
 	public void setExam(ExamBean exam) {
 		this.exam = exam;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	

@@ -1,5 +1,6 @@
 package com.controller.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bean.ExamMSubjectBean;
 import com.bean.ResponseBean;
 import com.bean.UserBean;
+import com.bean.examstatusBean;
 import com.bean.forms.ExamBean;
 import com.bean.forms.ExamquestionBean;
+import com.bean.forms.ResultBean;
 import com.repository.ExamRepository;
 import com.repository.ResultRepository;
 import com.repository.UserRepository;
@@ -129,6 +132,36 @@ public class ExamController {
 		} else {
 			ResponseBean<Optional<ExamBean>> res = new ResponseBean<>();
 			res.setData(examBean);
+			res.setMsg("fetch successfully");
+			return ResponseEntity.ok(res);
+		}
+	}
+	
+	@GetMapping("/statusofexam/{examId}")
+	public ResponseEntity<?> getstatusofexam(@PathVariable("examId") Integer examId) {
+		ExamBean examBean = examRepo.findByExamId(examId);
+		if (examBean == null) {
+			ResponseBean<Object> res = new ResponseBean<>();
+			res.setData(examId);
+			res.setMsg("exam not found");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			ResponseBean<List<examstatusBean>> res = new ResponseBean<>();
+			List<examstatusBean> examstatusBeans = new ArrayList<>();
+			List<UserBean> users = userRepo.findByExams(examBean);
+			for (UserBean userBean : users) {
+				examstatusBean examstatusBean = new examstatusBean();
+				ResultBean resultBean = resultRepo.findByExamAndUser(examBean, userBean);
+				examstatusBean.setUser(userBean);
+				if(resultBean == null) {
+					examstatusBean.setStatus("Not Complated");
+				}else {
+					examstatusBean.setResult(resultBean);
+					examstatusBean.setStatus("Complated");
+				}
+				examstatusBeans.add(examstatusBean);
+			}
+			res.setData(examstatusBeans);
 			res.setMsg("fetch successfully");
 			return ResponseEntity.ok(res);
 		}

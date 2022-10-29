@@ -1,5 +1,6 @@
 package com.controller.admin;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,8 +64,32 @@ public class SubjectFileController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 	}
 
+//	@GetMapping("/get/{userId}")
+//	public ResponseEntity<?> getallfileforuser(@PathVariable("userId") Integer userId) {
+//		UserBean user = userRepo.findByUserId(userId);
+//		List<SubjectBean> subjects = subjectRepo.findByUsers(user);
+//		List<SubjectFileBean> files = new ArrayList<>();
+//		for (int i = 0; i < subjects.size(); i++) {
+//			if (subjectFileRepo.findBySubject(subjects.get(i)) != null) {
+//				files.addAll(subjectFileRepo.findBySubject(subjects.get(i)));
+//			}
+//		}
+//		for (SubjectFileBean subjectFileBean : files) {
+//			subjectFileBean.setFileString(null);
+//			subjectFileBean.setUrl(null);
+//		}
+//		ResponseBean<List<SubjectFileBean>> res = new ResponseBean<>();
+//		res.setData(files);
+//		res.setMsg("files get successfully");
+//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+//		
+//		
+//		
+//	}
+
+	
 	@GetMapping("/get/{userId}")
-	public ResponseEntity<?> getallfileforuser(@PathVariable("userId") Integer userId) {
+	public ResponseEntity<?> getallfileforuserw(@PathVariable("userId") Integer userId) throws IOException {
 		UserBean user = userRepo.findByUserId(userId);
 		List<SubjectBean> subjects = subjectRepo.findByUsers(user);
 		List<SubjectFileBean> files = new ArrayList<>();
@@ -70,19 +99,25 @@ public class SubjectFileController {
 			}
 		}
 		for (SubjectFileBean subjectFileBean : files) {
-			subjectFileBean.setFileString(null);
-			subjectFileBean.setUrl(null);
+			   byte[] image = Files.readAllBytes(new File(subjectFileBean.getUrl()+".png").toPath());
+		      subjectFileBean.setPdfimage(image);
+		       subjectFileBean.setUrl(null);
 		}
 		ResponseBean<List<SubjectFileBean>> res = new ResponseBean<>();
 		res.setData(files);
 		res.setMsg("files get successfully");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+		
+
+		
 	}
 
+	
+	
+	
 
 	@GetMapping("/getfile/{subjectfileId}")
-	public ResponseEntity<?> getfile(@PathVariable("subjectfileId") Integer subjectfileId)
-			throws IOException {
+	public ResponseEntity<?> getfile(@PathVariable("subjectfileId") Integer subjectfileId) throws IOException {
 		SubjectFileBean file = subjectFileRepo.findBySubjectfileId(subjectfileId);
 		if (file == null) {
 			ResponseBean<Integer> res = new ResponseBean<>();
@@ -91,7 +126,7 @@ public class SubjectFileController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		} else {
 			ResponseBean<SubjectFileBean> res = new ResponseBean<>();
-			byte[] pdf = Files.readAllBytes(new File(file.getUrl()).toPath());
+			byte[] pdf = Files.readAllBytes(new File(file.getUrl()+".pdf").toPath());
 			String base64EncodedImageBytes = Base64.getEncoder().encodeToString(pdf);
 			file.setFileString(base64EncodedImageBytes);
 			file.setUrl(null);

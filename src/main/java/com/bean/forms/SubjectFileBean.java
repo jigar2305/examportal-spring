@@ -1,5 +1,7 @@
 package com.bean.forms;
 
+import java.io.File;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "SubjectFile")
@@ -26,11 +29,25 @@ public class SubjectFileBean {
 	@Column(columnDefinition="TEXT")
 	private String url;
 	
-	@Column(columnDefinition="TEXT")
+	@Transient
 	private String fileString;
+	
+	@Transient
+	private byte[] pdfimage;
+	
 	
 	public String getUrl() {
 		return url;
+	}
+
+
+	public byte[] getPdfimage() {
+		return pdfimage;
+	}
+
+
+	public void setPdfimage(byte[] image) {
+		this.pdfimage = image;
 	}
 
 

@@ -1,5 +1,6 @@
 package com.service;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,8 +16,11 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,8 +61,6 @@ public class SubjectFileService {
 //		return returnfile;
 //	}
 
-
-
 	public List<SubjectFileBean> addfiles(List<SubjectFileBean> files, SubjectBean subject) throws IOException {
 		String mainpath = "D:\\SpringTool\\examportal\\src\\main\\resources\\subjectfiles";
 		File folder = new File(mainpath, subject.getSubjectId() + "");
@@ -76,10 +78,19 @@ public class SubjectFileService {
 				outputStream.write(data);
 				outputStream.flush();
 				outputStream.close();
-				files.get(i).setFileName(name);
-				files.get(i).setUrl("src/main/resources/subjectfiles/" + subject.getSubjectId() + "/" + name);
+				String filename = name.replace(".pdf", "");
+				files.get(i).setFileName(filename);
+				files.get(i).setUrl("src/main/resources/subjectfiles/" + subject.getSubjectId() + "/" + filename);
 				files.get(i).setFileString(null);
 				files.get(i).setSubject(subject);
+				File newFile = new File(
+						"src/main/resources/subjectfiles/" + subject.getSubjectId() + "/" + filename + ".pdf");
+				PDDocument pdfDocument = PDDocument.load(newFile);
+
+				PDFRenderer pdfRenderer = new PDFRenderer(pdfDocument);
+				BufferedImage img = pdfRenderer.renderImage(0);
+				ImageIO.write(img, "JPEG", new File(folder, filename + ".png"));
+				pdfDocument.close();
 			} else {
 				files.remove(i);
 			}

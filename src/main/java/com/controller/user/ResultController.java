@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bean.ResponseBean;
 import com.bean.UserBean;
+import com.bean.forms.ExamBean;
 import com.bean.forms.ResultBean;
 import com.bean.forms.UserquestionanswerBean;
 import com.repository.ExamRepository;
@@ -65,12 +66,28 @@ public class ResultController {
 	}
 	
 	@GetMapping("/listresult/{userId}/{examId}")
-	public ResponseEntity<?> getallquestionbyexamId(@PathVariable("userId") Integer userId,@PathVariable("examId") Integer examId) {
+	public ResponseEntity<?> getallquestionbyexamIdanduserId(@PathVariable("userId") Integer userId,@PathVariable("examId") Integer examId) {
 		List<UserquestionanswerBean> userquestionanswerBean = userquestionanswerRepo.findByExamAndUser(examId,userId);
 		ResponseBean<List<UserquestionanswerBean>> res = new ResponseBean<>();
 		res.setData(userquestionanswerBean);
 		res.setMsg("sussessfully");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+	}
+	@GetMapping("/listresult/{examId}")
+	public ResponseEntity<?> getallresultbyexamId(@PathVariable("examId") Integer examId) {
+		ExamBean exam = examRepo.findByExamId(examId);
+		if(exam == null) {
+			ResponseBean<ExamBean> res = new ResponseBean<>();
+			res.setData(exam);
+			res.setMsg("sussessfully");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		}else {			
+			List<ResultBean> results = resultRepo.findByExam(exam);
+			ResponseBean<List<ResultBean>> res = new ResponseBean<>();
+			res.setData(results);
+			res.setMsg("sussessfully");
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		}
 	}
 
 }
