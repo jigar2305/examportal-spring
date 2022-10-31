@@ -23,7 +23,7 @@ public class CourseBean {
 	private String courseName;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "course",cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "course",cascade = {CascadeType.ALL})
 	List<SubjectBean> subjects;
 
 	public Integer getCourseId() {

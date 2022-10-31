@@ -40,24 +40,6 @@ public class ExamquestionController {
 
 	@Autowired
 	QuestionService questionService;
-//
-//	@PostMapping("/add")
-//	public ResponseEntity<?> addequestions(@RequestBody AddquestionBean addquestion) {
-//		List<ExamquestionBean> examque = examquestionRepo.findByExam(addquestion.getExam());
-//		ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
-//		if (examque.isEmpty()) {
-//			List<ExamquestionBean> equestions = questionService.randomquestion(addquestion);
-//			examquestionRepo.saveAll(equestions);
-//			res.setData(equestions);
-//			res.setMsg("added sussessfully");
-//			return ResponseEntity.status(HttpStatus.OK).body(res);
-//		} else {
-//			res.setData(examque);
-//			res.setMsg("this exam is already exist");
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-//		}
-//	}
-
 
 	@GetMapping("/get/{examId}")
 	public ResponseEntity<?> listequesrions(@PathVariable("examId") Integer examId) {

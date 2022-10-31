@@ -94,5 +94,23 @@ public class CourseController {
 			return ResponseEntity.ok(res);
 		}
 	}
+	
+	@GetMapping("/child/{courseId}")
+	public ResponseEntity<?> getsubjectincourse(@PathVariable("courseId") Integer courseId) {
+		Optional<CourseBean> course = courseRepo.findById(courseId);
+		if (course.isEmpty()) {
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(courseId);
+			res.setMsg("course not exist.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			ResponseBean<List<SubjectBean>> res = new ResponseBean<>();
+			List<SubjectBean> subject = subjectRepo.findByCourse(course);
+			res.setData(subject);
+			res.setMsg("get subject successfully");
+			return ResponseEntity.ok(res);
+		}
+	}
+	
 
 }

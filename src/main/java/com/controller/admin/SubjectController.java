@@ -186,5 +186,22 @@ public class SubjectController {
 			return ResponseEntity.ok(res);
 		}
 	}
+	
+	@GetMapping("/child/{subjectId}")
+	public ResponseEntity<?> getquebysubject(@PathVariable("subjectId") Integer subjectId) {
+		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
+		if (subject.isEmpty()) {
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(subjectId);
+			res.setMsg("subject not exist.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			ResponseBean<Integer> res = new ResponseBean<>();
+			List<QuestionBean> questionBeans = questionRepo.findBySubject(subject);
+			res.setData(questionBeans.size());
+			res.setMsg("get question successfully");
+			return ResponseEntity.ok(res);
+		}
+	}
 
 }

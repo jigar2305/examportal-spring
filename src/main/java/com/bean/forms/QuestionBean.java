@@ -2,6 +2,7 @@ package com.bean.forms;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,11 +45,11 @@ public class QuestionBean {
 	private SubjectBean subject;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "question")	
+	@OneToMany(mappedBy = "question",cascade = {CascadeType.ALL})	
 	private Set<ExamquestionBean> examquestions;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "question")	
+	@OneToMany(mappedBy = "question",cascade = {CascadeType.ALL})	
 	private Set<UserquestionanswerBean> userquestionanswers;
 
 	public Integer getQuestionId() {
