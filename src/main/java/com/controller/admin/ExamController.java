@@ -3,6 +3,7 @@ package com.controller.admin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -107,16 +108,34 @@ public class ExamController {
 
 	@DeleteMapping("/delete/{examId}")
 	public ResponseEntity<?> deleteexam(@PathVariable("examId") Integer examId) {
-		Optional<ExamBean> examBean = examRepo.findById(examId);
+		ExamBean examBean = examRepo.findByExamId(examId);
 		ResponseBean<Object> res = new ResponseBean<>();
-		if (examBean.isEmpty()) {
+		if (examBean == null) {
 			res.setData(examId);
 			res.setMsg("exam not found");
 			return ResponseEntity.ok(res);
 		} else {
-			examRepo.deleteById(examId);
+			examBean.getUsers().clear();
+			examRepo.save(examBean);
+			examRepo.delete(examBean);
 			res.setData(examId);
 			res.setMsg("deleted successfully");
+			return ResponseEntity.ok(res);
+		}
+	}
+	
+	@GetMapping("/child/{examId}")
+	public ResponseEntity<?> isenroll(@PathVariable("examId") Integer examId) {
+		ExamBean examBean = examRepo.findByExamId(examId);
+		if (examBean == null) {
+			ResponseBean<Object> res = new ResponseBean<>();
+			res.setData(examId);
+			res.setMsg("exam not found");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(examBean.getUsers().size());
+			res.setMsg("fetch successfully");
 			return ResponseEntity.ok(res);
 		}
 	}

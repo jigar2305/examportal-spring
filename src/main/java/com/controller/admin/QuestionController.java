@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bean.ResponseBean;
+import com.bean.forms.ExamquestionBean;
 import com.bean.forms.QuestionBean;
+import com.repository.ExamquestionRepository;
 import com.repository.QuestionRepository;
 
 
@@ -30,6 +32,9 @@ public class QuestionController {
 
 	@Autowired
 	QuestionRepository questionRepo;
+	
+	@Autowired
+	ExamquestionRepository examquestionRepo;
 
 	@PostMapping("/add")
 	public ResponseEntity<?> addquestion(@RequestBody List<QuestionBean> questions) {
@@ -62,6 +67,23 @@ public class QuestionController {
 		res.setMsg("list successfully");
 		return ResponseEntity.ok(res);
 	}
+	
+	@GetMapping("/child/{questionId}")
+	public ResponseEntity<?> checkfordelete(@PathVariable("questionId") Integer questionId) {
+		QuestionBean  question = questionRepo.findByQuestionId(questionId);
+		if(question == null) {
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(questionId);
+			res.setMsg("not found");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		}else {
+			List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);
+			ResponseBean<Integer> res = new ResponseBean<>();
+			res.setData(examquestionBean.size());
+			res.setMsg("successfully");
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		}
+	}
 
 	@DeleteMapping("/delete/{questionId}")
 	public ResponseEntity<?> deletequestion(@PathVariable("questionId") Integer questionId) {
@@ -70,12 +92,12 @@ public class QuestionController {
 		if (questionBean.isEmpty()) {
 			res.setData(questionId);
 			res.setMsg("question not found");
-			return ResponseEntity.ok(res);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		} else {
 			questionRepo.deleteById(questionId);
 			res.setData(questionId);
 			res.setMsg("deleted successfully");
-			return ResponseEntity.ok(res);
+			return ResponseEntity.status(HttpStatus.OK).body(res);
 		}
 	}
 

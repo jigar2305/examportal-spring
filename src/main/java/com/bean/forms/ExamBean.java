@@ -46,7 +46,7 @@ public class ExamBean {
 	Set<UserquestionanswerBean> userquestionanswers;
 	
 	@JsonIgnore
-	@ManyToMany
+	@ManyToMany()
 	@JoinTable(
 	  name = "enroleexam", 
 	  joinColumns = @JoinColumn(name = "examId"), 
