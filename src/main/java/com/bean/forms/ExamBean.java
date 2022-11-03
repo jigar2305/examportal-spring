@@ -1,5 +1,10 @@
 package com.bean.forms;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -12,6 +17,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.bean.UserBean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,6 +39,10 @@ public class ExamBean {
 	private Boolean isshow;
 	
 	private String level;
+	
+	private Date date;
+	
+	private LocalTime startAt;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "exam",cascade = {CascadeType.ALL})	
@@ -141,6 +152,28 @@ public class ExamBean {
 	public void setTime(Integer time) {
 		this.time = time;
 	}
+
+
+	public Date getDate() {
+		return date;
+	}
+
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+
+	public LocalTime getStartAt() {
+		return startAt;
+	}
+
+
+	public void setStartAt(LocalTime startAt) {
+		this.startAt = startAt;
+	}
+
+
 
 
 

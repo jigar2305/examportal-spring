@@ -115,19 +115,20 @@ public class SubjectController {
 
 	@DeleteMapping("/delete/{subjectId}")
 	public ResponseEntity<?> deletesubject(@PathVariable("subjectId") Integer subjectId) {
-		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
+		SubjectBean subject = subjectRepo.findBySubjectId(subjectId);
 		ResponseBean<Object> res = new ResponseBean<>();
-		if (subject.isEmpty()) {
+		if (subject == null) {
 			res.setData(subjectId);
 			res.setMsg("subjects not found ");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		} else {
-
+			subject.getUsers().clear();
+			subjectRepo.save(subject);
 			List<QuestionBean> questions = questionRepo.findBySubject(subject);
 			if (questions != null) {
 				questionRepo.deleteAll(questions);
 			}
-			subjectRepo.deleteById(subjectId);
+			subjectRepo.delete(subject);
 			res.setData(subjectId);
 			res.setMsg("deleted successfully");
 			return ResponseEntity.ok(res);

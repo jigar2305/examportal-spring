@@ -1,6 +1,12 @@
 package com.controller.admin;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -47,7 +53,7 @@ public class ExamController {
 
 
 	@PostMapping("/add")
-	public ResponseEntity<?> addexamandquestion(@RequestBody ExamMSubjectBean examsubject) {
+	public ResponseEntity<?> addexamandquestion(@RequestBody ExamMSubjectBean examsubject) throws ParseException {
 		ExamBean examBean = examRepo.findByExamName(examsubject.getExamName());
 		ResponseBean<ExamBean> res = new ResponseBean<>();
 		ExamBean exam = new ExamBean();
@@ -57,6 +63,14 @@ public class ExamController {
 			exam.setIsshow(examsubject.getIsshow());
 			exam.setLevel(examsubject.getLevel());
 			exam.setTime(examsubject.getTime() * 60);
+			Date date = new SimpleDateFormat("yyyy/mm/dd").parse(examsubject.getDate());
+			System.out.println(date);
+			exam.setDate(date);
+			System.out.println(examsubject.getStartAt());
+			
+			LocalTime time = LocalTime.parse(examsubject.getStartAt());
+			exam.setStartAt(time);
+			
 			ExamBean exam1 = examRepo.save(exam);
 			if (exam1 != null) {
 				List<ExamquestionBean> equestions = questionService.randomquestionbymultiplesubjectbylevel(examsubject);
