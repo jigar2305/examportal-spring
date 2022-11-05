@@ -7,10 +7,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.Transient;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,38 +55,50 @@ public class ExamController {
 	@Autowired
 	QuestionService questionService;
 
-
+	@Transient
 	@PostMapping("/add")
-	public ResponseEntity<?> addexamandquestion(@RequestBody ExamMSubjectBean examsubject) throws ParseException {
+	public ResponseEntity<?> addexamandquestion(@RequestBody ExamMSubjectBean examsubject) {
 		ExamBean examBean = examRepo.findByExamName(examsubject.getExamName());
 		ResponseBean<ExamBean> res = new ResponseBean<>();
 		ExamBean exam = new ExamBean();
 		if (examBean == null) {
 			exam.setExamName(examsubject.getExamName());
-			
 			exam.setIsshow(examsubject.getIsshow());
 			exam.setLevel(examsubject.getLevel());
 			exam.setTime(examsubject.getTime() * 60);
-			Date date = new SimpleDateFormat("yyyy/mm/dd").parse(examsubject.getDate());
-			System.out.println(date);
-			exam.setDate(date);
-			System.out.println(examsubject.getStartAt());
-			
-			LocalTime time = LocalTime.parse(examsubject.getStartAt());
-			exam.setStartAt(time);
-			
+			exam.setDate(examsubject.getDate());
+			LocalTime startAt = LocalTime.parse(examsubject.getStartAt());
+			exam.setStartAt(startAt);
+			LocalTime endAt = LocalTime.parse(examsubject.getEndAt());
+			exam.setEndAt(endAt);
 			ExamBean exam1 = examRepo.save(exam);
 			if (exam1 != null) {
-				List<ExamquestionBean> equestions = questionService.randomquestionbymultiplesubjectbylevel(examsubject);
-				if (equestions.size() > 0) {
-					res.setData(exam);
-					res.setMsg("exam added sussessfully...");
-					return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
-				} else {
-					res.setData(null);
-					examRepo.delete(exam1);
-					res.setMsg("please add questions first");
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+				try {
+					List<ExamquestionBean> equestions = questionService
+							.randomquestionbymultiplesubjectbylevel(examsubject);
+					if (equestions.size() > 0) {
+						res.setData(exam);
+						res.setMsg("exam added sussessfully...");
+						return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+					} else {
+						res.setData(null);
+						examRepo.delete(exam1);
+						res.setMsg("please add questions first");
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					ExamBean examBean2 = examRepo.findByExamId(exam1.getExamId());
+					if (examBean2 != null) {
+						examRepo.deleteById(examBean2.getExamId());
+						res.setData(exam);
+						res.setMsg("Technical error occourd...");
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+					}else {
+						res.setData(exam);
+						res.setMsg("Technical error occourd...");
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+					}
 				}
 			} else {
 				res.setData(exam);
@@ -114,6 +130,9 @@ public class ExamController {
 				exams.remove(i);
 			}
 		}
+		for (ExamBean examBean : exams) {
+			System.out.println(examBean.getDate());
+		}
 		ResponseBean<List<ExamBean>> res = new ResponseBean<>();
 		res.setData(exams);
 		res.setMsg("sussessfully");
@@ -137,7 +156,7 @@ public class ExamController {
 			return ResponseEntity.ok(res);
 		}
 	}
-	
+
 	@GetMapping("/child/{examId}")
 	public ResponseEntity<?> isenroll(@PathVariable("examId") Integer examId) {
 		ExamBean examBean = examRepo.findByExamId(examId);
@@ -169,7 +188,7 @@ public class ExamController {
 			return ResponseEntity.ok(res);
 		}
 	}
-	
+
 	@GetMapping("/statusofexam/{examId}")
 	public ResponseEntity<?> getstatusofexam(@PathVariable("examId") Integer examId) {
 		ExamBean examBean = examRepo.findByExamId(examId);
@@ -186,9 +205,9 @@ public class ExamController {
 				examstatusBean examstatusBean = new examstatusBean();
 				ResultBean resultBean = resultRepo.findByExamAndUser(examBean, userBean);
 				examstatusBean.setUser(userBean);
-				if(resultBean == null) {
+				if (resultBean == null) {
 					examstatusBean.setStatus("Not Complated");
-				}else {
+				} else {
 					examstatusBean.setResult(resultBean);
 					examstatusBean.setStatus("Complated");
 				}

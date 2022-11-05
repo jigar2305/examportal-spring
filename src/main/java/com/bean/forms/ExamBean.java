@@ -40,9 +40,11 @@ public class ExamBean {
 	
 	private String level;
 	
-	private Date date;
+	private String date;
 	
 	private LocalTime startAt;
+	
+	private LocalTime endAt;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "exam",cascade = {CascadeType.ALL})	
@@ -154,12 +156,12 @@ public class ExamBean {
 	}
 
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
@@ -171,6 +173,16 @@ public class ExamBean {
 
 	public void setStartAt(LocalTime startAt) {
 		this.startAt = startAt;
+	}
+
+
+	public LocalTime getEndAt() {
+		return endAt;
+	}
+
+
+	public void setEndAt(LocalTime endAt) {
+		this.endAt = endAt;
 	}
 
 

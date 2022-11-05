@@ -154,8 +154,8 @@ public class QuestionService {
 			String level = exam.getLevel();
 
 			if (level.equalsIgnoreCase("hard")) {
-				if (hard > number) {
-					for (int j = 0; j < hard; j++) {
+				if (hard >= number) {
+					for (int j = 0; j < number; j++) {
 						int randomIndex = rand.nextInt(hard);
 						ExamquestionBean eq = new ExamquestionBean();
 						eq.setExam(exam);
@@ -165,7 +165,7 @@ public class QuestionService {
 					}
 				}
 			} else if (level.equalsIgnoreCase("easy")) {
-				if (easy > number) {
+				if (easy >= number) {
 					for (int j = 0; j < number; j++) {
 						int randomIndex = rand.nextInt(easy);
 						ExamquestionBean eq = new ExamquestionBean();
@@ -180,9 +180,10 @@ public class QuestionService {
 					if (easy / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(easy);
+							QuestionBean questionBean = queeasy.get(randomIndex);
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
-							eq.setQuestion(queeasy.get(randomIndex));
+							eq.setQuestion(questionBean);
 							question.add(eq);
 							queeasy.remove(randomIndex);
 						}

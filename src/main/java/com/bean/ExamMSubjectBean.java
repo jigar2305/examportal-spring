@@ -1,20 +1,9 @@
 package com.bean;
 
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
-import com.bean.forms.ExamBean;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.Data;
-
-
 public class ExamMSubjectBean {
-//
-//	private ExamBean exam;
+ 
 	private String examName;
 
 	private Integer time;
@@ -27,6 +16,8 @@ public class ExamMSubjectBean {
 	
 	private String startAt;
 	
+	private String endAt;
+
 
 	private List<SNNLBean> subjects;
 
@@ -98,6 +89,16 @@ public class ExamMSubjectBean {
 
 	public void setStartAt(String startAt) {
 		this.startAt = startAt;
+	}
+
+
+	public String getEndAt() {
+		return endAt;
+	}
+
+
+	public void setEndAt(String endAt) {
+		this.endAt = endAt;
 	}
 	
 
