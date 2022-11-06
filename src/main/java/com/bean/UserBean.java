@@ -44,6 +44,8 @@ public class UserBean {
 	
 	private Integer otp;
 	
+	private String authToken;
+	
 	@ManyToOne()
 	@JoinColumn(name = "roleId",nullable = false)
 	private RoleBean role;
@@ -167,5 +169,14 @@ public class UserBean {
 	public void setExams(Set<ExamBean> exams) {
 		this.exams = exams;
 	}
+
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
+	}
+
 	
 }

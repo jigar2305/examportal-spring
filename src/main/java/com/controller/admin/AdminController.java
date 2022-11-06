@@ -19,6 +19,7 @@ import com.repository.UserRepository;
 @RequestMapping("/admin")
 @RestController
 public class AdminController {
+	
 	@Autowired
 	UserRepository userRepo;
 
@@ -61,4 +62,6 @@ public class AdminController {
 		res.setMsg("get user successfully..");
 		return ResponseEntity.ok(res);
 	}
+	
+	
 }

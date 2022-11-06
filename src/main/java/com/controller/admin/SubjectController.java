@@ -55,17 +55,26 @@ public class SubjectController {
 
 			SubjectBean subjectres = subjectRepo.save(subject);
 			if (subjectres != null) {
-				List<SubjectFileBean> rsfile = subjectFileService.addfiles(files, subjectres);
-				if (rsfile == null) {
+				try {
+					List<SubjectFileBean> rsfile = subjectFileService.addfiles(files, subjectres);
+					if (rsfile == null) {
+						subjectRepo.deleteById(subjectres.getSubjectId());
+						res.setData(subjectBean);
+						res.setMsg("something went wrong..");
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+					} else {
+						res.setData(subjectres);
+						res.setMsg("subject added..");
+						return ResponseEntity.ok(res);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 					subjectRepo.deleteById(subjectres.getSubjectId());
 					res.setData(subjectBean);
 					res.setMsg("something went wrong..");
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-				} else {
-					res.setData(subjectres);
-					res.setMsg("subject added..");
-					return ResponseEntity.ok(res);
 				}
+				
 			}
 			res.setData(subjectBean);
 			res.setMsg("something went wrong..");
@@ -126,7 +135,9 @@ public class SubjectController {
 			subjectRepo.save(subject);
 			List<QuestionBean> questions = questionRepo.findBySubject(subject);
 			if (questions != null) {
-				questionRepo.deleteAll(questions);
+				for (int i = 0; i < questions.size(); i++) {					
+					questionRepo.deleteById(questions.get(i).getQuestionId());
+				}
 			}
 			subjectRepo.delete(subject);
 			res.setData(subjectId);

@@ -1,20 +1,13 @@
 package com.controller.admin;
 
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.Transient;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -149,6 +142,7 @@ public class ExamController {
 			return ResponseEntity.ok(res);
 		} else {
 			examBean.getUsers().clear();
+			examBean.getExamquestions();
 			examRepo.save(examBean);
 			examRepo.delete(examBean);
 			res.setData(examId);

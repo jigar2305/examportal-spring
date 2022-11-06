@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import com.controller.EmailController;
 import com.repository.RoleRepository;
 import com.repository.UserRepository;
 import com.service.OptService;
+import com.service.TokenService;
 
 @CrossOrigin
 @RequestMapping("/public")
@@ -39,6 +42,9 @@ public class SessionController {
 	
 	@Autowired
 	OptService optService;
+	
+	@Autowired
+	TokenService tokenService;
 	
 	
 	@PostMapping("/signup")
@@ -74,6 +80,8 @@ public class SessionController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
 		}else {
 			ResponseBean<UserBean> res = new ResponseBean<>();
+			userBean.setAuthToken(tokenService.createtoken(20));
+			userRepo.save(userBean);
 			res.setData(userBean);
 			res.setMsg("Login done...");
 			return ResponseEntity.ok(res);
@@ -128,7 +136,14 @@ public class SessionController {
 		res.setData(userBean);
 		res.setMsg("password successfully forgot...");
 		return ResponseEntity.ok(res);	
-		
+	}
+	
+	@GetMapping("/logout/{userId}")
+	public void logout(@PathVariable("userId")Integer userId){		
+		UserBean user = userRepo.findByUserId(userId);
+		System.out.println("called");
+		user.setAuthToken(null);
+		userRepo.save(user);
 	}
 	
 	
