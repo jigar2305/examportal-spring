@@ -17,6 +17,8 @@ public class ExamMSubjectBean {
 	private String startAt;
 	
 	private String endAt;
+	
+	private Float percentage;
 
 
 	private List<SNNLBean> subjects;
@@ -99,6 +101,16 @@ public class ExamMSubjectBean {
 
 	public void setEndAt(String endAt) {
 		this.endAt = endAt;
+	}
+
+
+	public Float getPercentage() {
+		return percentage;
+	}
+
+
+	public void setPercentage(Float percentage) {
+		this.percentage = percentage;
 	}
 	
 

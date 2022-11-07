@@ -40,6 +40,8 @@ public class ExamBean {
 	
 	private LocalTime endAt;
 	
+	private Float percentage;
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "exam",cascade = {CascadeType.ALL})	
 	private Set<ExamquestionBean> examquestions;
@@ -177,6 +179,16 @@ public class ExamBean {
 
 	public void setEndAt(LocalTime endAt) {
 		this.endAt = endAt;
+	}
+
+
+	public Float getPercentage() {
+		return percentage;
+	}
+
+
+	public void setPercentage(Float percentage) {
+		this.percentage = percentage;
 	}
 
 

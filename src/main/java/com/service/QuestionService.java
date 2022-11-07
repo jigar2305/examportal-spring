@@ -82,7 +82,8 @@ public class QuestionService {
 		ResultBean result = new ResultBean();
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);
-		float fi = total/3;
+		Float Percentage = questions.getExam().getPercentage();
+		Float fi = total*Percentage/100;
 		if(fi < obtain) {
 			result.setStatus("pass");
 		}else {

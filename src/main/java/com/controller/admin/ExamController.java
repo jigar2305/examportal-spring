@@ -60,6 +60,7 @@ public class ExamController {
 			exam.setLevel(examsubject.getLevel());
 			exam.setTime(examsubject.getTime() * 60);
 			exam.setDate(examsubject.getDate());
+			exam.setPercentage(examsubject.getPercentage());
 			LocalTime startAt = LocalTime.parse(examsubject.getStartAt());
 			exam.setStartAt(startAt);
 			LocalTime endAt = LocalTime.parse(examsubject.getEndAt());
