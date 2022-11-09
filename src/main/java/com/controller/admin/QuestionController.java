@@ -77,27 +77,40 @@ public class QuestionController {
 			res.setMsg("not found");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}else {
-			List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(examquestionBean.size());
-			res.setMsg("successfully");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			try{
+				List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);				
+				ResponseBean<Integer> res = new ResponseBean<>();
+				res.setData(examquestionBean.size());
+				res.setMsg("successfully");
+				return ResponseEntity.status(HttpStatus.OK).body(res);
+			}catch (Exception e) {
+				ResponseBean<Integer> res = new ResponseBean<>();
+				res.setData(500);
+				res.setMsg("Technical error occoured");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+			}
 		}
 	}
 
 	@DeleteMapping("/delete/{questionId}")
 	public ResponseEntity<?> deletequestion(@PathVariable("questionId") Integer questionId) {
 		Optional<QuestionBean> questionBean = questionRepo.findById(questionId);
-		ResponseBean<Object> res = new ResponseBean<>();
+		ResponseBean<Integer> res = new ResponseBean<>();
 		if (questionBean.isEmpty()) {
 			res.setData(questionId);
 			res.setMsg("question not found");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		} else {
-			questionRepo.deleteById(questionId);
-			res.setData(questionId);
-			res.setMsg("deleted successfully");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			try {
+				questionRepo.deleteById(questionId);
+				res.setData(questionId);
+				res.setMsg("deleted successfully");
+				return ResponseEntity.status(HttpStatus.OK).body(res);				
+			} catch (Exception e) {
+				res.setData(questionId);
+				res.setMsg("Technical error occoured");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+			}
 		}
 	}
 
