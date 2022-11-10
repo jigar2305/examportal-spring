@@ -143,7 +143,7 @@ public class ExamController {
 			return ResponseEntity.ok(res);
 		} else {
 			examBean.getUsers().clear();
-			examBean.getExamquestions();
+			examBean.getExamquestions().clear();
 			examRepo.save(examBean);
 			examRepo.delete(examBean);
 			res.setData(examId);

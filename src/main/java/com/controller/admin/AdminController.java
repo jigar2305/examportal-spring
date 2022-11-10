@@ -57,22 +57,22 @@ public class AdminController {
 			List<SubjectBean> subject = subjectRepo.findByUsers(user);
 			List<ExamBean> exam = examRepo.findByUsers(user);
 			List<ResultBean> result = resultRepo.findByUser(user);
-			
 			if(subject != null) {		
 				for (int i = 0; i < subject.size(); i++) {
 					subject.get(i).getUsers().remove(user);
 				}
 				subjectRepo.saveAll(subject);
-			}else if(exam != null) {		
+			}
+			if(exam != null && exam.size() > 0) {
 				for (int i = 0; i < exam.size(); i++) {
 					exam.get(i).getUsers().remove(user);
+					examRepo.save(exam.get(i));
 				}
-				examRepo.saveAll(exam);
-			}else if(result != null) {		
+			}
+			if(result != null) {		
 				for (int i = 0; i < result.size(); i++) {
 				resultRepo.delete(result.get(i));
-				}
-				
+				}	
 			}
 			userRepo.deleteById(userId);
 		}catch (Exception e) {
