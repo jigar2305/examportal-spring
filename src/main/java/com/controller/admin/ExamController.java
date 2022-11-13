@@ -1,6 +1,5 @@
 package com.controller.admin;
 
-
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +27,7 @@ import com.bean.forms.ExamBean;
 import com.bean.forms.ExamquestionBean;
 import com.bean.forms.ResultBean;
 import com.repository.ExamRepository;
+import com.repository.ExamquestionRepository;
 import com.repository.ResultRepository;
 import com.repository.UserRepository;
 import com.service.QuestionService;
@@ -47,6 +47,9 @@ public class ExamController {
 
 	@Autowired
 	QuestionService questionService;
+
+	@Autowired
+	ExamquestionRepository examquestionRepo;
 
 	@Transient
 	@PostMapping("/add")
@@ -88,7 +91,7 @@ public class ExamController {
 						res.setData(exam);
 						res.setMsg("Technical error occourd...");
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-					}else {
+					} else {
 						res.setData(exam);
 						res.setMsg("Technical error occourd...");
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
@@ -143,8 +146,15 @@ public class ExamController {
 			return ResponseEntity.ok(res);
 		} else {
 			examBean.getUsers().clear();
-			examBean.getExamquestions().clear();
 			examRepo.save(examBean);
+			List<ExamquestionBean> equestion = examquestionRepo.findByExam(examBean);
+			if (equestion != null) {
+				examquestionRepo.deleteAll(equestion);
+			}
+			List<ResultBean> results = resultRepo.findByExam(examBean);
+			if (results != null && results.size() > 0) {
+				resultRepo.deleteAll(results);
+			}
 			examRepo.delete(examBean);
 			res.setData(examId);
 			res.setMsg("deleted successfully");

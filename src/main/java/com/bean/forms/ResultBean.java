@@ -25,11 +25,11 @@ public class ResultBean {
 	
 	private String status;
 	
-	@ManyToOne(cascade = {CascadeType.REMOVE})
+	@ManyToOne()
 	@JoinColumn(name = "userId")
 	private UserBean user;
 	
-	@ManyToOne(cascade = {CascadeType.REMOVE})
+	@ManyToOne()
 	@JoinColumn(name = "examId")
 	private ExamBean exam;
 

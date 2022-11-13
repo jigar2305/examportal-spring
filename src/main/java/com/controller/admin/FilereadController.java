@@ -35,14 +35,11 @@ public class FilereadController {
 			res.setMsg("question added successfully..");
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ResponseBean<Object> res = new ResponseBean<>();
+			res.setData(null);
+			res.setMsg("Technical error occurred");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 		}
-		ResponseBean<Object> res = new ResponseBean<>();
-		res.setData(null);
-		res.setMsg("something went wrong");
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-
 	}
 
 }
