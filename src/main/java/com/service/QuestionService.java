@@ -83,10 +83,10 @@ public class QuestionService {
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);
 		Float Percentage = questions.getExam().getPercentage();
-		Float fi = total*Percentage/100;
-		if(fi < obtain) {
+		Float fi = total * Percentage / 100;
+		if (fi < obtain) {
 			result.setStatus("pass");
-		}else {
+		} else {
 			result.setStatus("fail");
 		}
 		result.setExam(exam);
@@ -96,13 +96,13 @@ public class QuestionService {
 		return result;
 	}
 
-	public List<QuestionBean> addquestion(MultipartFile excel)  throws Exception{
+	public List<QuestionBean> addquestion(MultipartFile excel) throws Exception {
 
 		List<QuestionBean> questions = new ArrayList<>();
 		try {
 			XSSFWorkbook workbook = new XSSFWorkbook(excel.getInputStream());
 			XSSFSheet sheet = workbook.getSheetAt(0);
-			for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+			for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
 				XSSFRow row = sheet.getRow(i);
 				QuestionBean questionBean = new QuestionBean();
 				questionBean.setQuestion(row.getCell(0).toString());
@@ -110,32 +110,35 @@ public class QuestionService {
 				questionBean.setB(row.getCell(2).toString());
 				questionBean.setC(row.getCell(3).toString());
 				questionBean.setD(row.getCell(4).toString());
-				questionBean.setCorrectAnswer(row.getCell(5).toString());
+				questionBean.setCorrectAnswer(row.getCell(5).toString().toLowerCase());
 				questionBean.setLevel(row.getCell(6).toString());
 				SubjectBean subjectBean = null;
-				if(row.getCell(7).toString() != null) {
+				if (row.getCell(7).toString() != null) {
 					String subject = row.getCell(7).toString();
 					subjectBean = subjectRepo.findBySubjectName(subject);
 				}
 				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
 						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
 						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
+						|| questionBean.getCorrectAnswer().equalsIgnoreCase("a")
+						|| questionBean.getCorrectAnswer().equalsIgnoreCase("b")
+						|| questionBean.getCorrectAnswer().equalsIgnoreCase("c")
+						|| questionBean.getCorrectAnswer().equalsIgnoreCase("d")
+						|| questionBean.getCorrectAnswer().toString().length() != 1
 
 				) {
 				} else {
 					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
-					questionBean.setSubject(subjectBean);
-					questions.add(questionRepo.save(questionBean));
+						questionBean.setSubject(subjectBean);
+						questions.add(questionRepo.save(questionBean));
+					}
 				}
-			}
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return questions;
 	}
-
 
 	public List<ExamquestionBean> randomquestionbymultiplesubjectbylevel(ExamMSubjectBean addquestion) {
 		ExamBean exam = examRepo.findByExamName(addquestion.getExamName());
