@@ -127,9 +127,6 @@ public class ExamController {
 				exams.remove(i);
 			}
 		}
-		for (ExamBean examBean : exams) {
-			System.out.println(examBean.getDate());
-		}
 		ResponseBean<List<ExamBean>> res = new ResponseBean<>();
 		res.setData(exams);
 		res.setMsg("sussessfully");

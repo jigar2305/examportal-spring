@@ -149,7 +149,7 @@ public class QuestionService {
 			SubjectBean subjectBean = subjectRepo.findBySubjectName(addquestion.getSubjects().get(i).getSubjectName());
 			List<QuestionBean> quehard = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
 			List<QuestionBean> quemoderate = questionRepo.findBySubjectAndLevel(subjectBean, "moderate");
-			List<QuestionBean> queeasy = questionRepo.findBySubjectAndLevel(subjectBean, "hard");
+			List<QuestionBean> queeasy = questionRepo.findBySubjectAndLevel(subjectBean, "easy");
 			Integer hard = quehard.size();
 			Integer moderate = quemoderate.size();
 			Integer easy = queeasy.size();
