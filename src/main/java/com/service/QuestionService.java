@@ -82,7 +82,7 @@ public class QuestionService {
 		ResultBean result = new ResultBean();
 		result.setObtainMarks(obtain);
 		result.setTotalMarks(total);
-		Float Percentage = questions.getExam().getPercentage();
+		Float Percentage = exam.getPercentage();
 		Float fi = total * Percentage / 100;
 		if (fi < obtain) {
 			result.setStatus("pass");
@@ -91,8 +91,10 @@ public class QuestionService {
 		}
 		result.setExam(exam);
 		result.setUser(user);
-		resultRepo.save(result);
-
+		ResultBean checkresult = resultRepo.findByExamAndUser(exam, user);
+		if(checkresult ==null) {
+			resultRepo.save(result);			
+		}
 		return result;
 	}
 
@@ -111,7 +113,7 @@ public class QuestionService {
 				questionBean.setC(row.getCell(3).toString());
 				questionBean.setD(row.getCell(4).toString());
 				questionBean.setCorrectAnswer(row.getCell(5).toString().toLowerCase());
-				questionBean.setLevel(row.getCell(6).toString());
+				questionBean.setLevel(row.getCell(6).toString().toLowerCase());
 				SubjectBean subjectBean = null;
 				if (row.getCell(7).toString() != null) {
 					String subject = row.getCell(7).toString();
@@ -120,12 +122,14 @@ public class QuestionService {
 				if (subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
 						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
 						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
-						|| questionBean.getCorrectAnswer().equalsIgnoreCase("a")
-						|| questionBean.getCorrectAnswer().equalsIgnoreCase("b")
-						|| questionBean.getCorrectAnswer().equalsIgnoreCase("c")
-						|| questionBean.getCorrectAnswer().equalsIgnoreCase("d")
-						|| questionBean.getCorrectAnswer().toString().length() != 1
-
+						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("a")
+						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("b")
+						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("c")
+						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("d")
+						|| questionBean.getCorrectAnswer().toString().length() == 1
+						|| !questionBean.getLevel().equalsIgnoreCase("easy")
+						|| !questionBean.getLevel().equalsIgnoreCase("moderate")
+						|| !questionBean.getLevel().equalsIgnoreCase("hard")
 				) {
 				} else {
 					if (questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
@@ -153,6 +157,7 @@ public class QuestionService {
 			Integer hard = quehard.size();
 			Integer moderate = quemoderate.size();
 			Integer easy = queeasy.size();
+			Integer easy1 = easy -1;
 			Integer number = addquestion.getSubjects().get(i).getNumber();
 			total = total + number;
 			String level = exam.getLevel();
@@ -160,7 +165,7 @@ public class QuestionService {
 			if (level.equalsIgnoreCase("hard")) {
 				if (hard >= number) {
 					for (int j = 0; j < number; j++) {
-						int randomIndex = rand.nextInt(hard);
+						int randomIndex = rand.nextInt(quehard.size());
 						ExamquestionBean eq = new ExamquestionBean();
 						eq.setExam(exam);
 						eq.setQuestion(quehard.get(randomIndex));
@@ -171,7 +176,7 @@ public class QuestionService {
 			} else if (level.equalsIgnoreCase("easy")) {
 				if (easy >= number) {
 					for (int j = 0; j < number; j++) {
-						int randomIndex = rand.nextInt(easy);
+						int randomIndex = rand.nextInt(queeasy.size());
 						ExamquestionBean eq = new ExamquestionBean();
 						eq.setExam(exam);
 						eq.setQuestion(queeasy.get(randomIndex));
@@ -183,7 +188,7 @@ public class QuestionService {
 				if (number % 2 == 0) {
 					if (easy / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
-							int randomIndex = rand.nextInt(easy);
+							int randomIndex = rand.nextInt(queeasy.size());
 							QuestionBean questionBean = queeasy.get(randomIndex);
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
@@ -194,7 +199,7 @@ public class QuestionService {
 					}
 					if (moderate / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
-							int randomIndex = rand.nextInt(moderate);
+							int randomIndex = rand.nextInt(quemoderate.size());
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
 							eq.setQuestion(quemoderate.get(randomIndex));
@@ -205,7 +210,7 @@ public class QuestionService {
 				} else {
 					if (easy / 2 > (number + 1) / 2) {
 						for (int j = 0; j < (number + 1) / 2; j++) {
-							int randomIndex = rand.nextInt(easy);
+							int randomIndex = rand.nextInt(queeasy.size());
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
 							eq.setQuestion(queeasy.get(randomIndex));
@@ -215,7 +220,7 @@ public class QuestionService {
 					}
 					if (moderate / 2 > (number - 1) / 2) {
 						for (int j = 0; j < (number - 1) / 2; j++) {
-							int randomIndex = rand.nextInt(moderate);
+							int randomIndex = rand.nextInt(quemoderate.size());
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
 							eq.setQuestion(quemoderate.get(randomIndex));
@@ -228,7 +233,7 @@ public class QuestionService {
 				if (number % 2 == 0) {
 					if (hard / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
-							int randomIndex = rand.nextInt(hard);
+							int randomIndex = rand.nextInt(quehard.size());
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
 							eq.setQuestion(quehard.get(randomIndex));
@@ -238,7 +243,7 @@ public class QuestionService {
 					}
 					if (moderate / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
-							int randomIndex = rand.nextInt(moderate);
+							int randomIndex = rand.nextInt(quemoderate.size());
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
 							eq.setQuestion(quemoderate.get(randomIndex));
@@ -249,7 +254,7 @@ public class QuestionService {
 				} else {
 					if (hard / 2 > (number + 1) / 2) {
 						for (int j = 0; j < (number + 1) / 2; j++) {
-							int randomIndex = rand.nextInt(hard);
+							int randomIndex = rand.nextInt(quehard.size());
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
 							eq.setQuestion(quehard.get(randomIndex));
@@ -259,7 +264,7 @@ public class QuestionService {
 					}
 					if (moderate / 2 > (number - 1) / 2) {
 						for (int j = 0; j < (number - 1) / 2; j++) {
-							int randomIndex = rand.nextInt(moderate);
+							int randomIndex = rand.nextInt(quemoderate.size());
 							ExamquestionBean eq = new ExamquestionBean();
 							eq.setExam(exam);
 							eq.setQuestion(quemoderate.get(randomIndex));
