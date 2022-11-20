@@ -79,7 +79,7 @@ public class ExamquestionServiceImp implements ExamquestionService {
 		ResultBean result = questionService.checkAnswer(questions);
 		ResponseBean<ResultBean> res = new ResponseBean<>();
 		res.setData(result);
-		res.setMsg("Result Generated Successfully");
+		res.setMsg(result.getExam().getExamName()+" complated successfully");	
 		res.setApicode(200);
 		return res;
 	}
