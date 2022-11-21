@@ -43,7 +43,7 @@ public class SubjectFileServiceImp implements SubjectFileService {
 
 	@Override
 	public List<SubjectFileBean> addfiles(List<SubjectFileBean> files, SubjectBean subject) throws IOException {
-		String mainpath = "D:\\SpringTool\\examportal\\src\\main\\resources\\subjectfiles";
+		String mainpath = "D:\\Exam-Portal-Spring\\src\\main\\resources\\subjectfiles";
 		File folder = new File(mainpath, subject.getSubjectId() + "");
 		folder.mkdir();
 		for (int i = 0; i < files.size(); i++) {
@@ -94,6 +94,7 @@ public class SubjectFileServiceImp implements SubjectFileService {
 				subjectRepo.save(subject);
 			}
 		}
+		System.out.println("hello");
 		ResponseBean<Boolean> res = new ResponseBean<>();
 		res.setData(true);
 		res.setMsg("files successfully send to users");

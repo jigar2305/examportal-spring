@@ -108,7 +108,7 @@ public class AdminServiceImp implements AdminService {
 					ress.put("exam", exam);
 					ress.put("subject", subject);
 					res.setData(ress);
-					res.setMsg("Subject And exam found for user");
+					res.setMsg(null);
 					res.setApicode(200);
 					return res;
 				}

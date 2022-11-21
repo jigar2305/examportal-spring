@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Bean.Getsubjectfile;
 import com.Service.SubjectService;
 
-@RestController
 @RequestMapping("/subject")
+@RestController
 public class SubjectController {
 
 	@Autowired

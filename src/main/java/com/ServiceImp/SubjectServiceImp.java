@@ -124,7 +124,7 @@ public class SubjectServiceImp implements SubjectService {
 		ResponseBean<Object> res = new ResponseBean<>();
 		if (subject == null) {
 			res.setData(subjectId);
-			res.setMsg("subjects not found ");
+			res.setMsg(NOT_FOUND);
 			res.setApicode(404);
 			return res;
 		} else {
@@ -138,7 +138,7 @@ public class SubjectServiceImp implements SubjectService {
 			}
 			subjectRepo.delete(subject);
 			res.setData(subjectId);
-			res.setMsg(subject.getSubjectName() + "deleted successfully");
+			res.setMsg(subject.getSubjectName() + " deleted successfully");
 			res.setApicode(200);
 			return res;
 		}

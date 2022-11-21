@@ -34,7 +34,7 @@ public class AuthTokenFilter implements Filter {
 			String authToken = request.getHeader("authToken");
 			String email = request.getHeader("email");
 			UserBean user = userRepository.findByAuthTokenAndEmail(authToken,email);
-			if (authToken == null || email == null || authToken.trim().length() != 20 || user == null) {
+			if (authToken == null || email == null || authToken.trim().length() != 20 || user == null || user.getActive() == false) {
 				response.setContentType("application/json");
 				response.setStatus(401);
 				response.getWriter().write("{'msg':'Please Login before access service'}");			

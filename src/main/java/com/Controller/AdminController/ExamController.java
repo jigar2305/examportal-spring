@@ -57,7 +57,7 @@ public class ExamController {
 	}
 	@PostMapping("/enrollExam")
 	public ResponseEntity<?> enrollExam(@RequestBody EnroleexamBean enroleexam) {
-		return null;
+		return ResponseEntity.ok(examService.enrollExam(enroleexam));
 	}
 	
 

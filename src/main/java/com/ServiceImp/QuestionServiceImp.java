@@ -332,7 +332,7 @@ public class QuestionServiceImp implements QuestionService {
 				List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);
 				ResponseBean<Integer> res = new ResponseBean<>();
 				res.setData(examquestionBean.size());
-				res.setMsg("successfully");
+				res.setMsg("get successfully");
 				res.setApicode(200);
 				return res;
 			} catch (Exception e) {

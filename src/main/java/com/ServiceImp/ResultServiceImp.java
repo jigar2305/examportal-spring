@@ -18,6 +18,8 @@ import com.Service.ResultService;
 
 @Service
 public class ResultServiceImp implements ResultService {
+	
+	private static final String SUCCESS = "get Result Sussessfully";
 
 	@Autowired
 	UserRepository userRepo;
@@ -44,7 +46,7 @@ public class ResultServiceImp implements ResultService {
 			List<ResultBean> results = resultRepo.findByUser(user);
 			ResponseBean<List<ResultBean>> res = new ResponseBean<>();
 			res.setData(results);
-			res.setMsg("Results Get Successfully");
+			res.setMsg(SUCCESS);
 			res.setApicode(200);
 			return res;
 		}
@@ -62,7 +64,7 @@ public class ResultServiceImp implements ResultService {
 		} else {
 			ResponseBean<ResultBean> res = new ResponseBean<>();
 			res.setData(result);
-			res.setMsg("get Result Sussessfully");
+			res.setMsg(SUCCESS);
 			res.setApicode(200);
 			return res;
 		}
@@ -91,7 +93,7 @@ public class ResultServiceImp implements ResultService {
 			List<ResultBean> results = resultRepo.findByExam(exam);
 			ResponseBean<List<ResultBean>> res = new ResponseBean<>();
 			res.setData(results);
-			res.setMsg("Results Get Successfully");
+			res.setMsg(SUCCESS);
 			res.setApicode(200);
 			return res;
 		}
