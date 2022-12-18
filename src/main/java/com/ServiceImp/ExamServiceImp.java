@@ -118,10 +118,11 @@ public class ExamServiceImp implements ExamService {
 	@Override
 	public ResponseBean<?> getExamByUserId(Integer userId) {
 		UserBean user = userRepo.findByUserId(userId);
-		List<ExamBean> exams = examRepo.findByUsers(user);
-		for (int i = 0; i < exams.size(); i++) {
-			if (resultRepo.findByExamAndUser(exams.get(i), user) != null) {
-				exams.remove(i);
+		List<ExamBean> exam = examRepo.findByUsers(user);
+		List<ExamBean> exams = new ArrayList<>();
+		for (int i = 0; i < exam.size(); i++) {
+			if (resultRepo.findByExamAndUser(exam.get(i), user) == null) {
+				exam.add(exam.get(i));
 			}
 		}
 		ResponseBean<List<ExamBean>> res = new ResponseBean<>();
