@@ -22,14 +22,22 @@ public class UserquestionanswerBean {
 	private UserBean user;
 	
 	@ManyToOne
-	@JoinColumn(name = "questionId",nullable = false)
-	private QuestionBean question;
+	@JoinColumn(name = "examquestionId",nullable = false)
+	private ExamquestionBean question;
 	
 	@ManyToOne
 	@JoinColumn(name = "examId",nullable = false)
 	private ExamBean exam;
 	
 	private String selectedOption;
+
+	public ExamquestionBean getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(ExamquestionBean question) {
+		this.question = question;
+	}
 
 	public Integer getUserquestionanswerId() {
 		return userquestionanswerId;
@@ -45,14 +53,6 @@ public class UserquestionanswerBean {
 
 	public void setUser(UserBean user) {
 		this.user = user;
-	}
-
-	public QuestionBean getQuestion() {
-		return question;
-	}
-
-	public void setQuestion(QuestionBean question) {
-		this.question = question;
 	}
 
 	public ExamBean getExam() {

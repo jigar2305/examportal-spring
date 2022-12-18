@@ -26,8 +26,13 @@ public class QuestionController {
 	QuestionService questionService;
 
 	@PostMapping("/add")
-	public ResponseEntity<?> addQuestion(@RequestBody List<QuestionBean> questions) {
+	public ResponseEntity<?> addQuestions(@RequestBody List<QuestionBean> questions) {
 		return ResponseEntity.ok(questionService.addQuestions(questions));
+	}
+	
+	@PostMapping("/single-add")
+	public ResponseEntity<?> addQuestion(@RequestBody QuestionBean question) {
+		return ResponseEntity.ok(questionService.addQuestion(question));
 	}
 
 	@GetMapping("/list")

@@ -5,6 +5,7 @@ public class QuestionanswerBean {
 
 
 	private Integer questionId;
+	private Integer examquestionId;
 	
 	private String question;
 	private String a;
@@ -77,6 +78,14 @@ public class QuestionanswerBean {
 
 	public void setSelected(String selected) {
 		this.selected = selected;
+	}
+
+	public Integer getExamquestionId() {
+		return examquestionId;
+	}
+
+	public void setExamquestionId(Integer examquestionId) {
+		this.examquestionId = examquestionId;
 	}
 	
 	

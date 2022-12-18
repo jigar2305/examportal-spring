@@ -23,6 +23,8 @@ public interface QuestionService {
 	List<QuestionBean> addquestion(MultipartFile excel) throws IOException, NullPointerException;
 
 	public ResponseBean<?> addQuestions(List<QuestionBean> questions);
+	
+	public ResponseBean<?> addQuestion(QuestionBean question);
 
 	public ResponseBean<?> getAllQuestions();
 

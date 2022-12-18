@@ -31,6 +31,7 @@ import com.Repositoy.ResultRepository;
 import com.Repositoy.SubjectRepository;
 import com.Repositoy.UserRepository;
 import com.Repositoy.UserquestionanswerRepository;
+import com.Service.CommonService;
 import com.Service.QuestionService;
 
 @Service
@@ -60,6 +61,9 @@ public class QuestionServiceImp implements QuestionService {
 	@Autowired
 	UserquestionanswerRepository userquestionanswerRepo;
 
+	@Autowired
+	CommonService examquestionService;
+
 	@Override
 	public List<ExamquestionBean> addRendomQuestionByManySubject(ExamMSubjectBean addquestion) {
 		ExamBean exam = examRepo.findByExamName(addquestion.getExamName());
@@ -81,10 +85,7 @@ public class QuestionServiceImp implements QuestionService {
 				if (hard >= number) {
 					for (int j = 0; j < number; j++) {
 						int randomIndex = rand.nextInt(quehard.size());
-						ExamquestionBean eq = new ExamquestionBean();
-						eq.setExam(exam);
-						eq.setQuestion(quehard.get(randomIndex));
-						question.add(eq);
+						question.add(examquestionService.setExamQue(quehard.get(randomIndex), exam));
 						quehard.remove(randomIndex);
 					}
 				}
@@ -92,10 +93,7 @@ public class QuestionServiceImp implements QuestionService {
 				if (easy >= number) {
 					for (int j = 0; j < number; j++) {
 						int randomIndex = rand.nextInt(queeasy.size());
-						ExamquestionBean eq = new ExamquestionBean();
-						eq.setExam(exam);
-						eq.setQuestion(queeasy.get(randomIndex));
-						question.add(eq);
+						question.add(examquestionService.setExamQue(queeasy.get(randomIndex), exam));
 						queeasy.remove(randomIndex);
 					}
 				}
@@ -104,21 +102,14 @@ public class QuestionServiceImp implements QuestionService {
 					if (easy / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(queeasy.size());
-							QuestionBean questionBean = queeasy.get(randomIndex);
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(questionBean);
-							question.add(eq);
+							question.add(examquestionService.setExamQue(queeasy.get(randomIndex), exam));
 							queeasy.remove(randomIndex);
 						}
 					}
 					if (moderate / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(quemoderate.get(randomIndex));
-							question.add(eq);
+							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
 							quemoderate.remove(randomIndex);
 						}
 					}
@@ -126,20 +117,14 @@ public class QuestionServiceImp implements QuestionService {
 					if (easy / 2 > (number + 1) / 2) {
 						for (int j = 0; j < (number + 1) / 2; j++) {
 							int randomIndex = rand.nextInt(queeasy.size());
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(queeasy.get(randomIndex));
-							question.add(eq);
+							question.add(examquestionService.setExamQue(queeasy.get(randomIndex), exam));
 							queeasy.remove(randomIndex);
 						}
 					}
 					if (moderate / 2 > (number - 1) / 2) {
 						for (int j = 0; j < (number - 1) / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(quemoderate.get(randomIndex));
-							question.add(eq);
+							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
 							quemoderate.remove(randomIndex);
 						}
 					}
@@ -149,20 +134,14 @@ public class QuestionServiceImp implements QuestionService {
 					if (hard / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(quehard.size());
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(quehard.get(randomIndex));
-							question.add(eq);
+							question.add(examquestionService.setExamQue(quehard.get(randomIndex), exam));
 							quehard.remove(randomIndex);
 						}
 					}
 					if (moderate / 2 > number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(quemoderate.get(randomIndex));
-							question.add(eq);
+							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
 							quemoderate.remove(randomIndex);
 						}
 					}
@@ -170,20 +149,14 @@ public class QuestionServiceImp implements QuestionService {
 					if (hard / 2 > (number + 1) / 2) {
 						for (int j = 0; j < (number + 1) / 2; j++) {
 							int randomIndex = rand.nextInt(quehard.size());
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(quehard.get(randomIndex));
-							question.add(eq);
+							question.add(examquestionService.setExamQue(quehard.get(randomIndex), exam));
 							quehard.remove(randomIndex);
 						}
 					}
 					if (moderate / 2 > (number - 1) / 2) {
 						for (int j = 0; j < (number - 1) / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
-							ExamquestionBean eq = new ExamquestionBean();
-							eq.setExam(exam);
-							eq.setQuestion(quemoderate.get(randomIndex));
-							question.add(eq);
+							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
 							quemoderate.remove(randomIndex);
 						}
 					}
@@ -210,7 +183,7 @@ public class QuestionServiceImp implements QuestionService {
 		Integer obtain = 0;
 		for (QuestionanswerBean i : que) {
 			UserquestionanswerBean q = new UserquestionanswerBean();
-			QuestionBean queq = questionRepo.findByQuestionId(i.getQuestionId());
+			ExamquestionBean queq = examquestionRepo.findByExamquestionId(i.getExamquestionId());
 			q.setUser(user);
 			q.setQuestion(queq);
 			q.setExam(exam);
@@ -265,18 +238,18 @@ public class QuestionServiceImp implements QuestionService {
 					String subject = row.getCell(7).toString();
 					subjectBean = subjectRepo.findBySubjectName(subject);
 				}
-				if (!(subjectBean == null || questionBean.getQuestion().isEmpty() || questionBean.getA().isEmpty()
-						|| questionBean.getB().isEmpty() || questionBean.getC().isEmpty()
-						|| questionBean.getD().isEmpty() || questionBean.getCorrectAnswer().isEmpty()
-						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("a")
-						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("b")
-						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("c")
-						|| !questionBean.getCorrectAnswer().equalsIgnoreCase("d")
-						|| questionBean.getCorrectAnswer().length() != 1
-						|| !questionBean.getLevel().equalsIgnoreCase("easy")
-						|| !questionBean.getLevel().equalsIgnoreCase("moderate")
-						|| !questionBean.getLevel().equalsIgnoreCase("hard"))
-						&& questionRepo.findByQuestion(questionBean.getQuestion()) == null) {
+				if (!(subjectBean == null && questionBean.getQuestion().isEmpty() && questionBean.getA().isEmpty()
+						&& questionBean.getB().isEmpty() && questionBean.getC().isEmpty()
+						&& questionBean.getD().isEmpty() && questionBean.getCorrectAnswer().isEmpty())
+						&& (questionBean.getCorrectAnswer().equalsIgnoreCase("a")
+								|| questionBean.getCorrectAnswer().equalsIgnoreCase("b")
+								|| questionBean.getCorrectAnswer().equalsIgnoreCase("c")
+								|| questionBean.getCorrectAnswer().equalsIgnoreCase("d")
+								|| questionBean.getLevel().equalsIgnoreCase("easy")
+								|| questionBean.getLevel().equalsIgnoreCase("moderate")
+								|| questionBean.getLevel().equalsIgnoreCase("hard"))
+						&& questionRepo.findByQuestion(questionBean.getQuestion()) == null
+						&& questionBean.getCorrectAnswer().length() == 1) {
 					questionBean.setSubject(subjectBean);
 					questions.add(questionRepo.save(questionBean));
 				}
@@ -329,9 +302,9 @@ public class QuestionServiceImp implements QuestionService {
 			return res;
 		} else {
 			try {
-				List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);
+//				List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);
 				ResponseBean<Integer> res = new ResponseBean<>();
-				res.setData(examquestionBean.size());
+//				res.setData(examquestionBean.size());
 				res.setMsg("get successfully");
 				res.setApicode(200);
 				return res;
@@ -443,6 +416,25 @@ public class QuestionServiceImp implements QuestionService {
 		} catch (Exception e) {
 			ResponseBean<Object> res = new ResponseBean<>();
 			res.setData(null);
+			res.setMsg(TECHNICAL_ERROR);
+			res.setApicode(500);
+			return res;
+		}
+	}
+
+	@Override
+	public ResponseBean<?> addQuestion(QuestionBean question) {
+		ResponseBean<QuestionBean> res = new ResponseBean<>();
+		try {
+			if (questionRepo.findByQuestion(question.getQuestion()) == null) {
+				questionRepo.save(question);
+			}
+			res.setData(question);
+			res.setApicode(200);
+			res.setMsg("Question added successfully..");
+			return res;
+		} catch (Exception e) {
+			res.setData(question);
 			res.setMsg(TECHNICAL_ERROR);
 			res.setApicode(500);
 			return res;

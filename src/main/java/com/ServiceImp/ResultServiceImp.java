@@ -1,6 +1,7 @@
 package com.ServiceImp;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,8 +73,8 @@ public class ResultServiceImp implements ResultService {
 
 	@Override
 	public ResponseBean<?> getAllQuestionByExamIdAndUserId(Integer userId, Integer examId) {
-		List<UserquestionanswerBean> userquestionanswerBean = userquestionanswerRepo.findByExamAndUser(examId, userId);
-		ResponseBean<List<UserquestionanswerBean>> res = new ResponseBean<>();
+		List<Optional<UserquestionanswerBean>> userquestionanswerBean = userquestionanswerRepo.findByExamAndUser(examId, userId);
+		ResponseBean<List<Optional<UserquestionanswerBean>>> res = new ResponseBean<>();
 		res.setData(userquestionanswerBean);
 		res.setMsg("get Question Successfully");
 		res.setApicode(200);

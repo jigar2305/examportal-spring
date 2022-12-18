@@ -8,14 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import com.Entity.ExamBean;
 import com.Entity.ExamquestionBean;
-import com.Entity.QuestionBean;
-
 
 @Repository
 public interface ExamquestionRepository extends JpaRepository<ExamquestionBean, Integer>{
 	List<ExamquestionBean> findByExam(ExamBean examBean);
 	List<ExamquestionBean> findByExam(Optional<ExamBean> exam);
+	ExamquestionBean findByExamquestionId(Integer examquestionId);
 	 void deleteAllByExam(Optional<ExamBean> exam);
-	 List<ExamquestionBean> findByQuestion(QuestionBean question);
 	 void deleteAllByExam(ExamBean exam);
 }

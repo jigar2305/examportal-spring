@@ -14,5 +14,5 @@ public interface UserRepository extends JpaRepository<UserBean, Integer> {
 	List<UserBean> findByExams(ExamBean exams);
     UserBean findByAuthToken(String authToken);
     UserBean findByAuthTokenAndEmail(String authToken,String email);
-
+    
 }

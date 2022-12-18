@@ -44,9 +44,6 @@ public class QuestionBean {
 	@JoinColumn(name = "subjectId")
 	private SubjectBean subject;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "question",cascade = {CascadeType.ALL})	
-	private Set<ExamquestionBean> examquestions;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "question",cascade = {CascadeType.ALL})	
@@ -114,14 +111,6 @@ public class QuestionBean {
 
 	public void setSubject(SubjectBean subject) {
 		this.subject = subject;
-	}
-
-	public Set<ExamquestionBean> getExamquestions() {
-		return examquestions;
-	}
-
-	public void setExamquestions(Set<ExamquestionBean> examquestions) {
-		this.examquestions = examquestions;
 	}
 
 	public Set<UserquestionanswerBean> getUserquestionanswers() {

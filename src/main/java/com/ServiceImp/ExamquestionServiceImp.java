@@ -1,6 +1,5 @@
 package com.ServiceImp;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ import com.Bean.CheckquestionanswerBean;
 import com.Bean.ResponseBean;
 import com.Entity.ExamBean;
 import com.Entity.ExamquestionBean;
-import com.Entity.QuestionBean;
 import com.Entity.ResultBean;
 import com.Repositoy.ExamRepository;
 import com.Repositoy.ExamquestionRepository;
@@ -61,13 +59,13 @@ public class ExamquestionServiceImp implements ExamquestionService {
 			return res;
 
 		} else {
-			ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
+			ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-			List<QuestionBean> questions = new ArrayList<>();
-			for (int i = 0; i < examquestion.size(); i++) {
-				questions.add(examquestion.get(i).getQuestion());
-			}
-			res.setData(questions);
+//			List<QuestionBean> questions = new ArrayList<>();
+//			for (int i = 0; i < examquestion.size(); i++) {
+//				questions.add(examquestion.get(i).getQuestion());
+//			}
+			res.setData(examquestion);
 			res.setMsg("get question successfully");
 			res.setApicode(200);
 			return res;
@@ -101,5 +99,7 @@ public class ExamquestionServiceImp implements ExamquestionService {
 			return res;
 		}
 	}
+	
+	
 
 }

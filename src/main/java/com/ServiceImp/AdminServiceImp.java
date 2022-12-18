@@ -12,6 +12,7 @@ import com.Entity.ExamBean;
 import com.Entity.ResultBean;
 import com.Entity.SubjectBean;
 import com.Entity.UserBean;
+import com.Repositoy.CustomNativeRepository;
 import com.Repositoy.ExamRepository;
 import com.Repositoy.ResultRepository;
 import com.Repositoy.SubjectRepository;
@@ -32,6 +33,9 @@ public class AdminServiceImp implements AdminService {
 
 	@Autowired
 	ResultRepository resultRepo;
+	
+	@Autowired
+	CustomNativeRepository customNativeRepo;
 
 	@Override
 	public ResponseBean<?> listUser() {
@@ -47,22 +51,26 @@ public class AdminServiceImp implements AdminService {
 	public ResponseBean<?> deleteUser(Integer userId) {
 		UserBean user = userRepo.findByUserId(userId);
 		try {
-			List<SubjectBean> subject = subjectRepo.findByUsers(user);
-			List<ExamBean> exam = examRepo.findByUsers(user);
 			List<ResultBean> result = resultRepo.findByUser(user);
-			if (subject != null) {
-				for (int i = 0; i < subject.size(); i++) {
-					subject.get(i).getUsers().remove(user);
-				}
-				subjectRepo.saveAll(subject);
-			}
-			if (exam != null && !exam.isEmpty()) {
-				for (int i = 0; i < exam.size(); i++) {
-					exam.get(i).getUsers().remove(user);
-					examRepo.save(exam.get(i));
-				}
-			}
-			if (result != null) {
+//			List<SubjectBean> subject = subjectRepo.findByUsers(user);
+//			List<ExamBean> exam = examRepo.findByUsers(user);
+//			if (subject != null && !subject.isEmpty()) {
+////				for (int i = 0; i < subject.size(); i++) {
+////					subject.get(i).getUsers().remove(user);
+////				}
+////				subjectRepo.saveAll(subject);
+////				subjectRepo.deleteenrolesubjectuser(userId);
+//			}
+//			if (exam != null && !exam.isEmpty()) {
+//				for (int i = 0; i < exam.size(); i++) {
+//					exam.get(i).getUsers().remove(user);
+//					customNativeRepo.deleteenroleexam(exam.get(i).getExamId(), userId);
+////					examRepo.save(exam.get(i));
+//				}
+//			}
+			customNativeRepo.deleteenroleexambyuser(userId);
+			customNativeRepo.deleteenrolesubjectByuser(userId);
+			if (result != null && !result.isEmpty()) {
 				for (int i = 0; i < result.size(); i++) {
 					resultRepo.delete(result.get(i));
 				}

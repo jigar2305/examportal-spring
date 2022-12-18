@@ -18,6 +18,7 @@ import com.Entity.ExamBean;
 import com.Entity.ExamquestionBean;
 import com.Entity.ResultBean;
 import com.Entity.UserBean;
+import com.Repositoy.CustomNativeRepository;
 import com.Repositoy.ExamRepository;
 import com.Repositoy.ExamquestionRepository;
 import com.Repositoy.ResultRepository;
@@ -46,6 +47,9 @@ public class ExamServiceImp implements ExamService {
 
 	@Autowired
 	ExamquestionRepository examquestionRepo;
+	
+	@Autowired
+	CustomNativeRepository customNativeRepo;
 
 	@Transactional
 	@Override
@@ -96,6 +100,7 @@ public class ExamServiceImp implements ExamService {
 		} else {
 			res.setData(examBean);
 			res.setMsg("exam alredy added...");
+			res.setApicode(403);
 			return res;
 		}
 	}
@@ -136,8 +141,7 @@ public class ExamServiceImp implements ExamService {
 			res.setApicode(404);
 			return res;
 		} else {
-			examBean.getUsers().clear();
-			examRepo.save(examBean);
+			customNativeRepo.deleteenroleexambyexam(examId);	
 			List<ExamquestionBean> equestion = examquestionRepo.findByExam(examBean);
 			if (equestion != null) {
 				examquestionRepo.deleteAll(equestion);
@@ -146,7 +150,7 @@ public class ExamServiceImp implements ExamService {
 			if (results != null && !results.isEmpty()) {
 				resultRepo.deleteAll(results);
 			}
-			examRepo.delete(examBean);
+			examRepo.deleteById(examId);
 			res.setData(examId);
 			res.setMsg(examBean.getExamName() + " deleted successfully");
 			res.setApicode(200);

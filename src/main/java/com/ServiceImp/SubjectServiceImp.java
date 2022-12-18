@@ -12,6 +12,7 @@ import com.Bean.ResponseBean;
 import com.Entity.QuestionBean;
 import com.Entity.SubjectBean;
 import com.Entity.SubjectFileBean;
+import com.Repositoy.CustomNativeRepository;
 import com.Repositoy.QuestionRepository;
 import com.Repositoy.SubjectFileRepository;
 import com.Repositoy.SubjectRepository;
@@ -35,9 +36,9 @@ public class SubjectServiceImp implements SubjectService {
 
 	@Autowired
 	SubjectFileRepository fileRepo;
-	
 
-	
+	@Autowired
+	CustomNativeRepository customNativeRepo;
 
 	@Override
 	public ResponseBean<?> addSubject(Getsubjectfile subjectfile) throws IOException {
@@ -128,15 +129,14 @@ public class SubjectServiceImp implements SubjectService {
 			res.setApicode(404);
 			return res;
 		} else {
-			subject.getUsers().clear();
-			subjectRepo.save(subject);
+			customNativeRepo.deleteenrolesubjectBysubject(subjectId);
 			List<QuestionBean> questions = questionRepo.findBySubject(subject);
 			if (questions != null) {
 				for (int i = 0; i < questions.size(); i++) {
 					questionRepo.deleteById(questions.get(i).getQuestionId());
 				}
 			}
-			subjectRepo.delete(subject);
+			subjectRepo.deleteById(subjectId);
 			res.setData(subjectId);
 			res.setMsg(subject.getSubjectName() + " deleted successfully");
 			res.setApicode(200);
@@ -208,15 +208,22 @@ public class SubjectServiceImp implements SubjectService {
 		ResponseBean<Integer> res = new ResponseBean<>();
 		try {
 			SubjectFileBean fileBean = fileRepo.getReferenceById(subjectfileId);
-			fileRepo.delete(fileBean);
-			res.setData(subjectfileId);
-			res.setMsg(fileBean.getFileName()+"deleted successfully");
-			res.setApicode(200);
-			return res;			
+			if (fileBean != null) {
+				fileRepo.delete(fileBean);
+				res.setData(subjectfileId);
+				res.setMsg(fileBean.getFileName() + "  deleted successfully");
+				res.setApicode(200);
+				return res;
+			} else {
+				res.setData(subjectfileId);
+				res.setMsg("file not found");
+				res.setApicode(404);
+				return res;
+			}
 		} catch (Exception e) {
 			res.setData(subjectfileId);
-			res.setMsg("file not found");
-			res.setApicode(404);
+			res.setMsg(TECHNICAL_ERROR);
+			res.setApicode(500);
 			return res;
 		}
 	}
