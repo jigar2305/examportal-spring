@@ -19,6 +19,7 @@ public class CommonServiceImp implements CommonService{
 		examquestionBean.setC(question.getC());
 		examquestionBean.setD(question.getD());
 		examquestionBean.setCorrectAnswer(question.getCorrectAnswer());
+		examquestionBean.setUrl(question.getUrl());
 		examquestionBean.setLevel(question.getLevel());
 		examquestionBean.setExam(exam);
 		return examquestionBean;

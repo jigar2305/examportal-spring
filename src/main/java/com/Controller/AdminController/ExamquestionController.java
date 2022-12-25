@@ -29,6 +29,11 @@ public class ExamquestionController {
 	public ResponseEntity<?> getExamQuestion(@PathVariable("examId") Integer examId) {
 		return ResponseEntity.ok(examquestionService.getExamQuestion(examId));
 	}
+	
+	@GetMapping("/getquestion/{examId}")
+	public ResponseEntity<?> getExamQuestionWithImage(@PathVariable("examId") Integer examId) {
+		return ResponseEntity.ok(examquestionService.getExamQuestionWithImage(examId));
+	}
 
 	@PostMapping("/checkanswer")
 	public ResponseEntity<?> checkanswer(@RequestBody CheckquestionanswerBean questions) {

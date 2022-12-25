@@ -1,5 +1,6 @@
 package com.ServiceImp;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,18 +16,22 @@ import com.Repositoy.ExamRepository;
 import com.Repositoy.ExamquestionRepository;
 import com.Service.ExamquestionService;
 import com.Service.QuestionService;
+import com.Service.SubjectFileService;
 
 @Service
 public class ExamquestionServiceImp implements ExamquestionService {
-	
+
 	@Autowired
 	ExamRepository examRepo;
-	
+
 	@Autowired
 	ExamquestionRepository examquestionRepo;
-	
+
 	@Autowired
 	QuestionService questionService;
+
+	@Autowired
+	SubjectFileService fileService;
 
 	@Override
 	public ResponseBean<?> getQuestions(Integer examId) {
@@ -61,10 +66,6 @@ public class ExamquestionServiceImp implements ExamquestionService {
 		} else {
 			ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-//			List<QuestionBean> questions = new ArrayList<>();
-//			for (int i = 0; i < examquestion.size(); i++) {
-//				questions.add(examquestion.get(i).getQuestion());
-//			}
 			res.setData(examquestion);
 			res.setMsg("get question successfully");
 			res.setApicode(200);
@@ -77,7 +78,7 @@ public class ExamquestionServiceImp implements ExamquestionService {
 		ResultBean result = questionService.checkAnswer(questions);
 		ResponseBean<ResultBean> res = new ResponseBean<>();
 		res.setData(result);
-		res.setMsg(result.getExam().getExamName()+" complated successfully");	
+		res.setMsg(result.getExam().getExamName() + " complated successfully");
 		res.setApicode(200);
 		return res;
 	}
@@ -99,7 +100,40 @@ public class ExamquestionServiceImp implements ExamquestionService {
 			return res;
 		}
 	}
-	
-	
+
+	@Override
+	public ResponseBean<?> getExamQuestionWithImage(Integer examId) {
+		Optional<ExamBean> exam = examRepo.findById(examId);
+		if (exam.isEmpty()) {
+			ResponseBean<Object> res = new ResponseBean<>();
+			res.setData(examId);
+			res.setMsg("data not found");
+			res.setApicode(404);
+			return res;
+
+		} else {
+			ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
+			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
+			for (int i = 0; i < examquestion.size(); i++) {
+				if (examquestion.get(i).getUrl() != null) {
+					try {
+						if (examquestion.get(i).getUrl().endsWith("jpeg")) {
+							examquestion.get(i).setImagetype("data:image/jpeg;base64,");
+						} else if (examquestion.get(i).getUrl().endsWith("png")) {
+							examquestion.get(i).setImagetype("data:image/png;base64,");
+						} else {
+							examquestion.get(i).setImagetype("data:image/jpg;base64,");
+						}
+						byte[] image = fileService.getImage(examquestion.get(i).getUrl());
+						examquestion.get(i).setImage(image);
+					} catch (IOException e) {}
+				}
+			}
+			res.setData(examquestion);
+			res.setMsg("get question successfully");
+			res.setApicode(200);
+			return res;
+		}
+	}
 
 }

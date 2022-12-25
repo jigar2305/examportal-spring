@@ -79,6 +79,7 @@ public class ExamServiceImp implements ExamService {
 				} else {
 					res.setData(null);
 					examRepo.delete(exam1);
+					res.setApicode(300);
 					res.setMsg("please add questions first");
 					return res;
 				}
@@ -122,7 +123,7 @@ public class ExamServiceImp implements ExamService {
 		List<ExamBean> exams = new ArrayList<>();
 		for (int i = 0; i < exam.size(); i++) {
 			if (resultRepo.findByExamAndUser(exam.get(i), user) == null) {
-				exam.add(exam.get(i));
+				exams.add(exam.get(i));
 			}
 		}
 		ResponseBean<List<ExamBean>> res = new ResponseBean<>();

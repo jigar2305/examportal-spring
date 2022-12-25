@@ -40,4 +40,6 @@ public interface QuestionService {
 	
 	public ResponseBean<?> fileRead(MultipartFile excel);
 
+	public ResponseBean<?> getQuestionImage(Integer questionId);
+
 }

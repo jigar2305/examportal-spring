@@ -3,6 +3,7 @@ package com.Entity;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,8 +30,49 @@ public class QuestionBean {
 	private String c;
 	private String d;
 	private String correctAnswer;
-	
 	private String level;
+
+	@ManyToOne()
+	@JoinColumn(name = "subjectId")
+	private SubjectBean subject;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "question",cascade = {CascadeType.ALL})	
+	private Set<UserquestionanswerBean> userquestionanswers;
+	
+	@Column(columnDefinition="TEXT")
+	private String url;
+	
+	@Transient
+	private byte[] image;
+	
+	@Transient
+	private String imagetype;
+	
+	
+	public String getImagetype() {
+		return imagetype;
+	}
+
+	public void setImagetype(String imagetype) {
+		this.imagetype = imagetype;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	public String getLevel() {
 		return level;
@@ -40,14 +82,6 @@ public class QuestionBean {
 		this.level = level;
 	}
 
-	@ManyToOne()
-	@JoinColumn(name = "subjectId")
-	private SubjectBean subject;
-	
-	
-	@JsonIgnore
-	@OneToMany(mappedBy = "question",cascade = {CascadeType.ALL})	
-	private Set<UserquestionanswerBean> userquestionanswers;
 
 	public Integer getQuestionId() {
 		return questionId;

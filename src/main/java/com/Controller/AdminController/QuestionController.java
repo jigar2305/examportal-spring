@@ -1,5 +1,6 @@
 package com.Controller.AdminController;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.Bean.ResponseBean;
 import com.Entity.QuestionBean;
 import com.Service.QuestionService;
+import com.Service.SubjectFileService;
 
 @RequestMapping("/que")
 @RestController
@@ -25,6 +28,10 @@ public class QuestionController {
 	@Autowired
 	QuestionService questionService;
 
+	@Autowired
+	SubjectFileService subjectFileService;
+
+	
 	@PostMapping("/add")
 	public ResponseEntity<?> addQuestions(@RequestBody List<QuestionBean> questions) {
 		return ResponseEntity.ok(questionService.addQuestions(questions));
@@ -56,6 +63,12 @@ public class QuestionController {
 		return ResponseEntity.ok(questionService.getQuestionById(questionId));
 
 	}
+	
+	@GetMapping("/getImage/{questionId}")
+	public ResponseEntity<?> getImageByQurstionId(@PathVariable("questionId") Integer questionId) {
+		return ResponseEntity.ok(questionService.getQuestionImage(questionId));
+
+	}
 
 	@PutMapping("/update")
 	public ResponseEntity<?> updateQuestion(@RequestBody QuestionBean question) {
@@ -72,6 +85,15 @@ public class QuestionController {
 	@PostMapping("/excel")
 	public ResponseEntity<?> fileread(@RequestParam("file") MultipartFile excel) {
 		return ResponseEntity.ok(questionService.fileRead(excel));
+	}
+	
+	@PostMapping("/getImage")
+	public ResponseEntity<?> getImage(@RequestBody String URL) throws IOException {
+		byte[] Image = subjectFileService.getImage(URL);
+		ResponseBean<byte[]> res = new ResponseBean<>();
+		res.setApicode(200);
+		res.setData(Image);
+		return ResponseEntity.ok(res);
 	}
 
 }

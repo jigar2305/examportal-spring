@@ -1,10 +1,16 @@
 package com.ServiceImp;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -15,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Bean.CheckquestionanswerBean;
 import com.Bean.ExamMSubjectBean;
+import com.Bean.ImageBean;
 import com.Bean.QuestionanswerBean;
 import com.Bean.ResponseBean;
 import com.Entity.ExamBean;
@@ -33,6 +40,7 @@ import com.Repositoy.UserRepository;
 import com.Repositoy.UserquestionanswerRepository;
 import com.Service.CommonService;
 import com.Service.QuestionService;
+import com.Service.SubjectFileService;
 
 @Service
 public class QuestionServiceImp implements QuestionService {
@@ -63,6 +71,9 @@ public class QuestionServiceImp implements QuestionService {
 
 	@Autowired
 	CommonService examquestionService;
+
+	@Autowired
+	SubjectFileService fileService;
 
 	@Override
 	public List<ExamquestionBean> addRendomQuestionByManySubject(ExamMSubjectBean addquestion) {
@@ -99,14 +110,14 @@ public class QuestionServiceImp implements QuestionService {
 				}
 			} else if (level.equalsIgnoreCase("easy-moderate")) {
 				if (number % 2 == 0) {
-					if (easy / 2 > number / 2) {
+					if (easy / 2 >= number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(queeasy.size());
 							question.add(examquestionService.setExamQue(queeasy.get(randomIndex), exam));
 							queeasy.remove(randomIndex);
 						}
 					}
-					if (moderate / 2 > number / 2) {
+					if (moderate / 2 >= number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
 							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
@@ -114,14 +125,14 @@ public class QuestionServiceImp implements QuestionService {
 						}
 					}
 				} else {
-					if (easy / 2 > (number + 1) / 2) {
+					if (easy / 2 >= (number + 1) / 2) {
 						for (int j = 0; j < (number + 1) / 2; j++) {
 							int randomIndex = rand.nextInt(queeasy.size());
 							question.add(examquestionService.setExamQue(queeasy.get(randomIndex), exam));
 							queeasy.remove(randomIndex);
 						}
 					}
-					if (moderate / 2 > (number - 1) / 2) {
+					if (moderate / 2 >= (number - 1) / 2) {
 						for (int j = 0; j < (number - 1) / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
 							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
@@ -138,7 +149,7 @@ public class QuestionServiceImp implements QuestionService {
 							quehard.remove(randomIndex);
 						}
 					}
-					if (moderate / 2 > number / 2) {
+					if (moderate / 2 >= number / 2) {
 						for (int j = 0; j < number / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
 							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
@@ -146,14 +157,14 @@ public class QuestionServiceImp implements QuestionService {
 						}
 					}
 				} else {
-					if (hard / 2 > (number + 1) / 2) {
+					if (hard / 2 >= (number + 1) / 2) {
 						for (int j = 0; j < (number + 1) / 2; j++) {
 							int randomIndex = rand.nextInt(quehard.size());
 							question.add(examquestionService.setExamQue(quehard.get(randomIndex), exam));
 							quehard.remove(randomIndex);
 						}
 					}
-					if (moderate / 2 > (number - 1) / 2) {
+					if (moderate / 2 >= (number - 1) / 2) {
 						for (int j = 0; j < (number - 1) / 2; j++) {
 							int randomIndex = rand.nextInt(quemoderate.size());
 							question.add(examquestionService.setExamQue(quemoderate.get(randomIndex), exam));
@@ -264,11 +275,14 @@ public class QuestionServiceImp implements QuestionService {
 	public ResponseBean<?> addQuestions(List<QuestionBean> questions) {
 		ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
 		try {
-			for (int i = 0; i < questions.size(); i++) {
-				if (questionRepo.findByQuestion(questions.get(i).getQuestion()) == null) {
-					questionRepo.save(questions.get(i));
-				}
-			}
+//			for (int i = 0; i < questions.size(); i++) {
+//				if (questionRepo.findByQuestion(questions.get(i).getQuestion()) == null) {
+//					if (questions.get(i).getUrl() != null) {
+//
+//					}
+//					questionRepo.save(questions.get(i));
+//				}
+//			}
 			res.setData(questions);
 			res.setApicode(200);
 			res.setMsg("Questions added successfully..");
@@ -427,7 +441,18 @@ public class QuestionServiceImp implements QuestionService {
 		ResponseBean<QuestionBean> res = new ResponseBean<>();
 		try {
 			if (questionRepo.findByQuestion(question.getQuestion()) == null) {
-				questionRepo.save(question);
+				if (question.getUrl() != null && !question.getUrl().isEmpty()) {
+					String url = question.getUrl();
+					question.setUrl(null);
+					QuestionBean s = questionRepo.save(question);
+					s.setUrl(url);
+					QuestionBean Q = saveImage(s);
+					if (Q != null) {
+						questionRepo.save(Q);
+					}
+				} else {
+					questionRepo.save(question);
+				}
 			}
 			res.setData(question);
 			res.setApicode(200);
@@ -437,6 +462,75 @@ public class QuestionServiceImp implements QuestionService {
 			res.setData(question);
 			res.setMsg(TECHNICAL_ERROR);
 			res.setApicode(500);
+			return res;
+		}
+	}
+
+	public QuestionBean saveImage(QuestionBean question) {
+		String mainpath = "D:\\Exam-Portal-Spring\\src\\main\\resources\\questionImage";
+		File folder = new File(mainpath, question.getSubject().getSubjectName() + "");
+		folder.mkdir();
+
+		String name = question.getQuestionId() + ".";
+		String base64String = question.getUrl();
+		String[] strings = base64String.split(",");
+		String extension;
+		switch (strings[0]) {
+		case "data:image/jpeg;base64":
+			extension = "jpeg";
+			break;
+		case "data:image/png;base64":
+			extension = "png";
+			break;
+		default:
+			extension = "jpg";
+			break;
+		}
+		byte[] data = DatatypeConverter.parseBase64Binary(strings[1]);
+		File file = new File(folder, name + extension);
+		try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+			outputStream.write(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		question.setUrl("src/main/resources/questionImage/" + question.getSubject().getSubjectName() + "/"
+				+ question.getQuestionId() + "." + extension);
+		return question;
+	}
+
+	@Override
+	public ResponseBean<?> getQuestionImage(Integer questionId) {
+		ResponseBean<ImageBean> res = new ResponseBean<>();
+		QuestionBean question = questionRepo.findByQuestionId(questionId);
+		ImageBean imageBean = new ImageBean();
+		try {
+			if (question.getUrl().endsWith("jpeg")) {
+				imageBean.setImagetype("data:image/jpeg;base64,");
+			} else if (question.getUrl().endsWith("png")) {
+				imageBean.setImagetype("data:image/png;base64,");
+			} else {
+				imageBean.setImagetype("data:image/jpg;base64,");
+			}
+			byte[] image = fileService.getImage(question.getUrl());
+			if (image == null) {
+				res.setApicode(500);
+				res.setData(imageBean);
+				res.setMsg("file not fond");
+				return res;
+			} else {
+				imageBean.setImage(image);
+				imageBean.setQuestionId(questionId);
+				res.setApicode(200);
+				res.setData(imageBean);
+				res.setMsg("image get sussessfully");
+				return res;
+			}
+
+		} catch (IOException e) {
+			res.setApicode(500);
+			res.setData(imageBean);
+			res.setMsg("file not fond");
 			return res;
 		}
 	}

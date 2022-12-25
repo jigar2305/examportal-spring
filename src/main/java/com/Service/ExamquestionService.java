@@ -11,6 +11,8 @@ public interface ExamquestionService {
 	public ResponseBean<?> getQuestions(Integer examId);
 
 	public ResponseBean<?> getExamQuestion(Integer examId);
+	
+	public ResponseBean<?> getExamQuestionWithImage(Integer examId);
 
 	public ResponseBean<?> checkanswer(CheckquestionanswerBean questions);
 

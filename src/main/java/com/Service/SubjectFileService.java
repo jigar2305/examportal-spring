@@ -20,5 +20,7 @@ public interface SubjectFileService {
 	ResponseBean<?> getAllFileForUser(Integer userId) throws IOException;
 	
 	ResponseBean<?> getFile(Integer subjectfileId) throws IOException;
+	
+	public byte[] getImage(String URL) throws IOException;
 
 }
