@@ -3,6 +3,8 @@ package com.ServiceImp;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,9 @@ public class ResultServiceImp implements ResultService {
 	@Autowired
 	ExamRepository examRepo;
 
+	@Autowired
+	EntityManager entityManager; 
+	
 	@Override
 	public ResponseBean<?> getResultsById(Integer userId) {
 		UserBean user = userRepo.findByUserId(userId);

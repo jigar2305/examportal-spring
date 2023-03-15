@@ -40,9 +40,7 @@ public class SubjectBean {
 	
 	@JsonIgnore
 	@ManyToMany
-	@JoinTable(
-	  name = "enrolesubject", 
-	  joinColumns = @JoinColumn(name = "subjectId"), 
+	@JoinTable(name = "enrolesubject", joinColumns = @JoinColumn(name = "subjectId"), 
 	  inverseJoinColumns = @JoinColumn(name = "userId"))
 	Set<UserBean> users;
 	

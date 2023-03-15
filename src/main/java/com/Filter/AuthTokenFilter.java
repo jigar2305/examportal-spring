@@ -18,10 +18,10 @@ import com.Repositoy.UserRepository;
 
 @Component
 public class AuthTokenFilter implements Filter {
+	
 	@Autowired
 	UserRepository userRepository;
 	
-
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {

@@ -2,6 +2,7 @@ package com.Repositoy;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,7 @@ public interface ResultRepository extends CrudRepository<ResultBean, Integer>{
 	ResultBean findByExamAndUser(ExamBean exam,UserBean user);
 	List<ResultBean> findByExam(ExamBean exam);
 	void deleteAllByExam(ExamBean examBean);
+	
+	@Procedure(procedureName = "transfer"  ,refCursor = true)
+	Object test();
 }
