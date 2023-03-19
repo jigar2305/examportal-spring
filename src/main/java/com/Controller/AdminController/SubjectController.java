@@ -23,42 +23,42 @@ public class SubjectController {
 	SubjectService subjectService;
 
 	@PostMapping("/add")
-	public ResponseEntity<?> addsubject2(@RequestBody Getsubjectfile subjectfile) throws IOException {
+	public Object addsubject2(@RequestBody Getsubjectfile subjectfile) throws IOException {
 		return ResponseEntity.ok(subjectService.addSubject(subjectfile));
 	}
 
 	@PostMapping("/update")
-	public ResponseEntity<?> updatesubject(@RequestBody Getsubjectfile subjectfile) throws IOException {
+	public Object updatesubject(@RequestBody Getsubjectfile subjectfile) throws IOException {
 		return ResponseEntity.ok(subjectService.updateSubject(subjectfile));
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<?> listsubject() {
+	public Object listsubject() {
 		return ResponseEntity.ok(subjectService.listSubject());
 	}
 
 	@DeleteMapping("/delete/{subjectId}")
-	public ResponseEntity<?> deletesubject(@PathVariable("subjectId") Integer subjectId) {
+	public Object deletesubject(@PathVariable("subjectId") Integer subjectId) {
 		return ResponseEntity.ok(subjectService.deleteSubject(subjectId));
 	}
 
 	@GetMapping("/get/{subjectId}")
-	public ResponseEntity<?> getsubjectbyid(@PathVariable("subjectId") Integer subjectId) {
+	public Object getsubjectbyid(@PathVariable("subjectId") Integer subjectId) {
 		return ResponseEntity.ok(subjectService.findSubjectById(subjectId));
 	}
 
 	@GetMapping("/child/{subjectId}")
-	public ResponseEntity<?> getquebysubject(@PathVariable("subjectId") Integer subjectId) {
+	public Object getquebysubject(@PathVariable("subjectId") Integer subjectId) {
 		return ResponseEntity.ok(subjectService.checkForDelete(subjectId));
 	}
 
 	@GetMapping("/getfiles/{subjectId}")
-	public ResponseEntity<?> getfiles(@PathVariable("subjectId") Integer subjectId) {
+	public Object getfiles(@PathVariable("subjectId") Integer subjectId) {
 		return ResponseEntity.ok(subjectService.getSubjectFile(subjectId));
 	}
 
 	@DeleteMapping("/deletefile/{subjectfileId}")
-	public ResponseEntity<?> deletesubjectfile(@PathVariable("subjectfileId") Integer subjectfileId) {
+	public Object deletesubjectfile(@PathVariable("subjectfileId") Integer subjectfileId) {
 		return ResponseEntity.ok(subjectService.deleteFile(subjectfileId));
 	}
 

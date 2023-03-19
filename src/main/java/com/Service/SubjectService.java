@@ -5,26 +5,25 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 
 import com.Bean.Getsubjectfile;
-import com.Bean.ResponseBean;
 
 @Service
 public interface SubjectService {
 	
-	ResponseBean<?> addSubject(Getsubjectfile subjectfile) throws IOException;
+	Object addSubject(Getsubjectfile subjectfile) throws IOException;
 	
-	ResponseBean<?> updateSubject(Getsubjectfile subjectfile) throws IOException;
+	Object updateSubject(Getsubjectfile subjectfile) throws IOException;
     
-    ResponseBean<?> listSubject();
+    Object listSubject();
     
-    ResponseBean<?> deleteSubject(Integer subjectId);
+    Object deleteSubject(Integer subjectId);
     
-    ResponseBean<?> findSubjectById(Integer subjectId);
+    Object findSubjectById(Integer subjectId);
     
-    ResponseBean<?> checkForDelete(Integer subjectId);
+    Object checkForDelete(Integer subjectId);
     
-    ResponseBean<?> getSubjectFile(Integer subjectId);
+    Object getSubjectFile(Integer subjectId);
     
-    ResponseBean<?> deleteFile(Integer subjectfileId);
+    Object deleteFile(Integer subjectfileId);
     
 
 

@@ -22,41 +22,41 @@ public class ExamController {
 	ExamService examService;
 
 	@PostMapping("/add")
-	public ResponseEntity<?> addexamandquestion(@RequestBody ExamMSubjectBean examsubject) {
+	public Object addexamandquestion(@RequestBody ExamMSubjectBean examsubject) throws Exception {
 		return ResponseEntity.ok(examService.addExamAndQuestion(examsubject));
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<?> listExams() {
+	public Object listExams() throws Exception {
 		return ResponseEntity.ok(examService.listExams());
 	}
 
 	@GetMapping("/list/{userId}")
-	public ResponseEntity<?> getExamByUserId(@PathVariable("userId") Integer userId) {
+	public Object getExamByUserId(@PathVariable("userId") Integer userId) throws Exception {
 		return ResponseEntity.ok(examService.getExamByUserId(userId));
 	}
 
 	@DeleteMapping("/delete/{examId}")
-	public ResponseEntity<?> deleteExam(@PathVariable("examId") Integer examId) {
+	public Object deleteExam(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examService.deleteExam(examId));
 	}
 
 	@GetMapping("/child/{examId}")
-	public ResponseEntity<?> isEnroll(@PathVariable("examId") Integer examId) {
+	public Object isEnroll(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examService.isEnroll(examId));
 	}
 
 	@GetMapping("/get/{examId}")
-	public ResponseEntity<?> getQuestionById(@PathVariable("examId") Integer examId) {
+	public Object getQuestionById(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examService.getQuestionById(examId));
 	}
 
 	@GetMapping("/statusofexam/{examId}")
-	public ResponseEntity<?> getStatusOfExam(@PathVariable("examId") Integer examId) {
+	public Object getStatusOfExam(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examService.getStatusOfExam(examId));
 	}
 	@PostMapping("/enrollExam")
-	public ResponseEntity<?> enrollExam(@RequestBody EnroleexamBean enroleexam) {
+	public Object enrollExam(@RequestBody EnroleexamBean enroleexam) throws Exception {
 		return ResponseEntity.ok(examService.enrollExam(enroleexam));
 	}
 	

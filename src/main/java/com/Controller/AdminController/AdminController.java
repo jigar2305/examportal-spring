@@ -18,26 +18,26 @@ public class AdminController {
 	AdminService adminService;
 
 	@GetMapping("/userlist")
-	public ResponseEntity<?> liststudents() {
+	public Object liststudents() throws Exception {
 		return ResponseEntity.ok(adminService.listUser());
 	}
 	
 	@DeleteMapping("/deleteuser/{userId}")
-	public ResponseEntity<?> deleteuser(@PathVariable("userId")Integer userId){	
+	public Object deleteuser(@PathVariable("userId")Integer userId) throws Exception {	
 		return ResponseEntity.ok(adminService.deleteUser(userId));
 	}
 	
 	@GetMapping("/check/{userId}")
-	public ResponseEntity<?> check(@PathVariable("userId")Integer userId){		
+	public Object check(@PathVariable("userId")Integer userId) throws Exception {		
 		return ResponseEntity.ok(adminService.checkForDelete(userId));	
 	}
 	
 	@GetMapping("/updatestatus/{userId}")
-	public ResponseEntity<?> active(@PathVariable("userId")Integer userId){		
+	public Object active(@PathVariable("userId")Integer userId) throws Exception {		
 		return ResponseEntity.ok(adminService.isActive(userId));
 	}
 	@GetMapping("/user/{userId}")
-	public ResponseEntity<?> findbyid(@PathVariable("userId")Integer userId){		
+	public Object findbyid(@PathVariable("userId")Integer userId) throws Exception {		
 		return ResponseEntity.ok(adminService.findUserById(userId));
 	}
 	

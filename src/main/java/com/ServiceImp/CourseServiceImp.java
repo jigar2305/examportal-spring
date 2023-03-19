@@ -27,93 +27,61 @@ public class CourseServiceImp implements CourseService {
 	SubjectService subjectService;
 
 	@Override
-	public ResponseBean<?> addCourse(CourseBean course) {
+	public Object addCourse(CourseBean course) throws Exception {
 		CourseBean courses = courseRepo.findByCourseName(course.getCourseName());
-		ResponseBean<CourseBean> res = new ResponseBean<>();
 		if (courses == null) {
-			courseRepo.save(course);
-			res.setData(course);
-			res.setMsg("course added successfully..");
-			res.setApicode(200);
-			return res;
+			CourseBean courseBean = courseRepo.save(course);
+			return new ResponseBean<>(courseBean, "course added successfully", 200);
 		} else {
-			res.setData(courses);
-			res.setMsg("course exist..");
-			res.setApicode(403);
-			return res;
+			return new ResponseBean<>(courses, "course exist", 403);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> listCourses() {
+	public Object listCourses() throws Exception {
 		List<CourseBean> courses = (List<CourseBean>) courseRepo.findAll();
-		ResponseBean<List<CourseBean>> res = new ResponseBean<>();
-		res.setData(courses);
-		res.setMsg("list successfully");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(courses, "list successfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> deleteCourse(Integer courseId) {
+	public Object deleteCourse(Integer courseId) throws Exception {
 		Optional<CourseBean> courseBean = courseRepo.findById(courseId);
-		ResponseBean<Integer> res = new ResponseBean<>();
 		try {
 			if (courseBean.isEmpty()) {
-				res.setData(courseId);
-				res.setMsg("Course Not Found");
-				res.setApicode(404);
-				return res;
+				return new ResponseBean<>(courseId, "Course Not Found", 404);
 			} else {
 				List<SubjectBean> sub = subjectRepo.findByCourse(courseBean);
 				for (int i = 0; i < sub.size(); i++) {
 					subjectService.deleteSubject(sub.get(i).getSubjectId());
 				}
 				courseRepo.deleteById(courseId);
-				res.setData(courseId);
-				res.setMsg("Course deleted successfully");
-				res.setApicode(200);
-				return res;
+				return new ResponseBean<>(courseId, "Course deleted successfully", 200);
 			}
 		} catch (Exception e) {
-			res.setData(courseId);
-			res.setMsg("Technical error occurred");
-			res.setApicode(500);
-			return res;
+			return new ResponseBean<>(courseId, "Technical error occurred", 500);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> findCourseById(Integer courseId) {
+	public Object findCourseById(Integer courseId) throws Exception {
 		Optional<CourseBean> course = courseRepo.findById(courseId);
-		ResponseBean<Optional<CourseBean>> res = new ResponseBean<>();
 		if (course.isEmpty()) {
-			res.setData(course);
-			res.setMsg("Course Not Found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(null, "Course Not Found", 404);
 		} else {
-			res.setData(course);
-			res.setMsg("get course successfully..");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(course, "get course successfully", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> checkForDelete(Integer courseId) {
+	public Object checkForDelete(Integer courseId) throws Exception {
 		Optional<CourseBean> course = courseRepo.findById(courseId);
 		if (course.isEmpty()) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(courseId);
-			res.setMsg("course not exist.");
-			return res;
+			return new ResponseBean<>(courseId, "course not exist.");
+
 		} else {
-			ResponseBean<List<SubjectBean>> res = new ResponseBean<>();
 			List<SubjectBean> subject = subjectRepo.findByCourse(course);
-			res.setData(subject);
-			res.setMsg("get subject successfully");
-			return res;
+			return new ResponseBean<>(subject, "get subject successfully");
+
 		}
 	}
 

@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Bean.CheckquestionanswerBean;
 import com.Bean.ExamMSubjectBean;
-import com.Bean.ResponseBean;
 import com.Entity.ExamquestionBean;
 import com.Entity.QuestionBean;
 import com.Entity.ResultBean;
@@ -16,30 +15,30 @@ import com.Entity.ResultBean;
 @Service
 public interface QuestionService {
 
-	List<ExamquestionBean> addRendomQuestionByManySubject(ExamMSubjectBean addquestion);
+	List<ExamquestionBean> addRendomQuestionByManySubject(ExamMSubjectBean addquestion)  throws Exception;
 
-	ResultBean checkAnswer(CheckquestionanswerBean questions);
+	ResultBean checkAnswer(CheckquestionanswerBean questions)  throws Exception;
 
 	List<QuestionBean> addquestion(MultipartFile excel) throws IOException, NullPointerException;
 
-	public ResponseBean<?> addQuestions(List<QuestionBean> questions);
+	public Object addQuestions(List<QuestionBean> questions)  throws Exception;
 	
-	public ResponseBean<?> addQuestion(QuestionBean question);
+	public Object addQuestion(QuestionBean question)  throws Exception;
 
-	public ResponseBean<?> getAllQuestions();
+	public Object getAllQuestions()  throws Exception;
 
-	public ResponseBean<?> checkForDelete(Integer questionId);
+	public Object checkForDelete(Integer questionId)  throws Exception;
 
-	public ResponseBean<?> deleteQuestion(Integer questionId);
+	public Object deleteQuestion(Integer questionId)  throws Exception;
 
-	public ResponseBean<?> getQuestionById(Integer questionId);
+	public Object getQuestionById(Integer questionId)  throws Exception;
 
-	public ResponseBean<?> updateQuestion(QuestionBean question);
+	public Object updateQuestion(QuestionBean question)  throws Exception;
 
-	public ResponseBean<?> sendQuestion(Integer number);
+	public Object sendQuestion(Integer number)  throws Exception;
 	
-	public ResponseBean<?> fileRead(MultipartFile excel);
+	public Object fileRead(MultipartFile excel)  throws Exception;
 
-	public ResponseBean<?> getQuestionImage(Integer questionId);
+	public Object getQuestionImage(Integer questionId)  throws Exception;
 
 }

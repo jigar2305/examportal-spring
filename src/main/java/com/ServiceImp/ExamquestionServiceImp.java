@@ -34,87 +34,53 @@ public class ExamquestionServiceImp implements ExamquestionService {
 	SubjectFileService fileService;
 
 	@Override
-	public ResponseBean<?> getQuestions(Integer examId) {
+	public Object getQuestions(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
 		if (exam.isEmpty()) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(examId);
-			res.setMsg("data not found");
-			res.setApicode(404);
-			return res;
-
+			return new ResponseBean<>(examId, "data not found", 404);
 		} else {
-			ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-			res.setData(examquestion);
-			res.setMsg("get examquestion successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(examquestion, "get examquestion successfully", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getExamQuestion(Integer examId) {
+	public Object getExamQuestion(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
 		if (exam.isEmpty()) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(examId);
-			res.setMsg("data not found");
-			res.setApicode(404);
-			return res;
-
+			return new ResponseBean<>(examId, "data not found", 404);
 		} else {
-			ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-			res.setData(examquestion);
-			res.setMsg("get question successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(examquestion, "get examquestion successfully", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> checkanswer(CheckquestionanswerBean questions) {
+	public Object checkanswer(CheckquestionanswerBean questions) throws Exception {
 		ResultBean result = questionService.checkAnswer(questions);
-		ResponseBean<ResultBean> res = new ResponseBean<>();
-		res.setData(result);
-		res.setMsg(result.getExam().getExamName() + " complated successfully");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(result, result.getExam().getExamName() + " complated successfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> deleteExamQuestios(Integer examId) {
+	public Object deleteExamQuestios(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
-		ResponseBean<Object> res = new ResponseBean<>();
 		if (exam.isEmpty()) {
-			res.setData(examId);
-			res.setMsg("Exam not found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(examId, "Exam not found", 404);
 		} else {
 			examquestionRepo.deleteAllByExam(exam);
-			res.setData(examId);
-			res.setMsg("Questions deleted successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(examId, "Questions deleted successfully", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getExamQuestionWithImage(Integer examId) {
+	public Object getExamQuestionWithImage(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
 		if (exam.isEmpty()) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(examId);
-			res.setMsg("data not found");
-			res.setApicode(404);
-			return res;
-
+			return new ResponseBean<>(examId, "data not found", 404);
 		} else {
-			ResponseBean<List<ExamquestionBean>> res = new ResponseBean<>();
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
 			for (int i = 0; i < examquestion.size(); i++) {
+				examquestion.get(i).setCorrectAnswer(null);
 				if (examquestion.get(i).getUrl() != null) {
 					try {
 						if (examquestion.get(i).getUrl().endsWith("jpeg")) {
@@ -126,13 +92,11 @@ public class ExamquestionServiceImp implements ExamquestionService {
 						}
 						byte[] image = fileService.getImage(examquestion.get(i).getUrl());
 						examquestion.get(i).setImage(image);
-					} catch (IOException e) {}
+					} catch (IOException e) {
+					}
 				}
 			}
-			res.setData(examquestion);
-			res.setMsg("get question successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(examquestion, "get question successfully", 200);
 		}
 	}
 

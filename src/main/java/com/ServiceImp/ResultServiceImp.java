@@ -21,7 +21,7 @@ import com.Service.ResultService;
 
 @Service
 public class ResultServiceImp implements ResultService {
-	
+
 	private static final String SUCCESS = "get Result Sussessfully";
 
 	@Autowired
@@ -37,71 +37,51 @@ public class ResultServiceImp implements ResultService {
 	ExamRepository examRepo;
 
 	@Autowired
-	EntityManager entityManager; 
-	
+	EntityManager entityManager;
+
 	@Override
-	public ResponseBean<?> getResultsById(Integer userId) {
+	public Object getResultsById(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user == null) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(userId);
-			res.setMsg("User Not Found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(userId, "User Not Found", 404);
 		} else {
 			List<ResultBean> results = resultRepo.findByUser(user);
-			ResponseBean<List<ResultBean>> res = new ResponseBean<>();
-			res.setData(results);
-			res.setMsg(SUCCESS);
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(results, SUCCESS, 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getResultById(Integer resultId) {
+	public Object getResultById(Integer resultId) throws Exception {
 		ResultBean result = resultRepo.findByResultId(resultId);
 		if (result == null) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(resultId);
-			res.setMsg("Result not found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(resultId, "Result not found", 404);
 		} else {
-			ResponseBean<ResultBean> res = new ResponseBean<>();
-			res.setData(result);
-			res.setMsg(SUCCESS);
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(result, SUCCESS, 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getAllQuestionByExamIdAndUserId(Integer userId, Integer examId) {
-		List<Optional<UserquestionanswerBean>> userquestionanswerBean = userquestionanswerRepo.findByExamAndUser(examId, userId);
-		ResponseBean<List<Optional<UserquestionanswerBean>>> res = new ResponseBean<>();
-		res.setData(userquestionanswerBean);
-		res.setMsg("get Question Successfully");
-		res.setApicode(200);
-		return res;
+	public Object getAllQuestionByExamIdAndUserId(Integer userId, Integer examId) throws Exception {
+		List<Optional<UserquestionanswerBean>> userquestionanswerBean = userquestionanswerRepo.findByExamAndUser(examId,
+				userId);
+		if (!userquestionanswerBean.isEmpty()) {
+			if (!userquestionanswerBean.get(0).get().getExam().getIsshow()) {
+				for (int i = 0; i < userquestionanswerBean.size(); i++) {
+					userquestionanswerBean.get(i).get().getQuestion().setCorrectAnswer(null);
+				}
+			}
+		}
+		return new ResponseBean<>(userquestionanswerBean, "get Question Successfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> getAllResultByExamId(Integer examId) {
+	public Object getAllResultByExamId(Integer examId) throws Exception {
 		ExamBean exam = examRepo.findByExamId(examId);
 		if (exam == null) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(examId);
-			res.setMsg("Exam Not Found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(examId, "Exam Not Found", 404);
 		} else {
 			List<ResultBean> results = resultRepo.findByExam(exam);
-			ResponseBean<List<ResultBean>> res = new ResponseBean<>();
-			res.setData(results);
-			res.setMsg(SUCCESS);
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(results, SUCCESS, 200);
 		}
 	}
 

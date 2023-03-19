@@ -21,27 +21,27 @@ public class CourseController {
 	CourseService courseService;
 
 	@PostMapping("/add")
-	public ResponseEntity<?> addcourse(@RequestBody CourseBean course) {
+	public Object addcourse(@RequestBody CourseBean course) throws Exception {
 		return ResponseEntity.ok(courseService.addCourse(course));
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<?> listcourses() {
+	public Object listcourses() throws Exception {
 		return ResponseEntity.ok(courseService.listCourses());
 	}
 
 	@DeleteMapping("/delete/{courseId}")
-	public ResponseEntity<?> deletecourse(@PathVariable("courseId") Integer courseId) {
+	public Object deletecourse(@PathVariable("courseId") Integer courseId) throws Exception {
 		return ResponseEntity.ok(courseService.deleteCourse(courseId));
 	}
 
 	@GetMapping("/coursebyId/{courseId}")
-	public ResponseEntity<?> getcoursebyid(@PathVariable("courseId") Integer courseId) {
+	public Object getcoursebyid(@PathVariable("courseId") Integer courseId) throws Exception {
 		return ResponseEntity.ok(courseService.findCourseById(courseId));
 	}
 
 	@GetMapping("/child/{courseId}")
-	public ResponseEntity<?> getsubjectincourse(@PathVariable("courseId") Integer courseId) {
+	public Object getsubjectincourse(@PathVariable("courseId") Integer courseId) throws Exception {
 		return ResponseEntity.ok(courseService.checkForDelete(courseId));
 	}
 

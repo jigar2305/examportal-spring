@@ -18,7 +18,7 @@ public class TokenServiceImp implements TokenService {
 	UserRepository userRepository;
 
 	@Override
-	public String createtoken(int size) {
+	public String createtoken(int size) throws Exception {
 		String alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*";
 		String token = "";
 		UserBean dbuser = null;
@@ -33,7 +33,7 @@ public class TokenServiceImp implements TokenService {
 	}
 
 	@Override
-	public Integer genrateOtp() {
+	public Integer genrateOtp() throws Exception {
 		return (int) ((10000) * Math.random());
 	}
 

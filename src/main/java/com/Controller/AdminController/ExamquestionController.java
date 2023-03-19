@@ -21,28 +21,28 @@ public class ExamquestionController {
 	ExamquestionService examquestionService;
 
 	@GetMapping("/get/{examId}")
-	public ResponseEntity<?> getQuestions(@PathVariable("examId") Integer examId) {
+	public Object getQuestions(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examquestionService.getQuestions(examId));
 	}
 
 	@GetMapping("/getque/{examId}")
-	public ResponseEntity<?> getExamQuestion(@PathVariable("examId") Integer examId) {
+	public Object getExamQuestion(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examquestionService.getExamQuestion(examId));
 	}
 	
 	@GetMapping("/getquestion/{examId}")
-	public ResponseEntity<?> getExamQuestionWithImage(@PathVariable("examId") Integer examId) {
+	public Object getExamQuestionWithImage(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examquestionService.getExamQuestionWithImage(examId));
 	}
 
 	@PostMapping("/checkanswer")
-	public ResponseEntity<?> checkanswer(@RequestBody CheckquestionanswerBean questions) {
+	public Object checkanswer(@RequestBody CheckquestionanswerBean questions) throws Exception {
 		return ResponseEntity.ok(examquestionService.checkanswer(questions));
 
 	}
 
 	@DeleteMapping("/delete/{examId}")
-	public ResponseEntity<?> deleteExamQuestios(@PathVariable("examId") Integer examId) {
+	public Object deleteExamQuestios(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(examquestionService.deleteExamQuestios(examId));
 
 	}

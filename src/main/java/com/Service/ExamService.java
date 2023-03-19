@@ -7,26 +7,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.Bean.EnroleexamBean;
 import com.Bean.ExamMSubjectBean;
-import com.Bean.ResponseBean;
 
 @Service
 public interface ExamService {
 
 	@Transactional
-	public ResponseBean<?> addExamAndQuestion(ExamMSubjectBean examsubject);
+	public Object addExamAndQuestion(ExamMSubjectBean examsubject) throws Exception;
 
-	public ResponseBean<?> listExams();
+	public Object listExams() throws Exception;
 
-	public ResponseBean<?> getExamByUserId(Integer userId);
+	public Object getExamByUserId(Integer userId) throws Exception;
 
-	public ResponseBean<?> deleteExam(Integer examId);
+	public Object deleteExam(Integer examId) throws Exception;
 
-	public ResponseBean<?> isEnroll(Integer examId);
+	public Object isEnroll(Integer examId) throws Exception;
 
-	public ResponseBean<?> getQuestionById(Integer examId);
+	public Object getQuestionById(Integer examId) throws Exception;
 
-	public ResponseBean<?> getStatusOfExam(Integer examId);
+	public Object getStatusOfExam(Integer examId) throws Exception;
 
-	public ResponseBean<?> enrollExam(@RequestBody EnroleexamBean enroleexam);
+	public Object enrollExam(@RequestBody EnroleexamBean enroleexam) throws Exception;
 
 }

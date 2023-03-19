@@ -3,19 +3,18 @@ package com.Service;
 import org.springframework.stereotype.Service;
 
 import com.Bean.CheckquestionanswerBean;
-import com.Bean.ResponseBean;
 
 @Service
 public interface ExamquestionService {
 
-	public ResponseBean<?> getQuestions(Integer examId);
+	public Object getQuestions(Integer examId) throws Exception;
 
-	public ResponseBean<?> getExamQuestion(Integer examId);
-	
-	public ResponseBean<?> getExamQuestionWithImage(Integer examId);
+	public Object getExamQuestion(Integer examId) throws Exception;
 
-	public ResponseBean<?> checkanswer(CheckquestionanswerBean questions);
+	public Object getExamQuestionWithImage(Integer examId) throws Exception;
 
-	public ResponseBean<?> deleteExamQuestios(Integer examId);
+	public Object checkanswer(CheckquestionanswerBean questions) throws Exception;
+
+	public Object deleteExamQuestios(Integer examId) throws Exception;
 
 }

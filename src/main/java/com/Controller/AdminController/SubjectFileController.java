@@ -22,17 +22,17 @@ public class SubjectFileController {
 	SubjectFileService fileService;
 
 	@PostMapping("/add")
-	public ResponseEntity<?> sendToUser(@RequestBody EnroleSubjectFilesBean filesBean) throws Exception {
+	public Object sendToUser(@RequestBody EnroleSubjectFilesBean filesBean) throws Exception {
 		return ResponseEntity.ok(fileService.sendToUser(filesBean));
 	}
 
 	@GetMapping("/get/{userId}")
-	public ResponseEntity<?> getAllFileForUser(@PathVariable("userId") Integer userId) throws IOException {
+	public Object getAllFileForUser(@PathVariable("userId") Integer userId) throws IOException {
 		return ResponseEntity.ok(fileService.getAllFileForUser(userId));
 	}
 
 	@GetMapping("/getfile/{subjectfileId}")
-	public ResponseEntity<?> getFile(@PathVariable("subjectfileId") Integer subjectfileId) throws IOException {
+	public Object getFile(@PathVariable("subjectfileId") Integer subjectfileId) throws IOException {
 		return ResponseEntity.ok(fileService.getFile(subjectfileId));
 	}
 }

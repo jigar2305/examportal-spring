@@ -8,5 +8,7 @@ import com.Entity.QuestionBean;
 
 @Service
 public interface CommonService {
-	public ExamquestionBean setExamQue(QuestionBean question,ExamBean exam);
+
+	public ExamquestionBean setExamQue(QuestionBean question, ExamBean exam) throws Exception;
+
 }

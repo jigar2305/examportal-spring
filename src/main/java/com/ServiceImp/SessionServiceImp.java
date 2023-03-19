@@ -35,10 +35,9 @@ public class SessionServiceImp implements SessionService {
 	TokenService tokenService;
 
 	@Override
-	public ResponseBean<?> signup(UserBean user) {
+	public Object signup(UserBean user) throws Exception {
 		String email = user.getEmail();
 		UserBean dbUser = userRepo.findByEmail(email);
-		ResponseBean<UserBean> res = new ResponseBean<>();
 		if (dbUser == null) {
 			user.setActive(true);
 			RoleBean role = roleRepo.findByRoleName("student");
@@ -46,47 +45,29 @@ public class SessionServiceImp implements SessionService {
 			String encpassword = bcrypt.encode(user.getPassword());
 			user.setPassword(encpassword);
 			userRepo.save(user);
-			res.setData(user);
-			res.setMsg("Signup done.");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(user, "Signup done", 200);
 		} else {
-			res.setData(user);
-			res.setApicode(404);
-			res.setMsg("Email Already Taken");
-			return res;
+			return new ResponseBean<>(user, "Email Already Taken", 404);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> login(LoginBean login) {
+	public Object login(LoginBean login) throws Exception {
 		String email = login.getEmail();
 		UserBean userBean = userRepo.findByEmail(email);
 		if (userBean == null) {
-			ResponseBean<LoginBean> res = new ResponseBean<>();
-			res.setData(login);
-			res.setMsg("Not valid Email");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(login, "Not valid Email", 404);
 		} else if (!bcrypt.matches(login.getPassword(), userBean.getPassword())) {
-			ResponseBean<LoginBean> res = new ResponseBean<>();
-			res.setData(login);
-			res.setMsg("Invalid Credentials");
-			res.setApicode(401);
-			return res;
+			return new ResponseBean<>(login, "Invalid Credentials", 401);
 		} else {
-			ResponseBean<UserBean> res = new ResponseBean<>();
 			userBean.setAuthToken(tokenService.createtoken(20));
 			userRepo.save(userBean);
-			res.setData(userBean);
-			res.setMsg("Login done...");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(userBean, "Login done", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> sendotp(LoginBean login) {
+	public Object sendotp(LoginBean login) throws Exception {
 		EmailDetailsBean emailBean = new EmailDetailsBean();
 		String email = login.getEmail();
 		UserBean userBean = userRepo.findByEmail(email);
@@ -97,52 +78,35 @@ public class SessionServiceImp implements SessionService {
 		emailController.sendMail(emailBean);
 		userBean.setOtp(otp);
 		userRepo.save(userBean);
-		ResponseBean<EmailDetailsBean> res = new ResponseBean<>();
-		res.setApicode(200);
-		res.setData(emailBean);
-		res.setMsg("OTP send successfully");
-		return res;
+		return new ResponseBean<>(emailBean, "OTP send successfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> forgot(forgotpasswordBean forgotpassword) {
-		ResponseBean<Object> res = new ResponseBean<>();
+	public Object forgot(forgotpasswordBean forgotpassword) throws Exception {
 		String email = forgotpassword.getEmail();
 		UserBean userBean = userRepo.findByEmail(email);
 		Integer otp = userBean.getOtp();
 		if (otp == null) {
-			res.setData(email);
-			res.setMsg("Please Try Again");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(email, "Please Try Again", 404);
 		} else if (otp.equals(forgotpassword.getOtp())) {
 			userBean.setOtp(null);
 			userRepo.save(userBean);
-			res.setData(email);
-			res.setMsg("OTP Varifyed");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(email, "OTP Varifyed", 200);
 		} else {
-			res.setData(email);
-			res.setMsg("incorrect otp");
-			return res;
+			return new ResponseBean<>(email, "incorrect otp", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> updatepassword(LoginBean login) {
-		ResponseBean<UserBean> res = new ResponseBean<>();
+	public Object updatepassword(LoginBean login) throws Exception {
 		UserBean userBean = userRepo.findByEmail(login.getEmail());
 		userBean.setPassword(bcrypt.encode(login.getPassword()));
 		userRepo.save(userBean);
-		res.setData(userBean);
-		res.setMsg("Password Change Successfully");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(userBean, "Password Changed Successfully", 200);
 	}
 
 	@Override
-	public void logout(Integer userId) {
+	public void logout(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user != null) {
 			user.setAuthToken(null);

@@ -17,22 +17,22 @@ public class ResultController {
 	ResultService resultService;
 
 	@GetMapping("/list/{userId}")
-	public ResponseEntity<?> getResultsById(@PathVariable("userId") Integer userId) {
+	public Object getResultsById(@PathVariable("userId") Integer userId) throws Exception {
 		return ResponseEntity.ok(resultService.getResultsById(userId));
 	}
 
 	@GetMapping("/get/{resultId}")
-	public ResponseEntity<?> getResultById(@PathVariable("resultId") Integer resultId) {
+	public Object getResultById(@PathVariable("resultId") Integer resultId) throws Exception {
 		return ResponseEntity.ok(resultService.getResultById(resultId));
 	}
 
 	@GetMapping("/listresult/{userId}/{examId}")
-	public ResponseEntity<?> getallquestionbyexamIdanduserId(@PathVariable("userId") Integer userId, @PathVariable("examId") Integer examId) {
+	public Object getallquestionbyexamIdanduserId(@PathVariable("userId") Integer userId, @PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(resultService.getAllQuestionByExamIdAndUserId(userId, examId));
 	}
 
 	@GetMapping("/listresult/{examId}")
-	public ResponseEntity<?> getallresultbyexamId(@PathVariable("examId") Integer examId) {
+	public Object getallresultbyexamId(@PathVariable("examId") Integer examId) throws Exception {
 		return ResponseEntity.ok(resultService.getAllResultByExamId(examId));
 
 	}

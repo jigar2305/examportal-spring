@@ -33,22 +33,18 @@ public class AdminServiceImp implements AdminService {
 
 	@Autowired
 	ResultRepository resultRepo;
-	
+
 	@Autowired
 	CustomNativeRepository customNativeRepo;
 
 	@Override
-	public ResponseBean<?> listUser() {
+	public Object listUser() throws Exception {
 		List<UserBean> users = userRepo.findAll();
-		ResponseBean<List<UserBean>> res = new ResponseBean<>();
-		res.setData(users);
-		res.setMsg("users fetch successfully..");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(users, "users fetch successfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> deleteUser(Integer userId) {
+	public Object deleteUser(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		try {
 			List<ResultBean> result = resultRepo.findByUser(user);
@@ -77,68 +73,40 @@ public class AdminServiceImp implements AdminService {
 			}
 			userRepo.deleteById(userId);
 		} catch (Exception e) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(500);
-			res.setMsg("Technical error occoured");
-			res.setApicode(400);
-			return res;
+			return new ResponseBean<>(e, "Technical error occoured", 400);
 		}
-		ResponseBean<Integer> res = new ResponseBean<>();
-		res.setData(userId);
-		res.setMsg("user deleted successfully..");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(userId, "user deleted successfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> checkForDelete(Integer userId) {
+	public Object checkForDelete(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user == null) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(userId);
-			res.setMsg("user not found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(userId, "user not found", 404);
 		} else {
 			try {
 				List<SubjectBean> subject = subjectRepo.findByUsers(user);
 				List<ExamBean> exam = examRepo.findByUsers(user);
-
 				if (subject == null && exam == null) {
-					ResponseBean<Integer> res = new ResponseBean<>();
-					res.setData(userId);
-					res.setMsg("No dependency found");
-					res.setApicode(200);
-					return res;
+					return new ResponseBean<>(userId, "No dependency found", 200);
 				} else {
-					ResponseBean<Map<String, List<?>>> res = new ResponseBean<>();
 					Map<String, List<?>> ress = new HashMap<>();
 					ress.put("exam", exam);
 					ress.put("subject", subject);
-					res.setData(ress);
-					res.setMsg(null);
-					res.setApicode(200);
-					return res;
+					return new ResponseBean<>(ress, null, 200);
+
 				}
 			} catch (Exception e) {
-				ResponseBean<Integer> res = new ResponseBean<>();
-				res.setData(500);
-				res.setMsg("Technical error occoured");
-				res.setApicode(500);
-				return res;
+				return new ResponseBean<>(e, "Technical error occoured", 500);
 			}
 		}
 	}
 
 	@Override
-	public ResponseBean<?> isActive(Integer userId) {
+	public Object isActive(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user == null) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(userId);
-			res.setMsg("User Not Found..");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(userId, "User Not Found", 404);
 		} else {
 			if (user.getActive().booleanValue()) {
 				user.setActive(false);
@@ -146,29 +114,17 @@ public class AdminServiceImp implements AdminService {
 				user.setActive(true);
 			}
 			userRepo.save(user);
-			ResponseBean<Boolean> res = new ResponseBean<>();
-			res.setData(user.getActive());
-			res.setMsg("status updated successfully..");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(user.getActive(), "status updated successfully", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> findUserById(Integer userId) {
+	public Object findUserById(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user != null) {
-			ResponseBean<UserBean> res = new ResponseBean<>();
-			res.setData(user);
-			res.setMsg("get user successfully..");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(user, "get user successfully", 200);
 		} else {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(userId);
-			res.setMsg("User Not Found..");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(userId, "User Not Found", 404);
 		}
 	}
 

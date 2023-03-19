@@ -13,11 +13,11 @@ public class EmailController {
 	@Autowired
 	EmailService emailService;
 
-	public String sendMail(@RequestBody EmailDetailsBean details) {
+	public String sendMail(@RequestBody EmailDetailsBean details) throws Exception {
 		return emailService.sendSimpleMail(details);
 	}
 
-	public String sendMailWithAttachment(@RequestBody EmailDetailsBean details) {
+	public String sendMailWithAttachment(@RequestBody EmailDetailsBean details) throws Exception {
 		return emailService.sendMailWithAttachment(details);
 	}
 }

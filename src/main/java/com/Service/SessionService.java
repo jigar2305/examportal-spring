@@ -3,21 +3,20 @@ package com.Service;
 import org.springframework.stereotype.Service;
 
 import com.Bean.LoginBean;
-import com.Bean.ResponseBean;
 import com.Bean.forgotpasswordBean;
 import com.Entity.UserBean;
 
 @Service
 public interface SessionService {
-	ResponseBean<?> signup(UserBean user);
-	
-	ResponseBean<?> login(LoginBean login);
-		
-	ResponseBean<?> sendotp(LoginBean login);
+	Object signup(UserBean user) throws Exception;
 
-	ResponseBean<?> forgot(forgotpasswordBean forgotpassword);
-	
-	ResponseBean<?> updatepassword(LoginBean login);
-	
-	void logout(Integer userId);	
+	Object login(LoginBean login) throws Exception;
+
+	Object sendotp(LoginBean login) throws Exception;
+
+	Object forgot(forgotpasswordBean forgotpassword) throws Exception;
+
+	Object updatepassword(LoginBean login) throws Exception;
+
+	void logout(Integer userId) throws Exception;
 }

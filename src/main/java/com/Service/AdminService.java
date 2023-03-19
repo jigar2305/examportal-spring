@@ -2,19 +2,17 @@ package com.Service;
 
 import org.springframework.stereotype.Service;
 
-import com.Bean.ResponseBean;
-
 @Service
 public interface AdminService {
 
-	ResponseBean<?> listUser();
+	Object listUser() throws Exception;
 
-	ResponseBean<?> deleteUser(Integer userID);
+	Object deleteUser(Integer userID) throws Exception;
 
-	ResponseBean<?> checkForDelete(Integer userId);
+	Object checkForDelete(Integer userId) throws Exception;
 
-	ResponseBean<?> isActive(Integer userId);
+	Object isActive(Integer userId) throws Exception;
 
-	ResponseBean<?> findUserById(Integer userId);
+	Object findUserById(Integer userId) throws Exception;
 
 }

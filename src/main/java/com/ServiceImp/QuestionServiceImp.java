@@ -76,7 +76,7 @@ public class QuestionServiceImp implements QuestionService {
 	SubjectFileService fileService;
 
 	@Override
-	public List<ExamquestionBean> addRendomQuestionByManySubject(ExamMSubjectBean addquestion) {
+	public List<ExamquestionBean> addRendomQuestionByManySubject(ExamMSubjectBean addquestion) throws Exception {
 		ExamBean exam = examRepo.findByExamName(addquestion.getExamName());
 		Integer total = 0;
 		List<ExamquestionBean> question = new ArrayList<>();
@@ -185,7 +185,7 @@ public class QuestionServiceImp implements QuestionService {
 	}
 
 	@Override
-	public ResultBean checkAnswer(CheckquestionanswerBean questions) {
+	public ResultBean checkAnswer(CheckquestionanswerBean questions) throws Exception {
 		List<QuestionanswerBean> que = questions.getQuestions();
 		ExamBean exam = examRepo.findByExamId(questions.getExam().getExamId());
 		UserBean user = userRepo.findByEmail(questions.getEmail());
@@ -200,7 +200,7 @@ public class QuestionServiceImp implements QuestionService {
 			q.setExam(exam);
 			q.setSelectedOption(i.getSelected());
 			uqa.add(q);
-			if (i.getCorrectAnswer().equalsIgnoreCase(i.getSelected())) {
+			if (queq.getCorrectAnswer().equalsIgnoreCase(i.getSelected())) {
 				obtain = obtain + 1;
 			}
 		}
@@ -272,8 +272,7 @@ public class QuestionServiceImp implements QuestionService {
 	}
 
 	@Override
-	public ResponseBean<?> addQuestions(List<QuestionBean> questions) {
-		ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
+	public Object addQuestions(List<QuestionBean> questions) throws Exception {
 		try {
 //			for (int i = 0; i < questions.size(); i++) {
 //				if (questionRepo.findByQuestion(questions.get(i).getQuestion()) == null) {
@@ -283,37 +282,23 @@ public class QuestionServiceImp implements QuestionService {
 //					questionRepo.save(questions.get(i));
 //				}
 //			}
-			res.setData(questions);
-			res.setApicode(200);
-			res.setMsg("Questions added successfully..");
-			return res;
+			return new ResponseBean<>(questions, "Questions added successfully", 200);
 		} catch (Exception e) {
-			res.setData(questions);
-			res.setMsg(TECHNICAL_ERROR);
-			res.setApicode(500);
-			return res;
+			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getAllQuestions() {
+	public Object getAllQuestions() throws Exception {
 		List<QuestionBean> questions = (List<QuestionBean>) questionRepo.findAll();
-		ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
-		res.setData(questions);
-		res.setMsg("get Questions successfully");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(questions, "get Questions successfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> checkForDelete(Integer questionId) {
+	public Object checkForDelete(Integer questionId) throws Exception {
 		QuestionBean question = questionRepo.findByQuestionId(questionId);
 		if (question == null) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(questionId);
-			res.setApicode(404);
-			res.setMsg("Question Not Found");
-			return res;
+			return new ResponseBean<>(questionId, "Question Not Found", 404);
 		} else {
 			try {
 //				List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);
@@ -323,78 +308,48 @@ public class QuestionServiceImp implements QuestionService {
 				res.setApicode(200);
 				return res;
 			} catch (Exception e) {
-				ResponseBean<Integer> res = new ResponseBean<>();
-				res.setData(questionId);
-				res.setMsg(TECHNICAL_ERROR);
-				res.setApicode(500);
-				return res;
+				return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
 			}
 		}
 	}
 
 	@Override
-	public ResponseBean<?> deleteQuestion(Integer questionId) {
+	public Object deleteQuestion(Integer questionId) throws Exception {
 		Optional<QuestionBean> questionBean = questionRepo.findById(questionId);
-		ResponseBean<Integer> res = new ResponseBean<>();
 		if (questionBean.isEmpty()) {
-			res.setData(questionId);
-			res.setMsg("question not found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(questionId, "question not found", 404);
 		} else {
 			try {
 				questionRepo.deleteById(questionId);
-				res.setData(questionId);
-				res.setApicode(200);
-				res.setMsg("deleted successfully");
-				return res;
+				return new ResponseBean<>(questionId, "deleted successfully", 200);
 			} catch (Exception e) {
-				res.setData(questionId);
-				res.setMsg("Technical error occoured");
-				res.setApicode(500);
-				return res;
+				return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
 			}
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getQuestionById(Integer questionId) {
+	public Object getQuestionById(Integer questionId) throws Exception {
 		Optional<QuestionBean> questionBean = questionRepo.findById(questionId);
 		if (questionBean.isEmpty()) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(questionId);
-			res.setMsg("Question Not Found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(questionId, "Question Not Found", 404);
 		} else {
-			ResponseBean<Optional<QuestionBean>> res = new ResponseBean<>();
-			res.setData(questionBean);
-			res.setMsg("Get Question Successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(questionBean, "Get Question Successfully", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> updateQuestion(QuestionBean question) {
-		ResponseBean<QuestionBean> res = new ResponseBean<>();
+	public Object updateQuestion(QuestionBean question) throws Exception {
 		try {
 			QuestionBean que = questionRepo.save(question);
-			res.setData(que);
-			res.setMsg("Question Updated Successfully..");
-			res.setApicode(200);
-			return res;
-
+			return new ResponseBean<>(que, "Question Updated Successfully", 200);
 		} catch (Exception e) {
-			res.setData(question);
-			res.setMsg(TECHNICAL_ERROR);
-			res.setApicode(500);
-			return res;
+			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> sendQuestion(Integer number) {
+	public Object sendQuestion(Integer number) {
 		List<QuestionBean> que = (List<QuestionBean>) questionRepo.findAll();
 		if (que.size() > number) {
 			List<QuestionBean> question = new ArrayList<>();
@@ -403,42 +358,25 @@ public class QuestionServiceImp implements QuestionService {
 				question.add(que.get(randomIndex));
 				que.remove(randomIndex);
 			}
-			ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
-			res.setData(question);
-			res.setMsg("updated successfully..");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(question, "updated successfully", 200);
 		} else {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(number);
-			res.setMsg("out of question please add question first");
-			res.setApicode(401);
-			return res;
+			return new ResponseBean<>(number, "out of question please add question first", 401);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> fileRead(MultipartFile excel) {
+	public Object fileRead(MultipartFile excel) throws Exception {
 		List<QuestionBean> questions;
 		try {
 			questions = addquestion(excel);
-			ResponseBean<List<QuestionBean>> res = new ResponseBean<>();
-			res.setData(questions);
-			res.setMsg("question added successfully..");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(questions, "question added successfully", 200);
 		} catch (Exception e) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(null);
-			res.setMsg(TECHNICAL_ERROR);
-			res.setApicode(500);
-			return res;
+			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> addQuestion(QuestionBean question) {
-		ResponseBean<QuestionBean> res = new ResponseBean<>();
+	public Object addQuestion(QuestionBean question) throws Exception {
 		try {
 			if (questionRepo.findByQuestion(question.getQuestion()) == null) {
 				if (question.getUrl() != null && !question.getUrl().isEmpty()) {
@@ -454,19 +392,13 @@ public class QuestionServiceImp implements QuestionService {
 					questionRepo.save(question);
 				}
 			}
-			res.setData(question);
-			res.setApicode(200);
-			res.setMsg("Question added successfully..");
-			return res;
+			return new ResponseBean<>(question, "Question added successfully", 200);
 		} catch (Exception e) {
-			res.setData(question);
-			res.setMsg(TECHNICAL_ERROR);
-			res.setApicode(500);
-			return res;
+			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
-	public QuestionBean saveImage(QuestionBean question) {
+	public QuestionBean saveImage(QuestionBean question) throws Exception {
 		String mainpath = "D:\\Exam-Portal-Spring\\src\\main\\resources\\questionImage";
 		File folder = new File(mainpath, question.getSubject().getSubjectName() + "");
 		folder.mkdir();
@@ -500,8 +432,7 @@ public class QuestionServiceImp implements QuestionService {
 	}
 
 	@Override
-	public ResponseBean<?> getQuestionImage(Integer questionId) {
-		ResponseBean<ImageBean> res = new ResponseBean<>();
+	public Object getQuestionImage(Integer questionId) throws Exception {
 		QuestionBean question = questionRepo.findByQuestionId(questionId);
 		ImageBean imageBean = new ImageBean();
 		try {
@@ -514,24 +445,15 @@ public class QuestionServiceImp implements QuestionService {
 			}
 			byte[] image = fileService.getImage(question.getUrl());
 			if (image == null) {
-				res.setApicode(500);
-				res.setData(imageBean);
-				res.setMsg("file not fond");
-				return res;
+				return new ResponseBean<>(imageBean, "file not fond", 500);
 			} else {
 				imageBean.setImage(image);
 				imageBean.setQuestionId(questionId);
-				res.setApicode(200);
-				res.setData(imageBean);
-				res.setMsg("image get sussessfully");
-				return res;
+				return new ResponseBean<>(imageBean, "image get sussessfully", 200);
 			}
 
 		} catch (IOException e) {
-			res.setApicode(500);
-			res.setData(imageBean);
-			res.setMsg("file not fond");
-			return res;
+			return new ResponseBean<>(e, "file not fond", 500);
 		}
 	}
 

@@ -33,67 +33,64 @@ public class QuestionController {
 
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> addQuestions(@RequestBody List<QuestionBean> questions) {
+	public Object addQuestions(@RequestBody List<QuestionBean> questions) throws Exception {
 		return ResponseEntity.ok(questionService.addQuestions(questions));
 	}
 	
 	@PostMapping("/single-add")
-	public ResponseEntity<?> addQuestion(@RequestBody QuestionBean question) {
+	public Object addQuestion(@RequestBody QuestionBean question) throws Exception {
 		return ResponseEntity.ok(questionService.addQuestion(question));
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<?> getAllQuestions() {
+	public Object getAllQuestions() throws Exception {
 		return ResponseEntity.ok(questionService.getAllQuestions());
 	}
 
 	@GetMapping("/child/{questionId}")
-	public ResponseEntity<?> checkfordelete(@PathVariable("questionId") Integer questionId) {
+	public Object checkfordelete(@PathVariable("questionId") Integer questionId) throws Exception {
 		return ResponseEntity.ok(questionService.checkForDelete(questionId));
 
 	}
 
 	@DeleteMapping("/delete/{questionId}")
-	public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Integer questionId) {
+	public Object deleteQuestion(@PathVariable("questionId") Integer questionId) throws Exception {
 		return ResponseEntity.ok(questionService.deleteQuestion(questionId));
 	}
 
 	@GetMapping("/get/{questionId}")
-	public ResponseEntity<?> getQuestionById(@PathVariable("questionId") Integer questionId) {
+	public Object getQuestionById(@PathVariable("questionId") Integer questionId) throws Exception {
 		return ResponseEntity.ok(questionService.getQuestionById(questionId));
 
 	}
 	
 	@GetMapping("/getImage/{questionId}")
-	public ResponseEntity<?> getImageByQurstionId(@PathVariable("questionId") Integer questionId) {
+	public Object getImageByQurstionId(@PathVariable("questionId") Integer questionId) throws Exception {
 		return ResponseEntity.ok(questionService.getQuestionImage(questionId));
 
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<?> updateQuestion(@RequestBody QuestionBean question) {
+	public Object updateQuestion(@RequestBody QuestionBean question) throws Exception {
 		return ResponseEntity.ok(questionService.updateQuestion(question));
 
 	}
 
 	@GetMapping("/question/{number}")
-	public ResponseEntity<?> sendquestion(@PathVariable("number") Integer number) {
+	public Object sendquestion(@PathVariable("number") Integer number) throws Exception {
 		return ResponseEntity.ok(questionService.sendQuestion(number));
 
 	}
 
 	@PostMapping("/excel")
-	public ResponseEntity<?> fileread(@RequestParam("file") MultipartFile excel) {
+	public Object fileread(@RequestParam("file") MultipartFile excel) throws Exception {
 		return ResponseEntity.ok(questionService.fileRead(excel));
 	}
 	
 	@PostMapping("/getImage")
-	public ResponseEntity<?> getImage(@RequestBody String URL) throws IOException {
+	public Object getImage(@RequestBody String URL) throws IOException {
 		byte[] Image = subjectFileService.getImage(URL);
-		ResponseBean<byte[]> res = new ResponseBean<>();
-		res.setApicode(200);
-		res.setData(Image);
-		return ResponseEntity.ok(res);
+		return new ResponseBean<>(Image,"", 200);
 	}
 
 }

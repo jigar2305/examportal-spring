@@ -47,15 +47,14 @@ public class ExamServiceImp implements ExamService {
 
 	@Autowired
 	ExamquestionRepository examquestionRepo;
-	
+
 	@Autowired
 	CustomNativeRepository customNativeRepo;
 
 	@Transactional
 	@Override
-	public ResponseBean<?> addExamAndQuestion(ExamMSubjectBean examsubject) {
+	public Object addExamAndQuestion(ExamMSubjectBean examsubject) throws Exception {
 		ExamBean examBean = examRepo.findByExamName(examsubject.getExamName());
-		ResponseBean<ExamBean> res = new ResponseBean<>();
 		ExamBean exam = new ExamBean();
 		if (examBean == null) {
 			exam.setExamName(examsubject.getExamName());
@@ -72,52 +71,31 @@ public class ExamServiceImp implements ExamService {
 			try {
 				List<ExamquestionBean> equestions = questionService.addRendomQuestionByManySubject(examsubject);
 				if (!equestions.isEmpty()) {
-					res.setData(exam);
-					res.setApicode(200);
-					res.setMsg("exam added sussessfully...");
-					return res;
+					return new ResponseBean<>(exam, "exam added sussessfully", 200);
 				} else {
-					res.setData(null);
 					examRepo.delete(exam1);
-					res.setApicode(300);
-					res.setMsg("please add questions first");
-					return res;
+					return new ResponseBean<>("please add questions first", 300);
 				}
 			} catch (Exception e) {
 				ExamBean examBean2 = examRepo.findByExamId(exam1.getExamId());
 				if (examBean2 != null) {
 					examRepo.deleteById(examBean2.getExamId());
-					res.setData(exam);
-					res.setApicode(500);
-					res.setMsg(TECHNICAL_ERROR);
-					return res;
-				} else {
-					res.setData(exam);
-					res.setApicode(500);
-					res.setMsg(TECHNICAL_ERROR);
-					return res;
 				}
+				return new ResponseBean<>(exam, TECHNICAL_ERROR, 500);
 			}
 		} else {
-			res.setData(examBean);
-			res.setMsg("exam alredy added...");
-			res.setApicode(403);
-			return res;
+			return new ResponseBean<>(examBean, "exam alredy added", 403);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> listExams() {
+	public Object listExams() throws Exception {
 		List<ExamBean> exams = examRepo.findAll();
-		ResponseBean<List<ExamBean>> res = new ResponseBean<>();
-		res.setData(exams);
-		res.setMsg("get Exams Sussessfully");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(exams, "get Exams Sussessfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> getExamByUserId(Integer userId) {
+	public Object getExamByUserId(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		List<ExamBean> exam = examRepo.findByUsers(user);
 		List<ExamBean> exams = new ArrayList<>();
@@ -126,24 +104,16 @@ public class ExamServiceImp implements ExamService {
 				exams.add(exam.get(i));
 			}
 		}
-		ResponseBean<List<ExamBean>> res = new ResponseBean<>();
-		res.setData(exams);
-		res.setMsg("get Exam Successfully");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(exams, "get Exam Sussessfully", 200);
 	}
 
 	@Override
-	public ResponseBean<?> deleteExam(Integer examId) {
+	public Object deleteExam(Integer examId) throws Exception {
 		ExamBean examBean = examRepo.findByExamId(examId);
-		ResponseBean<Object> res = new ResponseBean<>();
 		if (examBean == null) {
-			res.setData(examId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(examId, NOT_FOUND, 404);
 		} else {
-			customNativeRepo.deleteenroleexambyexam(examId);	
+			customNativeRepo.deleteenroleexambyexam(examId);
 			List<ExamquestionBean> equestion = examquestionRepo.findByExam(examBean);
 			if (equestion != null) {
 				examquestionRepo.deleteAll(equestion);
@@ -153,60 +123,36 @@ public class ExamServiceImp implements ExamService {
 				resultRepo.deleteAll(results);
 			}
 			examRepo.deleteById(examId);
-			res.setData(examId);
-			res.setMsg(examBean.getExamName() + " deleted successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(examId, examBean.getExamName() + " deleted successfully", 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> isEnroll(Integer examId) {
+	public Object isEnroll(Integer examId) throws Exception {
 		ExamBean examBean = examRepo.findByExamId(examId);
 		if (examBean == null) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(examId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(examId, NOT_FOUND, 404);
 		} else {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(examBean.getUsers().size());
-			res.setApicode(200);
-			res.setMsg(FETCH_DATA);
-			return res;
+			return new ResponseBean<>(examBean.getUsers().size(), FETCH_DATA, 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getQuestionById(Integer examId) {
+	public Object getQuestionById(Integer examId) throws Exception {
 		Optional<ExamBean> examBean = examRepo.findById(examId);
 		if (examBean.isEmpty()) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(examId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(examId, NOT_FOUND, 404);
 		} else {
-			ResponseBean<Optional<ExamBean>> res = new ResponseBean<>();
-			res.setData(examBean);
-			res.setMsg(FETCH_DATA);
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(examBean, FETCH_DATA, 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getStatusOfExam(Integer examId) {
+	public Object getStatusOfExam(Integer examId) throws Exception {
 		ExamBean examBean = examRepo.findByExamId(examId);
 		if (examBean == null) {
-			ResponseBean<Object> res = new ResponseBean<>();
-			res.setData(examId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(examId, NOT_FOUND, 404);
 		} else {
-			ResponseBean<List<examstatusBean>> res = new ResponseBean<>();
 			List<examstatusBean> examstatusBeans = new ArrayList<>();
 			List<UserBean> users = userRepo.findByExams(examBean);
 			for (UserBean userBean : users) {
@@ -221,38 +167,27 @@ public class ExamServiceImp implements ExamService {
 				}
 				examstatusBeans.add(examstatusBean);
 			}
-			res.setData(examstatusBeans);
-			res.setMsg(FETCH_DATA);
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(examstatusBeans, FETCH_DATA, 200);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> enrollExam(EnroleexamBean enroleexam) {
+	public Object enrollExam(EnroleexamBean enroleexam) throws Exception {
 		ExamBean exam = examRepo.findByExamId(enroleexam.getExamId());
 		ExamBean exam2 = new ExamBean();
-		if (exam != null) {
-			for (int i = 0; i < enroleexam.getUserId().size(); i++) {
-				UserBean user = userRepo.findByUserId(enroleexam.getUserId().get(i));
-				if (user != null) {
-					exam.getUsers().add(user);
-					exam2 = examRepo.save(exam);
+		try {
+			if (exam != null) {
+				for (int i = 0; i < enroleexam.getUserId().size(); i++) {
+					UserBean user = userRepo.findByUserId(enroleexam.getUserId().get(i));
+					if (user != null) {
+						exam.getUsers().add(user);
+						exam2 = examRepo.save(exam);
+					}
 				}
 			}
-		}
-		try {
-			ResponseBean<ExamBean> res = new ResponseBean<>();
-			res.setData(exam2);
-			res.setMsg("exam send to user");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(exam2, "exam send to user", 200);
 		} catch (Exception e) {
-			ResponseBean<ExamBean> res = new ResponseBean<>();
-			res.setData(exam);
-			res.setMsg(TECHNICAL_ERROR);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(e, NOT_FOUND, 404);
 		}
 	}
 

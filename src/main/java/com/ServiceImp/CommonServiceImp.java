@@ -8,10 +8,10 @@ import com.Entity.QuestionBean;
 import com.Service.CommonService;
 
 @Service
-public class CommonServiceImp implements CommonService{
+public class CommonServiceImp implements CommonService {
 
 	@Override
-	public ExamquestionBean setExamQue(QuestionBean question,ExamBean exam) {
+	public ExamquestionBean setExamQue(QuestionBean question, ExamBean exam) throws Exception {
 		ExamquestionBean examquestionBean = new ExamquestionBean();
 		examquestionBean.setQuestion(question.getQuestion());
 		examquestionBean.setA(question.getA());

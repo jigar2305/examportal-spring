@@ -22,32 +22,32 @@ public class SessionController {
 	SessionService sessionService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> signup(@RequestBody UserBean user) {
+	public Object signup(@RequestBody UserBean user) throws Exception {
 		return ResponseEntity.ok(sessionService.signup(user));
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginBean login) {
+	public Object login(@RequestBody LoginBean login) throws Exception {
 		return ResponseEntity.ok(sessionService.login(login));
 	}
 
 	@PostMapping("/otpsend")
-	public ResponseEntity<?> sendotp(@RequestBody LoginBean login) {
+	public Object sendotp(@RequestBody LoginBean login) throws Exception {
 		return ResponseEntity.ok(sessionService.sendotp(login));
 	}
 
 	@PostMapping("/otp")
-	public ResponseEntity<?> forgot(@RequestBody forgotpasswordBean forgotpassword) {
+	public Object forgot(@RequestBody forgotpasswordBean forgotpassword) throws Exception {
 		return ResponseEntity.ok(sessionService.forgot(forgotpassword));
 	}
 
 	@PostMapping("/forgot")
-	public ResponseEntity<?> updatepassword(@RequestBody LoginBean login) {
+	public Object updatepassword(@RequestBody LoginBean login) throws Exception {
 		return ResponseEntity.ok(sessionService.updatepassword(login));
 	}
 
 	@GetMapping("/logout/{userId}")
-	public void logout(@PathVariable("userId") Integer userId) {
+	public void logout(@PathVariable("userId") Integer userId) throws Exception {
 		sessionService.logout(userId);
 	}
 

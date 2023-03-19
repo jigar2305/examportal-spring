@@ -2,17 +2,15 @@ package com.Service;
 
 import org.springframework.stereotype.Service;
 
-import com.Bean.ResponseBean;
-
 @Service
 public interface ResultService {
 
-	ResponseBean<?> getResultsById(Integer userId);
+	Object getResultsById(Integer userId) throws Exception;
 
-	ResponseBean<?> getResultById(Integer resultId);
+	Object getResultById(Integer resultId) throws Exception;
 
-	ResponseBean<?> getAllQuestionByExamIdAndUserId(Integer userId, Integer examId);
+	Object getAllQuestionByExamIdAndUserId(Integer userId, Integer examId) throws Exception;
 
-	ResponseBean<?> getAllResultByExamId(Integer examId);
+	Object getAllResultByExamId(Integer examId) throws Exception;
 
 }

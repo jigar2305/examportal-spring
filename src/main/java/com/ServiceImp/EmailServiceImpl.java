@@ -27,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
 	// Method 1
 	// To send a simple email
 	@Override
-	public String sendSimpleMail(EmailDetailsBean details) {
+	public String sendSimpleMail(EmailDetailsBean details) throws Exception {
 		// Try block to check for exceptions
 		try {
 
@@ -42,7 +42,7 @@ public class EmailServiceImpl implements EmailService {
 
 			// Sending the mail
 			javaMailSender.send(mailMessage);
-			return "Mail Sent Successfully...";
+			return "Mail Sent Successfully";
 		}
 
 		// Catch block to handle the exceptions
@@ -54,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
 	// Method 2
 	// To send an email with attachment
 	@Override
-	public String sendMailWithAttachment(EmailDetailsBean details) {
+	public String sendMailWithAttachment(EmailDetailsBean details) throws Exception {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper mimeMessageHelper;
 

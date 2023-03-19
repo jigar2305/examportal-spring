@@ -81,7 +81,7 @@ public class SubjectFileServiceImp implements SubjectFileService {
 	}
 
 	@Override
-	public ResponseBean<?> sendToUser(EnroleSubjectFilesBean filesBean) throws Exception {
+	public Object sendToUser(EnroleSubjectFilesBean filesBean) throws Exception {
 		for (int i = 0; i < filesBean.getSubjectId().size(); i++) {
 			SubjectBean subject = subjectRepo.findBySubjectId(filesBean.getSubjectId().get(i));
 			if (subject != null) {
@@ -94,16 +94,11 @@ public class SubjectFileServiceImp implements SubjectFileService {
 				subjectRepo.save(subject);
 			}
 		}
-		System.out.println("hello");
-		ResponseBean<Boolean> res = new ResponseBean<>();
-		res.setData(true);
-		res.setMsg("files successfully send to users");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean<>(true, "files successfully send to users", 200);
 	}
 
 	@Override
-	public ResponseBean<?> getAllFileForUser(Integer userId) throws IOException {
+	public Object getAllFileForUser(Integer userId) throws IOException {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user != null) {
 
@@ -119,50 +114,33 @@ public class SubjectFileServiceImp implements SubjectFileService {
 				subjectFileBean.setPdfimage(image);
 				subjectFileBean.setUrl(null);
 			}
-			ResponseBean<List<SubjectFileBean>> res = new ResponseBean<>();
-			res.setData(files);
-			res.setMsg("files Get successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(files, "files Get successfully", 200);
 		} else {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(userId);
-			res.setMsg("User Not Found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(userId, "User Not Found", 404);
 		}
 	}
 
 	@Override
-	public ResponseBean<?> getFile(Integer subjectfileId) throws IOException {
+	public Object getFile(Integer subjectfileId) throws IOException {
 		SubjectFileBean file = subjectFileRepo.findBySubjectfileId(subjectfileId);
 		if (file == null) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(subjectfileId);
-			res.setMsg("file not found");
-			res.setApicode(404);
-			return res;
+			return new ResponseBean<>(subjectfileId, "file not found", 404);
 		} else {
-			ResponseBean<SubjectFileBean> res = new ResponseBean<>();
 			byte[] pdf = Files.readAllBytes(new File(file.getUrl() + ".pdf").toPath());
 			String base64EncodedImageBytes = Base64.getEncoder().encodeToString(pdf);
 			file.setFileString(base64EncodedImageBytes);
 			file.setUrl(null);
-			res.setData(file);
-			res.setMsg(file.getFileName() + "get successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean<>(file, file.getFileName() + "get successfully", 200);
 		}
 	}
 
-	public byte[] getImage(String URL)  {
-		
+	public byte[] getImage(String URL) {
+
 		byte[] image;
 		try {
 			image = Files.readAllBytes(new File(URL).toPath());
 			return image;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
