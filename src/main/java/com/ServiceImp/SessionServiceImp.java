@@ -45,9 +45,9 @@ public class SessionServiceImp implements SessionService {
 			String encpassword = bcrypt.encode(user.getPassword());
 			user.setPassword(encpassword);
 			userRepo.save(user);
-			return new ResponseBean<>(user, "Signup done", 200);
+			return new ResponseBean(user, "Signup done", 200);
 		} else {
-			return new ResponseBean<>(user, "Email Already Taken", 404);
+			return new ResponseBean(user, "Email Already Taken", 404);
 		}
 	}
 
@@ -56,13 +56,13 @@ public class SessionServiceImp implements SessionService {
 		String email = login.getEmail();
 		UserBean userBean = userRepo.findByEmail(email);
 		if (userBean == null) {
-			return new ResponseBean<>(login, "Not valid Email", 404);
+			return new ResponseBean(login, "Not valid Email", 404);
 		} else if (!bcrypt.matches(login.getPassword(), userBean.getPassword())) {
-			return new ResponseBean<>(login, "Invalid Credentials", 401);
+			return new ResponseBean(login, "Invalid Credentials", 401);
 		} else {
 			userBean.setAuthToken(tokenService.createtoken(20));
 			userRepo.save(userBean);
-			return new ResponseBean<>(userBean, "Login done", 200);
+			return new ResponseBean(userBean, "Login done", 200);
 		}
 	}
 
@@ -78,7 +78,7 @@ public class SessionServiceImp implements SessionService {
 		emailController.sendMail(emailBean);
 		userBean.setOtp(otp);
 		userRepo.save(userBean);
-		return new ResponseBean<>(emailBean, "OTP send successfully", 200);
+		return new ResponseBean(emailBean, "OTP send successfully", 200);
 	}
 
 	@Override
@@ -87,13 +87,13 @@ public class SessionServiceImp implements SessionService {
 		UserBean userBean = userRepo.findByEmail(email);
 		Integer otp = userBean.getOtp();
 		if (otp == null) {
-			return new ResponseBean<>(email, "Please Try Again", 404);
+			return new ResponseBean(email, "Please Try Again", 404);
 		} else if (otp.equals(forgotpassword.getOtp())) {
 			userBean.setOtp(null);
 			userRepo.save(userBean);
-			return new ResponseBean<>(email, "OTP Varifyed", 200);
+			return new ResponseBean(email, "OTP Varifyed", 200);
 		} else {
-			return new ResponseBean<>(email, "incorrect otp", 200);
+			return new ResponseBean(email, "incorrect otp", 200);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class SessionServiceImp implements SessionService {
 		UserBean userBean = userRepo.findByEmail(login.getEmail());
 		userBean.setPassword(bcrypt.encode(login.getPassword()));
 		userRepo.save(userBean);
-		return new ResponseBean<>(userBean, "Password Changed Successfully", 200);
+		return new ResponseBean(userBean, "Password Changed Successfully", 200);
 	}
 
 	@Override

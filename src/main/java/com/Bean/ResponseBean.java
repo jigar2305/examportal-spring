@@ -1,7 +1,7 @@
 package com.Bean;
 
-public class ResponseBean<T> {
-	private T data;
+public class ResponseBean {
+	private Object data;
 	private String msg;
 	private Integer apicode;
 	private Exception exception;
@@ -23,13 +23,13 @@ public class ResponseBean<T> {
 		this.apicode = apicode;
 	}
 
-	public ResponseBean(T data, String msg, Integer apicode) {
+	public ResponseBean(Object data, String msg, Integer apicode) {
 		super();
 		this.data = data;
 		this.msg = msg;
 		this.apicode = apicode;
 	}
-	public ResponseBean(T data, String msg) {
+	public ResponseBean(Object data, String msg) {
 		super();
 		this.data = data;
 		this.msg = msg;
@@ -44,11 +44,11 @@ public class ResponseBean<T> {
 		this.exception = exception;
 	}
 
-	public T getData() {
+	public Object getData() {
 		return data;
 	}
 
-	public void setData(T data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 

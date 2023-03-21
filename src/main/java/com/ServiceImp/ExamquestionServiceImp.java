@@ -37,10 +37,10 @@ public class ExamquestionServiceImp implements ExamquestionService {
 	public Object getQuestions(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
 		if (exam.isEmpty()) {
-			return new ResponseBean<>(examId, "data not found", 404);
+			return new ResponseBean(examId, "data not found", 404);
 		} else {
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-			return new ResponseBean<>(examquestion, "get examquestion successfully", 200);
+			return new ResponseBean(examquestion, "get examquestion successfully", 200);
 		}
 	}
 
@@ -48,27 +48,27 @@ public class ExamquestionServiceImp implements ExamquestionService {
 	public Object getExamQuestion(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
 		if (exam.isEmpty()) {
-			return new ResponseBean<>(examId, "data not found", 404);
+			return new ResponseBean(examId, "data not found", 404);
 		} else {
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
-			return new ResponseBean<>(examquestion, "get examquestion successfully", 200);
+			return new ResponseBean(examquestion, "get examquestion successfully", 200);
 		}
 	}
 
 	@Override
 	public Object checkanswer(CheckquestionanswerBean questions) throws Exception {
 		ResultBean result = questionService.checkAnswer(questions);
-		return new ResponseBean<>(result, result.getExam().getExamName() + " complated successfully", 200);
+		return new ResponseBean(result, result.getExam().getExamName() + " complated successfully", 200);
 	}
 
 	@Override
 	public Object deleteExamQuestios(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
 		if (exam.isEmpty()) {
-			return new ResponseBean<>(examId, "Exam not found", 404);
+			return new ResponseBean(examId, "Exam not found", 404);
 		} else {
 			examquestionRepo.deleteAllByExam(exam);
-			return new ResponseBean<>(examId, "Questions deleted successfully", 200);
+			return new ResponseBean(examId, "Questions deleted successfully", 200);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class ExamquestionServiceImp implements ExamquestionService {
 	public Object getExamQuestionWithImage(Integer examId) throws Exception {
 		Optional<ExamBean> exam = examRepo.findById(examId);
 		if (exam.isEmpty()) {
-			return new ResponseBean<>(examId, "data not found", 404);
+			return new ResponseBean(examId, "data not found", 404);
 		} else {
 			List<ExamquestionBean> examquestion = examquestionRepo.findByExam(exam);
 			for (int i = 0; i < examquestion.size(); i++) {
@@ -96,7 +96,7 @@ public class ExamquestionServiceImp implements ExamquestionService {
 					}
 				}
 			}
-			return new ResponseBean<>(examquestion, "get question successfully", 200);
+			return new ResponseBean(examquestion, "get question successfully", 200);
 		}
 	}
 

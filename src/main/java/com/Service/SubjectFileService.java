@@ -20,6 +20,6 @@ public interface SubjectFileService {
 
 	Object getFile(Integer subjectfileId) throws IOException;
 
-	public byte[] getImage(String URL) throws IOException;
+	public byte[] getImage(String URL) throws Exception;
 
 }

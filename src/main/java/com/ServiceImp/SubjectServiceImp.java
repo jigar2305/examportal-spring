@@ -54,17 +54,17 @@ public class SubjectServiceImp implements SubjectService {
 				List<SubjectFileBean> rsfile = subjectFileService.addfiles(files, subjectres);
 				if (rsfile == null) {
 					subjectRepo.deleteById(subjectres.getSubjectId());
-					return new ResponseBean<>(subjectBean, TECHNICAL_ERROR, 500);
+					return new ResponseBean(subjectBean, TECHNICAL_ERROR, 500);
 				} else {
-					return new ResponseBean<>(subjectres, "subject added successfully", 200);
+					return new ResponseBean(subjectres, "subject added successfully", 200);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				subjectRepo.delete(subjectRepo.findBySubjectName(subject.getSubjectName()));
-				return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+				return new ResponseBean(e, TECHNICAL_ERROR, 500);
 			}
 		} else {
-			return new ResponseBean<>(subjectBean, "subject Already exist", 404);
+			return new ResponseBean(subjectBean, "subject Already exist", 404);
 		}
 	}
 
@@ -77,35 +77,27 @@ public class SubjectServiceImp implements SubjectService {
 			List<SubjectFileBean> rsfile = subjectFileService.addfiles(files, subjectres);
 			if (rsfile == null) {
 				subjectRepo.deleteById(subjectres.getSubjectId());
-				return new ResponseBean<>(subjectfile.getSubject(), TECHNICAL_ERROR, 500);
+				return new ResponseBean(subjectfile.getSubject(), TECHNICAL_ERROR, 500);
 			} else {
-				return new ResponseBean<>(subjectres, subject.getSubjectName() + "Updated Successfully", 200);
+				return new ResponseBean(subjectres, subject.getSubjectName() + "Updated Successfully", 200);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseBean<>(subjectfile.getSubject(), TECHNICAL_ERROR, 500);
+			return new ResponseBean(subjectfile.getSubject(), TECHNICAL_ERROR, 500);
 		}
 	}
 
 	@Override
 	public Object listSubject() {
 		List<SubjectBean> subjects = (List<SubjectBean>) subjectRepo.findAll();
-		ResponseBean<List<SubjectBean>> res = new ResponseBean<>();
-		res.setData(subjects);
-		res.setMsg("Subject listed successfully");
-		res.setApicode(200);
-		return res;
+		return new ResponseBean(subjects, "Subject listed successfully", 200);
 	}
 
 	@Override
 	public Object deleteSubject(Integer subjectId) {
 		SubjectBean subject = subjectRepo.findBySubjectId(subjectId);
-		ResponseBean<Object> res = new ResponseBean<>();
 		if (subject == null) {
-			res.setData(subjectId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean(subjectId, NOT_FOUND, 404);
 		} else {
 			customNativeRepo.deleteenrolesubjectBysubject(subjectId);
 			List<QuestionBean> questions = questionRepo.findBySubject(subject);
@@ -115,10 +107,7 @@ public class SubjectServiceImp implements SubjectService {
 				}
 			}
 			subjectRepo.deleteById(subjectId);
-			res.setData(subjectId);
-			res.setMsg(subject.getSubjectName() + " deleted successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean(subjectId, subject.getSubjectName() + " deleted successfully", 200);
 		}
 	}
 
@@ -126,17 +115,9 @@ public class SubjectServiceImp implements SubjectService {
 	public Object findSubjectById(Integer subjectId) {
 		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
 		if (subject.isEmpty()) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(subjectId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean(subjectId, NOT_FOUND, 404);
 		} else {
-			ResponseBean<Optional<SubjectBean>> res = new ResponseBean<>();
-			res.setData(subject);
-			res.setMsg("get subject successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean(subject, "get subject successfully", 200);
 		}
 	}
 
@@ -144,17 +125,10 @@ public class SubjectServiceImp implements SubjectService {
 	public Object checkForDelete(Integer subjectId) {
 		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
 		if (subject.isEmpty()) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(subjectId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean(subjectId, NOT_FOUND, 404);
 		} else {
-			ResponseBean<Integer> res = new ResponseBean<>();
 			List<QuestionBean> questionBeans = questionRepo.findBySubject(subject);
-			res.setData(questionBeans.size());
-			res.setMsg("get question successfully");
-			return res;
+			return new ResponseBean(questionBeans.size(), "get question successfully", 200);
 		}
 	}
 
@@ -162,44 +136,29 @@ public class SubjectServiceImp implements SubjectService {
 	public Object getSubjectFile(Integer subjectId) {
 		Optional<SubjectBean> subject = subjectRepo.findById(subjectId);
 		if (subject.isEmpty()) {
-			ResponseBean<Integer> res = new ResponseBean<>();
-			res.setData(subjectId);
-			res.setMsg(NOT_FOUND);
-			res.setApicode(404);
-			return res;
+			return new ResponseBean(subjectId, NOT_FOUND, 404);
 		} else {
-			ResponseBean<List<SubjectFileBean>> res = new ResponseBean<>();
 			List<SubjectFileBean> subjectfile = fileRepo.findBySubject(subject);
 			for (SubjectFileBean subjectFileBean : subjectfile) {
 				subjectFileBean.setFileString(null);
 				subjectFileBean.setUrl(null);
 			}
-			res.setData(subjectfile);
-			res.setMsg("get file successfully");
-			res.setApicode(200);
-			return res;
+			return new ResponseBean(subjectfile, "get file successfully", 200);
 		}
 	}
 
 	@Override
 	public Object deleteFile(Integer subjectfileId) {
-		ResponseBean<Integer> res = new ResponseBean<>();
 		try {
 			SubjectFileBean fileBean = fileRepo.getReferenceById(subjectfileId);
 			if (fileBean != null) {
 				fileRepo.delete(fileBean);
-				res.setData(subjectfileId);
-				res.setMsg(fileBean.getFileName() + "  deleted successfully");
-				res.setApicode(200);
-				return res;
+				return new ResponseBean(subjectfileId, fileBean.getFileName() + "  deleted successfully", 200);
 			} else {
-				res.setData(subjectfileId);
-				res.setMsg("file not found");
-				res.setApicode(404);
-				return res;
+				return new ResponseBean(subjectfileId, "file not found", 404);
 			}
 		} catch (Exception e) {
-			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+			return new ResponseBean(e, TECHNICAL_ERROR, 500);
 		}
 	}
 

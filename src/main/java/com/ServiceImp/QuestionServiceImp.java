@@ -282,33 +282,30 @@ public class QuestionServiceImp implements QuestionService {
 //					questionRepo.save(questions.get(i));
 //				}
 //			}
-			return new ResponseBean<>(questions, "Questions added successfully", 200);
+			return new ResponseBean(questions, "Questions added successfully", 200);
 		} catch (Exception e) {
-			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+			return new ResponseBean(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
 	@Override
 	public Object getAllQuestions() throws Exception {
 		List<QuestionBean> questions = (List<QuestionBean>) questionRepo.findAll();
-		return new ResponseBean<>(questions, "get Questions successfully", 200);
+		return new ResponseBean(questions, "get Questions successfully", 200);
 	}
 
 	@Override
 	public Object checkForDelete(Integer questionId) throws Exception {
 		QuestionBean question = questionRepo.findByQuestionId(questionId);
 		if (question == null) {
-			return new ResponseBean<>(questionId, "Question Not Found", 404);
+			return new ResponseBean(questionId, "Question Not Found", 404);
 		} else {
 			try {
 //				List<ExamquestionBean> examquestionBean = examquestionRepo.findByQuestion(question);
-				ResponseBean<Integer> res = new ResponseBean<>();
 //				res.setData(examquestionBean.size());
-				res.setMsg("get successfully");
-				res.setApicode(200);
-				return res;
+				return  new ResponseBean(null, "get successfully", 200);
 			} catch (Exception e) {
-				return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+				return new ResponseBean(e, TECHNICAL_ERROR, 500);
 			}
 		}
 	}
@@ -317,13 +314,13 @@ public class QuestionServiceImp implements QuestionService {
 	public Object deleteQuestion(Integer questionId) throws Exception {
 		Optional<QuestionBean> questionBean = questionRepo.findById(questionId);
 		if (questionBean.isEmpty()) {
-			return new ResponseBean<>(questionId, "question not found", 404);
+			return new ResponseBean(questionId, "question not found", 404);
 		} else {
 			try {
 				questionRepo.deleteById(questionId);
-				return new ResponseBean<>(questionId, "deleted successfully", 200);
+				return new ResponseBean(questionId, "deleted successfully", 200);
 			} catch (Exception e) {
-				return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+				return new ResponseBean(e, TECHNICAL_ERROR, 500);
 			}
 		}
 	}
@@ -332,9 +329,9 @@ public class QuestionServiceImp implements QuestionService {
 	public Object getQuestionById(Integer questionId) throws Exception {
 		Optional<QuestionBean> questionBean = questionRepo.findById(questionId);
 		if (questionBean.isEmpty()) {
-			return new ResponseBean<>(questionId, "Question Not Found", 404);
+			return new ResponseBean(questionId, "Question Not Found", 404);
 		} else {
-			return new ResponseBean<>(questionBean, "Get Question Successfully", 200);
+			return new ResponseBean(questionBean, "Get Question Successfully", 200);
 		}
 	}
 
@@ -342,9 +339,9 @@ public class QuestionServiceImp implements QuestionService {
 	public Object updateQuestion(QuestionBean question) throws Exception {
 		try {
 			QuestionBean que = questionRepo.save(question);
-			return new ResponseBean<>(que, "Question Updated Successfully", 200);
+			return new ResponseBean(que, "Question Updated Successfully", 200);
 		} catch (Exception e) {
-			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+			return new ResponseBean(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
@@ -358,9 +355,9 @@ public class QuestionServiceImp implements QuestionService {
 				question.add(que.get(randomIndex));
 				que.remove(randomIndex);
 			}
-			return new ResponseBean<>(question, "updated successfully", 200);
+			return new ResponseBean(question, "updated successfully", 200);
 		} else {
-			return new ResponseBean<>(number, "out of question please add question first", 401);
+			return new ResponseBean(number, "out of question please add question first", 401);
 		}
 	}
 
@@ -369,9 +366,9 @@ public class QuestionServiceImp implements QuestionService {
 		List<QuestionBean> questions;
 		try {
 			questions = addquestion(excel);
-			return new ResponseBean<>(questions, "question added successfully", 200);
+			return new ResponseBean(questions, "question added successfully", 200);
 		} catch (Exception e) {
-			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+			return new ResponseBean(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
@@ -392,9 +389,9 @@ public class QuestionServiceImp implements QuestionService {
 					questionRepo.save(question);
 				}
 			}
-			return new ResponseBean<>(question, "Question added successfully", 200);
+			return new ResponseBean(question, "Question added successfully", 200);
 		} catch (Exception e) {
-			return new ResponseBean<>(e, TECHNICAL_ERROR, 500);
+			return new ResponseBean(e, TECHNICAL_ERROR, 500);
 		}
 	}
 
@@ -445,15 +442,15 @@ public class QuestionServiceImp implements QuestionService {
 			}
 			byte[] image = fileService.getImage(question.getUrl());
 			if (image == null) {
-				return new ResponseBean<>(imageBean, "file not fond", 500);
+				return new ResponseBean(imageBean, "file not fond", 500);
 			} else {
 				imageBean.setImage(image);
 				imageBean.setQuestionId(questionId);
-				return new ResponseBean<>(imageBean, "image get sussessfully", 200);
+				return new ResponseBean(imageBean, "image get sussessfully", 200);
 			}
 
 		} catch (IOException e) {
-			return new ResponseBean<>(e, "file not fond", 500);
+			return new ResponseBean(e, "file not fond", 500);
 		}
 	}
 

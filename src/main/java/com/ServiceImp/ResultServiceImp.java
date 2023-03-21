@@ -43,10 +43,10 @@ public class ResultServiceImp implements ResultService {
 	public Object getResultsById(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user == null) {
-			return new ResponseBean<>(userId, "User Not Found", 404);
+			return new ResponseBean(userId, "User Not Found", 404);
 		} else {
 			List<ResultBean> results = resultRepo.findByUser(user);
-			return new ResponseBean<>(results, SUCCESS, 200);
+			return new ResponseBean(results, SUCCESS, 200);
 		}
 	}
 
@@ -54,9 +54,9 @@ public class ResultServiceImp implements ResultService {
 	public Object getResultById(Integer resultId) throws Exception {
 		ResultBean result = resultRepo.findByResultId(resultId);
 		if (result == null) {
-			return new ResponseBean<>(resultId, "Result not found", 404);
+			return new ResponseBean(resultId, "Result not found", 404);
 		} else {
-			return new ResponseBean<>(result, SUCCESS, 200);
+			return new ResponseBean(result, SUCCESS, 200);
 		}
 	}
 
@@ -71,17 +71,17 @@ public class ResultServiceImp implements ResultService {
 				}
 			}
 		}
-		return new ResponseBean<>(userquestionanswerBean, "get Question Successfully", 200);
+		return new ResponseBean(userquestionanswerBean, "get Question Successfully", 200);
 	}
 
 	@Override
 	public Object getAllResultByExamId(Integer examId) throws Exception {
 		ExamBean exam = examRepo.findByExamId(examId);
 		if (exam == null) {
-			return new ResponseBean<>(examId, "Exam Not Found", 404);
+			return new ResponseBean(examId, "Exam Not Found", 404);
 		} else {
 			List<ResultBean> results = resultRepo.findByExam(exam);
-			return new ResponseBean<>(results, SUCCESS, 200);
+			return new ResponseBean(results, SUCCESS, 200);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package com.Controller.AdminController;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +87,9 @@ public class QuestionController {
 	}
 	
 	@PostMapping("/getImage")
-	public Object getImage(@RequestBody String URL) throws IOException {
+	public Object getImage(@RequestBody String URL) throws Exception {
 		byte[] Image = subjectFileService.getImage(URL);
-		return new ResponseBean<>(Image,"", 200);
+		return new ResponseBean(Image,"", 200);
 	}
 
 }

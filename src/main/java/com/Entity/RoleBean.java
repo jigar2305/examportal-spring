@@ -11,17 +11,22 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-
 @Table(name = "role")
 @Entity
 public class RoleBean {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer roleId;
-	
+
 	private String roleName;
 	
+	public RoleBean() {
+	}
+
+	public RoleBean(String roleName) {
+		this.roleName = roleName;
+	}
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "role")
 	Set<UserBean> users;
@@ -48,6 +53,6 @@ public class RoleBean {
 
 	public void setUsers(Set<UserBean> users) {
 		this.users = users;
-	} 
+	}
 
 }

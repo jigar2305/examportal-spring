@@ -11,29 +11,22 @@ import com.Entity.UserBean;
 import com.Repositoy.RoleRepository;
 import com.Repositoy.UserRepository;
 
-
 @Component
 public class Roleseed {
 	@Autowired
 	RoleRepository roleRepo;
-	
+
 	@Autowired
 	UserRepository userRepo;
-	
+
 	@Autowired
 	BCryptPasswordEncoder bcrypt;
-
 
 	@PostConstruct
 	void createroles() {
 		RoleBean role = roleRepo.findByRoleName("admin");
 		if (role == null) {
-			RoleBean role1 = new RoleBean();
-			RoleBean role2 = new RoleBean();
-			role1.setRoleName("admin");
-			role2.setRoleName("student");
-			roleRepo.save(role1);
-			roleRepo.save(role2);
+			roleRepo.save(new RoleBean("student"));
 		}
 		UserBean user = userRepo.findByEmail("admin@gmail.com");
 		if (user == null) {
@@ -47,9 +40,7 @@ public class Roleseed {
 			userBean.setLastName("super");
 			userBean.setActive(true);
 			userRepo.save(userBean);
-
 		}
 	}
-	
 
 }

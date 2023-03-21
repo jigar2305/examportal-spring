@@ -71,27 +71,27 @@ public class ExamServiceImp implements ExamService {
 			try {
 				List<ExamquestionBean> equestions = questionService.addRendomQuestionByManySubject(examsubject);
 				if (!equestions.isEmpty()) {
-					return new ResponseBean<>(exam, "exam added sussessfully", 200);
+					return new ResponseBean(exam, "exam added sussessfully", 200);
 				} else {
 					examRepo.delete(exam1);
-					return new ResponseBean<>("please add questions first", 300);
+					return new ResponseBean("please add questions first", 300);
 				}
 			} catch (Exception e) {
 				ExamBean examBean2 = examRepo.findByExamId(exam1.getExamId());
 				if (examBean2 != null) {
 					examRepo.deleteById(examBean2.getExamId());
 				}
-				return new ResponseBean<>(exam, TECHNICAL_ERROR, 500);
+				return new ResponseBean(exam, TECHNICAL_ERROR, 500);
 			}
 		} else {
-			return new ResponseBean<>(examBean, "exam alredy added", 403);
+			return new ResponseBean(examBean, "exam alredy added", 403);
 		}
 	}
 
 	@Override
 	public Object listExams() throws Exception {
 		List<ExamBean> exams = examRepo.findAll();
-		return new ResponseBean<>(exams, "get Exams Sussessfully", 200);
+		return new ResponseBean(exams, "get Exams Sussessfully", 200);
 	}
 
 	@Override
@@ -104,14 +104,14 @@ public class ExamServiceImp implements ExamService {
 				exams.add(exam.get(i));
 			}
 		}
-		return new ResponseBean<>(exams, "get Exam Sussessfully", 200);
+		return new ResponseBean(exams, "get Exam Sussessfully", 200);
 	}
 
 	@Override
 	public Object deleteExam(Integer examId) throws Exception {
 		ExamBean examBean = examRepo.findByExamId(examId);
 		if (examBean == null) {
-			return new ResponseBean<>(examId, NOT_FOUND, 404);
+			return new ResponseBean(examId, NOT_FOUND, 404);
 		} else {
 			customNativeRepo.deleteenroleexambyexam(examId);
 			List<ExamquestionBean> equestion = examquestionRepo.findByExam(examBean);
@@ -123,7 +123,7 @@ public class ExamServiceImp implements ExamService {
 				resultRepo.deleteAll(results);
 			}
 			examRepo.deleteById(examId);
-			return new ResponseBean<>(examId, examBean.getExamName() + " deleted successfully", 200);
+			return new ResponseBean(examId, examBean.getExamName() + " deleted successfully", 200);
 		}
 	}
 
@@ -131,9 +131,9 @@ public class ExamServiceImp implements ExamService {
 	public Object isEnroll(Integer examId) throws Exception {
 		ExamBean examBean = examRepo.findByExamId(examId);
 		if (examBean == null) {
-			return new ResponseBean<>(examId, NOT_FOUND, 404);
+			return new ResponseBean(examId, NOT_FOUND, 404);
 		} else {
-			return new ResponseBean<>(examBean.getUsers().size(), FETCH_DATA, 200);
+			return new ResponseBean(examBean.getUsers().size(), FETCH_DATA, 200);
 		}
 	}
 
@@ -141,9 +141,9 @@ public class ExamServiceImp implements ExamService {
 	public Object getQuestionById(Integer examId) throws Exception {
 		Optional<ExamBean> examBean = examRepo.findById(examId);
 		if (examBean.isEmpty()) {
-			return new ResponseBean<>(examId, NOT_FOUND, 404);
+			return new ResponseBean(examId, NOT_FOUND, 404);
 		} else {
-			return new ResponseBean<>(examBean, FETCH_DATA, 200);
+			return new ResponseBean(examBean, FETCH_DATA, 200);
 		}
 	}
 
@@ -151,7 +151,7 @@ public class ExamServiceImp implements ExamService {
 	public Object getStatusOfExam(Integer examId) throws Exception {
 		ExamBean examBean = examRepo.findByExamId(examId);
 		if (examBean == null) {
-			return new ResponseBean<>(examId, NOT_FOUND, 404);
+			return new ResponseBean(examId, NOT_FOUND, 404);
 		} else {
 			List<examstatusBean> examstatusBeans = new ArrayList<>();
 			List<UserBean> users = userRepo.findByExams(examBean);
@@ -167,7 +167,7 @@ public class ExamServiceImp implements ExamService {
 				}
 				examstatusBeans.add(examstatusBean);
 			}
-			return new ResponseBean<>(examstatusBeans, FETCH_DATA, 200);
+			return new ResponseBean(examstatusBeans, FETCH_DATA, 200);
 		}
 	}
 
@@ -185,9 +185,9 @@ public class ExamServiceImp implements ExamService {
 					}
 				}
 			}
-			return new ResponseBean<>(exam2, "exam send to user", 200);
+			return new ResponseBean(exam2, "exam send to user", 200);
 		} catch (Exception e) {
-			return new ResponseBean<>(e, NOT_FOUND, 404);
+			return new ResponseBean(e, NOT_FOUND, 404);
 		}
 	}
 

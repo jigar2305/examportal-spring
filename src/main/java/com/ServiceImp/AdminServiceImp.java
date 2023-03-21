@@ -40,7 +40,7 @@ public class AdminServiceImp implements AdminService {
 	@Override
 	public Object listUser() throws Exception {
 		List<UserBean> users = userRepo.findAll();
-		return new ResponseBean<>(users, "users fetch successfully", 200);
+		return new ResponseBean(users, "users fetch successfully", 200);
 	}
 
 	@Override
@@ -73,31 +73,31 @@ public class AdminServiceImp implements AdminService {
 			}
 			userRepo.deleteById(userId);
 		} catch (Exception e) {
-			return new ResponseBean<>(e, "Technical error occoured", 400);
+			return new ResponseBean(e, "Technical error occoured", 400);
 		}
-		return new ResponseBean<>(userId, "user deleted successfully", 200);
+		return new ResponseBean(userId, "user deleted successfully", 200);
 	}
 
 	@Override
 	public Object checkForDelete(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user == null) {
-			return new ResponseBean<>(userId, "user not found", 404);
+			return new ResponseBean(userId, "user not found", 404);
 		} else {
 			try {
 				List<SubjectBean> subject = subjectRepo.findByUsers(user);
 				List<ExamBean> exam = examRepo.findByUsers(user);
 				if (subject == null && exam == null) {
-					return new ResponseBean<>(userId, "No dependency found", 200);
+					return new ResponseBean(userId, "No dependency found", 200);
 				} else {
 					Map<String, List<?>> ress = new HashMap<>();
 					ress.put("exam", exam);
 					ress.put("subject", subject);
-					return new ResponseBean<>(ress, null, 200);
+					return new ResponseBean(ress, null, 200);
 
 				}
 			} catch (Exception e) {
-				return new ResponseBean<>(e, "Technical error occoured", 500);
+				return new ResponseBean(e, "Technical error occoured", 500);
 			}
 		}
 	}
@@ -106,7 +106,7 @@ public class AdminServiceImp implements AdminService {
 	public Object isActive(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user == null) {
-			return new ResponseBean<>(userId, "User Not Found", 404);
+			return new ResponseBean(userId, "User Not Found", 404);
 		} else {
 			if (user.getActive().booleanValue()) {
 				user.setActive(false);
@@ -114,7 +114,7 @@ public class AdminServiceImp implements AdminService {
 				user.setActive(true);
 			}
 			userRepo.save(user);
-			return new ResponseBean<>(user.getActive(), "status updated successfully", 200);
+			return new ResponseBean(user.getActive(), "status updated successfully", 200);
 		}
 	}
 
@@ -122,9 +122,9 @@ public class AdminServiceImp implements AdminService {
 	public Object findUserById(Integer userId) throws Exception {
 		UserBean user = userRepo.findByUserId(userId);
 		if (user != null) {
-			return new ResponseBean<>(user, "get user successfully", 200);
+			return new ResponseBean(user, "get user successfully", 200);
 		} else {
-			return new ResponseBean<>(userId, "User Not Found", 404);
+			return new ResponseBean(userId, "User Not Found", 404);
 		}
 	}
 

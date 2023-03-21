@@ -94,7 +94,7 @@ public class SubjectFileServiceImp implements SubjectFileService {
 				subjectRepo.save(subject);
 			}
 		}
-		return new ResponseBean<>(true, "files successfully send to users", 200);
+		return new ResponseBean(true, "files successfully send to users", 200);
 	}
 
 	@Override
@@ -114,9 +114,9 @@ public class SubjectFileServiceImp implements SubjectFileService {
 				subjectFileBean.setPdfimage(image);
 				subjectFileBean.setUrl(null);
 			}
-			return new ResponseBean<>(files, "files Get successfully", 200);
+			return new ResponseBean(files, "files Get successfully", 200);
 		} else {
-			return new ResponseBean<>(userId, "User Not Found", 404);
+			return new ResponseBean(userId, "User Not Found", 404);
 		}
 	}
 
@@ -124,17 +124,17 @@ public class SubjectFileServiceImp implements SubjectFileService {
 	public Object getFile(Integer subjectfileId) throws IOException {
 		SubjectFileBean file = subjectFileRepo.findBySubjectfileId(subjectfileId);
 		if (file == null) {
-			return new ResponseBean<>(subjectfileId, "file not found", 404);
+			return new ResponseBean(subjectfileId, "file not found", 404);
 		} else {
 			byte[] pdf = Files.readAllBytes(new File(file.getUrl() + ".pdf").toPath());
 			String base64EncodedImageBytes = Base64.getEncoder().encodeToString(pdf);
 			file.setFileString(base64EncodedImageBytes);
 			file.setUrl(null);
-			return new ResponseBean<>(file, file.getFileName() + "get successfully", 200);
+			return new ResponseBean(file, file.getFileName() + "get successfully", 200);
 		}
 	}
 
-	public byte[] getImage(String URL) {
+	public byte[] getImage(String URL) throws Exception {
 
 		byte[] image;
 		try {
